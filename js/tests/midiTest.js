@@ -6,7 +6,6 @@ define(
             test('getNoteNameForPitch returns expected values', function() {
 
                 var isFlat = true;
-
                 equal(midi.getNoteNameForPitch(0, isFlat), 'C-2', '');
                 equal(midi.getNoteNameForPitch(1, isFlat), 'Db-2', '');
                 equal(midi.getNoteNameForPitch(2, isFlat), 'D-2', '');
@@ -20,7 +19,7 @@ define(
                 equal(midi.getNoteNameForPitch(10, isFlat), 'Bb-2', '');
                 equal(midi.getNoteNameForPitch(11, isFlat), 'B-2', '');
                 equal(midi.getNoteNameForPitch(12, isFlat), 'C-1', '');
-                
+
                 equal(midi.getNoteNameForPitch(127, isFlat), 'G8', '');
 
                 isFlat = false;
