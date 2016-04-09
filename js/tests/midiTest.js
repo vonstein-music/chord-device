@@ -20,7 +20,7 @@ define(
                 equal(midi.getNoteNameForPitch(11, isFlat), 'B-2', '');
                 equal(midi.getNoteNameForPitch(12, isFlat), 'C-1', '');
 
-                equal(midi.getNoteNameForPitch(127, isFlat), 'G8', '');
+                equal(midi.getNoteNameForPitch(127, isFlat), 'G8', ''); 
 
                 isFlat = false;
                 equal(midi.getNoteNameForPitch(1, isFlat), 'C#-2', '');
