@@ -29,6 +29,11 @@ define(
                 equal(midi.getNoteNameForPitch(8, isFlat), 'G#-2', '');
                 equal(midi.getNoteNameForPitch(10, isFlat), 'A#-2', '');
             });
+
+            test('getPitchClasses works', function() {
+                deepEqual(midi.getPitchClasses([1, 1, 2, 3]), [1, 2, 3]);
+
+            });
         };
         return {run: run}
     }

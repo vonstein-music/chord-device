@@ -1,22 +1,14 @@
 "use strict";
 require.config({
     paths: {
-        'QUnit': 'libs/qunit'
-    },
-    shim: {
-       'QUnit': {
-           exports: 'QUnit',
-           init: function() {
-               QUnit.config.autoload = false;
-               QUnit.config.autostart = false;
-           }
-       } 
+        'QUnit': 'libs/qunit',
+        '_': 'libs/lodash'
     }
 });
 
 require(
-    ['QUnit', 'tests/midiTest'],
-    function(QUnit, midiTest) {
+    ['QUnit', '_', 'tests/midiTest'],
+    function(QUnit, _, midiTest) {
         // run the tests.
         midiTest.run();
 
