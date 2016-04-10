@@ -25,20 +25,23 @@ define(function() {
     	},
     	getChordName: function(notes) {
     		/**
-				schritt 1:
-					- alle noten nehmen [0, 3, 7, 11, 14]
+
+    		TODO NEXT
+
+				- mit regexes table.txt aufbereiten, sodass
+					- interval-combo (z.B. 1 1 1 2 1) auf chord-namen mappt
+					- falls kein Akkord-Name vorhandne leeren String zurückgeben
+
+				- in getChordName (Algorithmus)			
+					- noten als input [0, 3, 7, 11, 14]
 					- wir wollen nur einstellige, deshalb alles was über 9 verändern
 					- niedrigste zahl über 9 so viel addieren, dass 12 ergibt und dann %12 (pitchklasse)
 					- bei allen diese niedrigste zahl addieren, z.B. +1 = 1 4 8 0 3
-					- nach grösse ordnen
-					- intervalle nehmen, z.B. 1->4 = 3, 4->8 = 4... 3 4 4 3
-					- interval-combo in tabelle finden
-
-
-
+					- nach grösse ordnen -> z.B. 01348
+					- intervalle nehmen, z.B. 1->1 = 1, 1->3 = 2 etc., ergibt interval-combo 1214
+					- interval-combo in tabelle finden und auf namen mappen
+					- fertig :-)
     		*/
-
-
     	},
     	getRoot: function(notes) {
 
