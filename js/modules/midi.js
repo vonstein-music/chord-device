@@ -29,7 +29,14 @@ define(function() {
     		TODO NEXT
 
 				- mit regexes table.txt aufbereiten, sodass
+				\d+\s:\s(.*)?\n\s+\d\/\d+\s+(.*)\(
+				\d{6}\s:\s(.*)\n\s
+
+
+
+				gut: aufräum: \(.*\s*,[#\w]+\s*:	
 					- interval-combo (z.B. 1 1 1 2 1) auf chord-namen mappt
+
 					- falls kein Akkord-Name vorhandne leeren String zurückgeben
 
 				- in getChordName (Algorithmus)			
@@ -37,10 +44,15 @@ define(function() {
 					- wir wollen nur einstellige, deshalb alles was über 9 verändern
 					- niedrigste zahl über 9 so viel addieren, dass 12 ergibt und dann %12 (pitchklasse)
 					- bei allen diese niedrigste zahl addieren, z.B. +1 = 1 4 8 0 3
-					- nach grösse ordnen -> z.B. 01348
+					- nach grösse ordnen (fuer finden) -> z.B. 01348
 					- intervalle nehmen, z.B. 1->1 = 1, 1->3 = 2 etc., ergibt interval-combo 1214
 					- interval-combo in tabelle finden und auf namen mappen
+					- evtl. weiterer algorithmus für welche inversion verwendet wurde
 					- fertig :-)
+					- optimierung: tree für selektion
+						4
+						 3: minor trichord
+						 4: augmented trichord
     		*/
     	},
     	getRoot: function(notes) {
