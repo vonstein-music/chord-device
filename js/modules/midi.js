@@ -23,6 +23,23 @@ define(function() {
     			return note%12;
     		})); 
     	},
+    	getChordName: function(notes) {
+    		/**
+				schritt 1:
+					- alle noten nehmen [0, 3, 7, 11, 14]
+					- wir wollen nur einstellige, deshalb alles was über 9 verändern
+					- niedrigste zahl über 9 so viel addieren, dass 12 ergibt und dann %12 (pitchklasse)
+					- bei allen diese niedrigste zahl addieren, z.B. +1 = 1 4 8 0 3
+					- nach grösse ordnen
+					- intervalle nehmen, z.B. 1->4 = 3, 4->8 = 4... 3 4 4 3
+					- interval-combo in tabelle finden
+
+
+
+    		*/
+
+
+    	},
     	getRoot: function(notes) {
 
 			var weightingPoints = [
