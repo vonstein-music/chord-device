@@ -44,18 +44,44 @@ define(
                 [
                     {pitches: [1, 1, 2, 3], expected: [1, 2, 3]},
                     {pitches: [1, 2, 3], expected: [1, 2, 3]},
+                    {pitches: [1, 13, 25], expected: [1]},
+                    {pitches: [0, 1, 12, 13], expected: [0, 1]},       
                 ], function(p){
-                    deepEqual(midi.getPitchClasses(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected.join());
+                    deepEqual(midi._getPitchClasses(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected.join());
                 });
             });
 
+
+            /*var notes = [12, 16, 7]; // {0: 20, 4: 20, 7: 20}
+            var notes = [11, 3, 7]; // {3: 16, 7: 20, 11: 16}
+            var notes = [13, 3, 7]; // {1: 6, 3: 13, 7: 13}*/
+
             test('getRoot works', function() {
+
                 _.each(
                 [
                     {pitches: [0, 3, 7], expected: 'C', chord: 'c minor'},
                     {pitches: [0, 4, 7], expected: 'C', chord: 'c major'},
                     {pitches: [4, 7, 12], expected: 'C', chord: 'c major 1. inversion'},
                     {pitches: [7, 12, 16], expected: 'C', chord: 'c major 2. inversion'},
+                    {pitches: [12, 16, 19], expected: 'C', chord: 'c major 3. inversion (same chord)'},
+                    {pitches: [1, 4, 8], expected: 'C#', chord: 'c# minor'},
+                    {pitches: [2, 5, 9], expected: 'D', chord: 'd minor'},                    
+                    {pitches: [0, 4, 7, 11], expected: 'C', chord: 'maj7'},
+                    {pitches: [0, 3, 7, 10], expected: 'C', chord: 'min7'},
+                    {pitches: [0, 4, 7, 10], expected: 'C', chord: 'dom7'},
+                    {pitches: [0, 3, 6, 9], expected: 'C', chord: 'dim7'},
+                    {pitches: [0, 4, 8], expected: 'C', chord: 'c aug'},
+                    {pitches: [5, 9, 13], expected: 'C#', chord: 'c# aug first inversion'},
+
+                    //{pitches: [0, 4, 7, 10, 15], expected: 'C', chord: 'hendrix chord'},
+                    //{pitches: [1, 5, 8, 11, 16], expected: 'C#', chord: 'hendrix chord'},
+                    {pitches: [0, 4, 7, 11, 14], expected: 'C', chord: 'maj 9'},
+
+
+                    //{pitches: [2, 6, 9, 12, 17], expected: 'D', chord: 'hendrix chord'},
+                    //{pitches: [3, 7, 10, 13, 18], expected: 'D#', chord: 'hendrix chord'},
+
                 ], function(p){
                     equal(midi.getRoot(p.pitches), p.expected, p.pitches.join() + ' has root ' + p.expected);
                 });
