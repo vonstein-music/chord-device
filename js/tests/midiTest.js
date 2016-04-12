@@ -39,6 +39,7 @@ define(
                 });
             });
 
+
             test('getPitchClasses works', function() {
                 _.each(
                 [
@@ -50,6 +51,59 @@ define(
                     deepEqual(midi._getPitchClasses(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected.join());
                 });
             });
+
+
+
+            test('getIntervalKey works', function() {
+                _.each(
+                [
+                    {pitches: [1, 2, 4], expected: '12'},
+                    {pitches: [1, 3], expected: '2'},
+                    {pitches: [0, 4, 6, 10], expected: '242'},
+
+
+
+                ], function(p){
+                    equal(midi._getIntervalKey(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
+                });
+            });
+
+            test('getChordName works', function() {
+                _.each(
+                [
+                    {pitches: [0, 3, 6], expected: 'Diminished Chord'},
+                    {pitches: [0, 3, 7], expected: 'Minor Chord'},
+                    {pitches: [0, 4, 7], expected: 'Major Chord'},
+                    {pitches: [4, 7, 12], expected: 'Major Chord'},
+                    {pitches: [0, 4, 7, 12, 24], expected: 'Major Chord'},
+
+                    {pitches: [0, 3, 7, 11, 14], expected: 'Minor-major Ninth Chord'}, // 3 4 4 3 nö, 1 4 8 0 3 -> 01348 -> 1 2 1 4
+                    {pitches: [0, 3, 7, 10, 14], expected: 'Major-Ninth Chord'}, // 2 5 9 0 4, 0 2 4 5 9, 1 2 1 4
+
+
+                    // +3: 3 6 10 13 15 -> 3 6 10 1
+
+                    // 1 4 8 11 15 -> 1 4 8 11 3 -> 1 3 4 8 11 -> 2 1 4 3
+
+
+
+
+
+
+
+
+
+
+                    //{pitches: [0, 4, 6, 10], expected: 'Dominant seventh flat five chord, Seven Flat Five'}, // 0, 2, 6, 8 // 2 4 2
+                    //{pitches: [0, 2, 5, 6, 7], expected: 'Double-seconds Triple-fourth Pentachord.2'}, // 0, 2, 6, 8 // 2 4 2
+
+
+
+                ], function(p){
+                    equal(midi.getChordName(p.pitches), p.expected, p.pitches.join() + ' has name: ' + p.expected);
+                });
+            });
+
 
 
             /*var notes = [12, 16, 7]; // {0: 20, 4: 20, 7: 20}
