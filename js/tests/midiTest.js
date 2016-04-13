@@ -10,6 +10,14 @@ define(
                     {pitches: [2, 3, 9], expected: '100011'},     
                     {pitches: [0,2,6], expected: '010101'},
                     {pitches: [0,2,3,6], expected: '112101'},
+                    {pitches: [4,6,0,1,3], expected: '223111'},
+                    {pitches: [0,1,2,4,5,8], expected: '323421'},
+
+
+
+
+
+     
                     //{pitches: [0,2,3,4,6], expected: '223111'},
 
 
@@ -77,7 +85,7 @@ define(
 
 
 
-            test('getIntervalKey works', function() {
+            /*test('getIntervalKey works', function() {
                 _.each(
                 [
                     {pitches: [1, 2, 4], expected: '12'},
@@ -89,16 +97,20 @@ define(
                 ], function(p){
                     equal(midi._getIntervalKey(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
                 });
-            });
+            });*/
 
             test('getChordName works', function() {
                 _.each(
                 [
-                    {pitches: [0, 3, 6], expected: 'Diminished Chord'},
+                    /*{pitches: [0, 3, 6], expected: 'Diminished Chord'},
+                    {pitches: [3, 6, 9], expected: 'Diminished Chord'},
                     {pitches: [0, 3, 7], expected: 'Minor Chord'},
                     {pitches: [0, 4, 7], expected: 'Major Chord'},
                     {pitches: [4, 7, 12], expected: 'Major Chord'},
-                    {pitches: [0, 4, 7, 12, 24], expected: 'Major Chord'},
+                    {pitches: [0, 4, 7, 12, 24], expected: 'Major Chord'},*/
+
+                    
+                    {pitches: [0, 3, 6, 10], expected: 'Half-diminished Seventh Chord'}, 
 
                     {pitches: [0, 3, 7, 11, 14], expected: 'Minor-major Ninth Chord'}, // 3 4 4 3 nö, 1 4 8 0 3 -> 01348 -> 1 2 1 4
                     {pitches: [0, 3, 7, 10, 14], expected: 'Major-Ninth Chord'}, // 2 5 9 0 4, 0 2 4 5 9, 1 2 1 4
