@@ -4,6 +4,27 @@ define(
     function(midi) {
         var run = function() {
 
+            test('_getIntervalVector works', function() {
+                _.each(
+                [
+                    {pitches: [2, 3, 9], expected: '100011'},     
+                    {pitches: [0,2,6], expected: '010101'},
+                    {pitches: [0,2,3,6], expected: '112101'},
+                    //{pitches: [0,2,3,4,6], expected: '223111'},
+
+
+
+
+
+
+                    //{pitches: [0,1,2,4,6], expected: [2,2,3,1,1,1]},     
+
+
+                ], function(p){
+                    deepEqual(midi._getIntervalVectorString(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
+                });
+            });
+
             test('getNoteNameForPitch for', function() {
                 _.each(
                 [
@@ -38,6 +59,8 @@ define(
                     );
                 });
             });
+
+
 
 
             test('getPitchClasses works', function() {

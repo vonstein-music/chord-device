@@ -12,6 +12,28 @@ define(function() {
     	getNoteNameForPitch: function(pitch, isFlat) {
     		return this._getNoteName(pitch, isFlat) + (Math.floor(pitch/12) - 2);
     	},
+    	_getIntervalVectorString: function(pitches) {
+
+    		var intervalVector = [0, 0, 0, 0, 0, 0];    		
+    		var pitchClasses = _.sortBy(this._getPitchClasses(pitches));
+
+    		for(var i = 0, len = pitchClasses.length; i < len; i++) {
+
+    			for(var k = i + 1; k < len; k++){
+    				console.log(pitchClasses[i], pitchClasses[k]);
+
+					var intervalClass = Math.abs(pitchClasses[k] - pitchClasses[i]);
+					if(intervalClass > 6) {
+						intervalClass = 12 - intervalClass;
+					}
+
+					console.log(intervalClass);
+					intervalVector[intervalClass - 1]++;
+    			}
+    		}
+    		console.log(intervalVector);
+    		return intervalVector.join('');
+    	},
     	_getIntervalKey: function(pitchClasses) {
 
 
@@ -27,7 +49,7 @@ define(function() {
 				return (pitch + diff)%12;
 			}));
 
-			console.log(biggestUnder12);
+			//console.log(biggestUnder12);
 
     		var intervalKey = '';
 
@@ -364,7 +386,7 @@ define(function() {
 				_.each(pitches, function(comparedPitchValue){
 					var interval = Math.abs(pitchValue - comparedPitchValue);
 					score += weightingPoints[interval];
-					console.log(pitchValue, comparedPitchValue, interval, weightingPoints[interval], score);
+					//console.log(pitchValue, comparedPitchValue, interval, weightingPoints[interval], score);
 
 				});
 
@@ -384,8 +406,8 @@ define(function() {
 				}				
 			});
 
-			console.log(pitches);
-			console.log(ratings);
+			//console.log(pitches);
+			//console.log(ratings);
 
 			// unique winner
 			if (countOfScoreMap[highestScore] === 1) {
@@ -402,7 +424,7 @@ define(function() {
 			}
 
 			// unclear, return the lowest pitch of all the winners				
-			console.log('unclear, return the lowest pitch of all the winners');
+			//console.log('unclear, return the lowest pitch of all the winners');
 
 			var winners = _.filter(ratings, ['score', highestScore]);
 
