@@ -351,6 +351,202 @@ _888885: {_012346789A: 'Messiaen mode 7 (1111211112)'},
 _AAAAA5: {_0123456789A: 'Chromatic Undecamirror'},
 _CCCCC6: {_0123456789AB: 'Chromatic Scale/Dodecamirror (111111111111)'}
 		},
+		scaleTable: 
+		[
+		 [
+		     ["Major", "Ionian"],
+		     [0, 2, 4, 5, 7, 9, 11]
+		 ], [
+		     ["natural minor", "Aeolian"],
+		     [0, 2, 3, 5, 7, 8, 10]
+		 ], [
+		     ["harmonic minor", "Mohammedan"],
+		     [0, 2, 3, 5, 7, 8, 11]
+		 ], [
+		     ["melodic minor"],
+		     [0, 2, 3, 5, 7, 9, 11]
+		 ], [
+		     ["major pentatonic"],
+		     [0, 2, 4, 7, 9]
+		 ], [
+		     ["minor pentatonic"],
+		     [0, 3, 5, 7, 10]
+		 ], [
+		     ["blues"],
+		     [0, 3, 5, 6, 7, 10]
+		 ], [
+		     ["minor blues"],
+		     [0, 2, 3, 5, 6, 7, 8, 10]
+		 ], [
+		     ["major blues"],
+		     [0, 2, 3, 4, 5, 6, 7, 9, 10]
+		 ], [
+		     ["augmented", "whole tone"],
+		     [0, 2, 4, 6, 8, 10]
+		 ], [
+		     ["diminished"],
+		     [0, 2, 3, 5, 6, 8, 9, 11]
+		 ], [
+		     ["Phrygian-Dominant", "major Phrygian", "Spanish-flamenco"],
+		     [0, 1, 4, 5, 7, 8, 10]
+		 ], [
+		     ["Dorian"],
+		     [0, 2, 3, 5, 7, 9, 10]
+		 ], [
+		     ["Phrygian"],
+		     [0, 1, 3, 5, 7, 8, 10]
+		 ], [
+		     ["Lydian"],
+		     [0, 2, 4, 6, 7, 9, 11]
+		 ], [
+		     ["Mixolydian"],
+		     [0, 2, 4, 5, 7, 9, 10]
+		 ], [
+		     ["Locrian"],
+		     [0, 1, 3, 5, 6, 8, 10]
+		 ], [
+		     ["jazz melodic minor"],
+		     [0, 2, 3, 5, 7, 9, 11]
+		 ], [
+		     ["Dorian b2"],
+		     [0, 1, 3, 5, 7, 9, 10]
+		 ], [
+		     ["Lydian augmented"],
+		     [0, 2, 4, 6, 8, 9, 11]
+		 ], [
+		     ["Lydian b7", "overture"],
+		     [0, 2, 4, 6, 7, 9, 10]
+		 ], [
+		     ["Mixolydian b13", "Hindu"],
+		     [0, 2, 4, 5, 7, 8, 10]
+		 ], [
+		     ["Locrian #2"],
+		     [0, 2, 3, 5, 6, 8, 10]
+		 ], [
+		     ["super Locrian", "altered"],
+		     [0, 1, 3, 4, 6, 8, 10]
+		 ], [
+		     ["whole half diminished"],
+		     [0, 2, 3, 5, 6, 8, 9, 11]
+		 ], [
+		     ["half whole diminished"],
+		     [0, 1, 3, 4, 6, 7, 9, 10]
+		 ], [
+		     ["enigmatic"],
+		     [0, 1, 4, 6, 8, 10, 11]
+		 ], [
+		     ["double harmonic", "gypsy", "Byzantine"],
+		     [0, 1, 4, 5, 7, 8, 11]
+		 ], [
+		     ["Hungarian minor"],
+		     [0, 2, 3, 6, 7, 8, 11]
+		 ], [
+		     ["Persian"],
+		     [0, 1, 4, 5, 6, 8, 11]
+		 ], [
+		     ["Arabian", "major Locrian"],
+		     [0, 2, 4, 5, 6, 8, 10]
+		 ], [
+		     ["Japanese"],
+		     [0, 1, 5, 7, 8]
+		 ], [
+		     ["Egyptian"],
+		     [0, 2, 5, 7, 10]
+		 ], [
+		     ["Hirajoshi"],
+		     [0, 2, 3, 7, 8]
+		 	]
+		 ],
+// http://vladimir_ladma.sweb.cz/english/music/structs/mus_rot.htm
+// http://solomonsmusic.net/pcsets.htm#Explanation%20of%20This%20Table
+// view-source:http://composertools.com/Tools/PCSets/setfinder.html
+// https://en.wikipedia.org/wiki/Set_theory_(music)
+
+/*
+function ComputePartialPrime(pc, pcout)
+{
+  var best = 0;    // The best rotation found so far
+  var adj = 0;     // Adjustment applied based on the algorithm type (Temp var)
+
+  // Find the best rotation
+
+  for(i = 1 ; i < card ; i++) {
+    // Test to see if the size of the set is smaller than we've found so far
+    if( (pc[i+card-1] - pc[i]) < (pc[best+card-1] - pc[best]) ) {
+      best = i;
+      continue;
+    }
+
+    // Test to see if the sizes are the same, if so, we go into tie-breaker mode
+    if( (pc[i+card-1] - pc[i]) == (pc[best+card-1] - pc[best]) ) {
+      for(j = 1 ; j < (card-1) ; j++ ) {
+        if(isForte)  adj = j;
+        else         adj = card-j-1;
+
+        // is the new interval better?
+        if( (pc[i+adj] - pc[i]) < (pc[best+adj] - pc[best]) )  {
+          best = i;  // then it becomes the best and we're done
+          break;
+        }
+        // is the new interval worse?
+        else if( (pc[i+adj] - pc[i]) > (pc[best+adj] - pc[best]) )
+          break;  // then the old best is still best and we're done
+
+        // otherwise, we are still tied, so keep looking
+      }
+    }
+  }
+
+  // Found the best rotation, so now copy it into pcout and transpose down
+  for(i = 0 ; i < card ; i++)
+    pcout[i] = pc[best+i] - pc[best];
+}
+
+
+function ComparePartialPrimes()
+{
+  var bestPrime = 0;  // Assume pcOrigPrime is best until we know otherwise
+
+  for(i = 0 ; i < card ; i++) {
+    if(isForte)  adj = i;
+    else         adj = card-i-1;
+
+    // is the new interval better?
+    if( (pcInvPPrime[adj] - pcInvPPrime[0]) < (pcOrigPPrime[adj] - pcOrigPPrime[0]) )  {
+      bestPrime = 1;  // then inverted form becomes the best and we're done
+      break;
+    }
+    // is the new interval worse?
+    else if( (pcInvPPrime[adj] - pcInvPPrime[0]) > (pcOrigPPrime[adj] - pcOrigPPrime[0]) )
+      break;  // then the original is definitiely best and we're done
+
+    // otherwise, we are still tied, so keep looking
+  }
+
+  if(bestPrime == 0) {
+    for(i = 0 ; i < card ; i++)  pcPrime[i] = pcOrigPPrime[i];
+  }
+  else {
+    for(i = 0 ; i < card ; i++)  pcPrime[i] = pcInvPPrime[i];
+  }
+}*/
+
+
+
+		_getTnSetClass: function(notes){
+			var pitchClasses = _.sortBy(this._getPitchClasses(notes));
+
+			console.log(pitchClasses);
+
+			var distanceFirstLast = 12;  // 279  792  927
+
+			for(var i = 0, len = pitchClasses.length; i < len; i++) {
+				if (pitchClasses[i] - pitchClasses[])
+			}
+
+
+
+		},
 
     	getChordName: function(notes) {
 
@@ -363,7 +559,12 @@ _CCCCC6: {_0123456789AB: 'Chromatic Scale/Dodecamirror (111111111111)'}
 
     		var intervalVector = '_' + this._getIntervalVectorString(notes);
     		if (_.has(this.chordTable, intervalVector)) {
-
+    			// @todo: inversions, testen, getroot verfeinern, sets vergleichen, namen ergänzen, omit/sus hinzufügen
+    			// scale erkennung, akkord-funktion (tonic, dominant etc.)
+    			// vorschläge
+    			// im display jeweils die skalen anzeigen (aufleuchten), in welchen der akkord vorkommt und welche funktion er darin hat (V, vii etc.)
+    			// grenzfälle abdecken AAAAA5 etc.
+    			// evtl. intervalVektor zur Bewertung oder root-findung heranziehen
     			// chord found, now try to be more precise (major/minor, inversions etc.)
 
     			console.log(this.chordTable[intervalVector]);
@@ -383,6 +584,7 @@ _CCCCC6: {_0123456789AB: 'Chromatic Scale/Dodecamirror (111111111111)'}
     				console.log(this.chordTable[intervalVector][pitchesKey]);
     				return this.chordTable[intervalVector][pitchesKey]
     			} else {
+    				// return first
     				for(var key in this.chordTable[intervalVector]) break;
     				return this.chordTable[intervalVector][key];
     			}

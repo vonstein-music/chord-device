@@ -4,6 +4,22 @@ define(
     function(midi) {
         var run = function() {
 
+
+            test('_getTnSetClass works', function() {
+                _.each(
+                [
+                    {pitches: [5, 2, 11, 3, 9], expected: '100011'},     
+                    /*{pitches: [0,2,6], expected: '010101'},
+                    {pitches: [0,2,3,6], expected: '112101'},
+                    {pitches: [4,6,0,1,3], expected: '223111'},
+                    {pitches: [0,1,2,4,5,8], expected: '323421'},*/
+                    //{pitches: [0,2,3,4,6], expected: '223111'},
+                    //{pitches: [0,1,2,4,6], expected: [2,2,3,1,1,1]},     
+                ], function(p){
+                    deepEqual(midi._getTnSetClass(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
+                });
+            });
+/*
             test('_getIntervalVector works', function() {
                 _.each(
                 [
@@ -12,22 +28,8 @@ define(
                     {pitches: [0,2,3,6], expected: '112101'},
                     {pitches: [4,6,0,1,3], expected: '223111'},
                     {pitches: [0,1,2,4,5,8], expected: '323421'},
-
-
-
-
-
-     
                     //{pitches: [0,2,3,4,6], expected: '223111'},
-
-
-
-
-
-
                     //{pitches: [0,1,2,4,6], expected: [2,2,3,1,1,1]},     
-
-
                 ], function(p){
                     deepEqual(midi._getIntervalVectorString(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
                 });
@@ -81,7 +83,7 @@ define(
                 ], function(p){
                     deepEqual(midi._getPitchClasses(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected.join());
                 });
-            });
+            });*/
 
 
 
@@ -99,17 +101,16 @@ define(
                 });
             });*/
 
-            test('getChordName works', function() {
+            /*test('getChordName works', function() {
                 _.each(
                 [
-                    /*{pitches: [0, 3, 6], expected: 'Diminished Chord'},
+                    {pitches: [0, 3, 6], expected: 'Diminished Chord'},
                     {pitches: [3, 6, 9], expected: 'Diminished Chord'},
                     {pitches: [0, 3, 7], expected: 'Minor Chord'},
                     {pitches: [0, 4, 7], expected: 'Major Chord'},
                     {pitches: [4, 7, 12], expected: 'Major Chord'},
-                    {pitches: [0, 4, 7, 12, 24], expected: 'Major Chord'},*/
-
-                    
+                    {pitches: [0, 4, 7, 12, 24], expected: 'Major Chord'},
+                    {pitches: [0, 3, 7, 10], expected: 'Minor-seventh Chord'},                     
                     {pitches: [0, 3, 6, 10], expected: 'Half-diminished Seventh Chord'}, 
 
                     {pitches: [0, 3, 7, 11, 14], expected: 'Minor-major Ninth Chord'}, // 3 4 4 3 nö, 1 4 8 0 3 -> 01348 -> 1 2 1 4
@@ -120,15 +121,6 @@ define(
 
                     // 1 4 8 11 15 -> 1 4 8 11 3 -> 1 3 4 8 11 -> 2 1 4 3
 
-
-
-
-
-
-
-
-
-
                     //{pitches: [0, 4, 6, 10], expected: 'Dominant seventh flat five chord, Seven Flat Five'}, // 0, 2, 6, 8 // 2 4 2
                     //{pitches: [0, 2, 5, 6, 7], expected: 'Double-seconds Triple-fourth Pentachord.2'}, // 0, 2, 6, 8 // 2 4 2
 
@@ -137,7 +129,7 @@ define(
                 ], function(p){
                     equal(midi.getChordName(p.pitches), p.expected, p.pitches.join() + ' has name: ' + p.expected);
                 });
-            });
+            });*/
 
 
 
@@ -145,7 +137,7 @@ define(
             var notes = [11, 3, 7]; // {3: 16, 7: 20, 11: 16}
             var notes = [13, 3, 7]; // {1: 6, 3: 13, 7: 13}*/
 
-            test('getRoot works', function() {
+            /*test('getRoot works', function() {
 
                 _.each(
                 [
@@ -174,7 +166,7 @@ define(
                 ], function(p){
                     equal(midi.getRoot(p.pitches), p.expected, p.pitches.join() + ' has root ' + p.expected);
                 });
-            });
+            });*/
 
             
         };
