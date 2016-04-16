@@ -53,15 +53,15 @@ define(function() {
 			_210000: {_012: 'BACH /Chromatic Trimirror'},
 			_111000: {_013: 'Phrygian Trichord', _023: 'Minor Trichord'},
 			_101100: {_014: 'Major-minor Trichord.1', _034: 'Major-minor Trichord.2'},
-			_100110: {_015: 'Incomplete Major-seventh Chord.1', _045: 'Incomplete Major-seventh Chord.2'},
+			_100110: {_015: 'Incomplete Major-seventh chord.1', _045: 'Incomplete Major-seventh chord.2'},
 			_100011: {_016: 'Rite chord.2, Tritone-fourth.1', _056: 'Rite chord.1, Tritone-fourth.2'},
 			_020100: {_024: 'Whole-tone Trichord'},
-			_011010: {_025: 'Incomplete Minor-seventh Chord', _035: 'Incomplete Dominant-seventh Chord.2'},
-			_010101: {_026: 'Italian-sixth, Incomplete Dominant-seventh Chord.1', _046: 'Incomplete Half-dim-seventh Chord'},
+			_011010: {_025: 'Incomplete minor seventh chord', _035: 'Incomplete Dominant-seventh chord.2'},
+			_010101: {_026: 'Italian-sixth, Incomplete Dominant-seventh chord.1', _046: 'Incomplete Half-dim-seventh chord'},
 			_010020: {_027: 'Quartal Trichord'},
-			_002001: {_036: 'Diminished Chord'},
-			_001110: {_037: 'Minor Chord', _047: 'Major Chord'},
-			_000300: {_048: 'Augmented Chord'},
+			_002001: {_036: 'Diminished Triad'},
+			_001110: {_037: 'Minor Triad', _047: 'Major Triad'},
+			_000300: {_048: 'Augmented Triad'},
 			_321000: {_0123: 'BACH /Chromatic Tetramirror'},
 			_221100: {_0124: 'Major-second Tetracluster.2', _0234: 'Major-second Tetracluster.1'},
 			_212100: {_0134: 'Alternating Tetramirror'},
@@ -75,21 +75,21 @@ define(function() {
 			_121110: {_0135: 'Phrygian Tetrachord', _0245: 'Major Tetrachord, Lydian Tetrachord'},
 			_112101: {_0236: 'Harmonic-minor Tetrachord', _0346: 'Major-third Diminished Tetrachord'},
 			_112011: {_0136: 'Minor-second Diminished Tetrachord', _0356: 'Perfect-fourth Diminished Tetrachord'},
-			_111120: {_0237: 'Major-second Minor Tetrachord', _0457: 'Perfect-fourth Major Tetrachord'},
+			_111120: {_0237: /* Minor added ninth chord */'Minor added ninth chord, Major-second Minor Tetrachord', _0457: 'Perfect-fourth Major Tetrachord'},
 			_111111: {_0146: 'All-interval Tetrachord.1', _0256: 'All-interval Tetrachord.2', _0137: 'All-interval Tetrachord.3', _0467: 'All-interval Tetrachord.4'},
-			_110121: {_0157: 'Minor-second Quartal Tetrachord', _0267: 'Tritone Quartal Tetrachord'},
+			_110121: {_0157: /* Major seventh flat five chord */'Major seventh flat five chord, Minor-second Quartal Tetrachord', _0267: 'Tritone Quartal Tetrachord'},
 			_102210: {_0347: 'Major-minor Tetramirror'},
-			_102111: {_0147: 'Major-diminished Tetrachord', _0367: 'Minor-diminished Tetrachord'},
-			_101310: {_0148: 'Minor-augmented Tetrachord', _0348: 'Augmented-major Tetrachord'},
-			_101220: {_0158: 'Major-seventh Chord, Raga Lavangi'},
+			_102111: {_0147: 'Diminished major seventh chord OR Major diminished Tetrachord', _0367: 'Minor-diminished Tetrachord'},
+			_101310: {_0148: 'Minor major seventh chord OR Major Seventh Augmented Fifth OR augmented major seventh chord, Minor augmented Tetrachord', _0348: 'Augmented-major Tetrachord'},
+			_101220: {_0158: 'Major seventh chord, Raga Lavangi'},
 			_030201: {_0246: 'Whole-tone Tetramirror'},
-			_021120: {_0247: 'Major-second Major Tetrachord', _0357: 'Perfect-fourth Minor Tetrachord'},
+			_021120: {_0247: /* Added ninth chord*/'Added ninth chord, Major-second Major Tetrachord', _0357: 'Perfect-fourth Minor Tetrachord'},
 			_021030: {_0257: 'Quartal Tetramirror'},
-			_020301: {_0248: 'Augmented Seventh Chord'},
-			_020202: {_0268: 'French-sixth Chord, Messiaen\'s truncated 6'},
-			_012120: {_0358: 'Minor-seventh Chord'},
-			_012111: {_0258: 'Half-diminished Seventh Chord', _0368: 'Dominant-seventh, German-sixth Chord'},
-			_004002: {_0369: 'Diminished-seventh Chord'},
+			_020301: {_0248: 'Augmented seventh chord'},
+			_020202: {_0268: 'Dominant seventh flat five chord, Seven Flat Five, French-sixth chord, Messiaen\'s truncated 6'},
+			_012120: {_0358: 'Minor seventh chord'},
+			_012111: {_0258: 'Dominant seventh chord OR Half-diminished seventh chord', _0368: 'Dominant-seventh, German-sixth chord'},
+			_004002: {_0369: 'Diminished seventh chord, full diminished seventh chord, Diminished 7th (with Flat 5th)'},
 			_432100: {_01234: 'Chromatic Pentamirror'},
 			_332110: {_01235: 'Major-second Pentacluster.2', _02345: 'Major-second Pentacluster.1'},
 			_322210: {_01245: 'Minor-second Major Pentachord', _01345: 'Spanish Pentacluster'},
@@ -106,24 +106,24 @@ define(function() {
 			_221131: {_01257: 'Double-seconds Triple-fourth Pentachord.1', _02567: 'Double-seconds Triple-fourth Pentachord.2'},
 			_220222: {_01268: 'Assymetric Pentamirror, Bardos\'s'},
 			_213211: {_01347: 'Major-minor-dim Pentachord.1', _03467: 'Major-minor-dim Pentachord.2'},
-			_212320: {_01348: 'Minor-major Ninth Chord', _03458: 'Center-cluster Pentamirror'},
+			_212320: {_01348: 'Minor-major ninth chord', _03458: 'Center-cluster Pentamirror'},
 			_212221: {_01457: 'Gypsy/semiditonic Pentachord.1', _02367: 'Gypsy/semiditonic Pentachord.2', _01258: 'Diminished Pentacluster.1', _03678: 'Diminished Pentacluster.2'},
 			_212122: {_01367: 'Javanese Pentachord', _01467: 'Balinese Pentachord'},
 			_211231: {_02378: 'Indian-Japan Pentatonic', _01378: 'Balinese Pelog Pentatonic, Korean, Raga Bhupala, Raga Bibhas', _01578: 'Hirajoshi Pentatonic, Iwato, Sakura, Raga Saveri'},
-			_202420: {_01458: 'Major-augmented Ninth Chord, Syrian Pentatonic, Raga Megharanji', _03478: 'Lebanese Pentachord, Augmented-minor Chord'},
+			_202420: {_01458: 'Major-augmented ninth chord, Syrian Pentatonic, Raga Megharanji', _03478: 'Lebanese Pentachord, Augmented-minor chord'},
 			_202321: {_01478: 'Persian Pentamirror, Raga reva/Ramkali'},
 			_132130: {_02357: 'Dorian/Minor Pentachord', _02457: 'Major/Ionic Pentachord'},
-			_131221: {_01357: 'Phrygian Pentachord', _02467: 'Lydian Pentachord'},
-			_123121: {_02358: 'Diminished-major Ninth Chord', _03568: 'Minor-diminished Ninth Chord'},
-			_122311: {_02458: 'Diminished-augmented Ninth Chord', _03468: 'Augmented-diminished Ninth Chord'},
-			_122230: {_01358: 'Major-Ninth Chord', _03578: 'Minor-Ninth Chord'},
+			_131221: {_01357: 'Phrygian Pentachord', _02467: /* Major ninth sharp eleventh chord */'Major ninth sharp eleventh chord, Lydian Pentachord'},
+			_123121: {_02358: 'Diminished-major ninth chord', _03568: 'Minor-diminished ninth chord'},
+			_122311: {_02458: 'Diminished-augmented ninth chord', _03468: 'Augmented-diminished ninth chord'},
+			_122230: {_01358: 'Minor ninth chord', _03578: 'Major ninth chord'}, /* check */
 			_122212: {_02368: 'Augmented-sixth Pentachord.1', _02568: 'Augmented-sixth Pentachord.2, Indian Hindola, Javan Pentatonic'},
 			_122131: {_01368: 'Kumoi Pentachord.2', _02578: 'Kumoi Pentachord.1'},
 			_121321: {_01468: 'Enigmatic Pentachord.1', _02478: 'Enigmatic Pentachord.2, Altered Pentatonic'},
-			_114112: {_01369: 'Diminished Minor-Ninth Chord', _02369: 'Flat-Ninth Pentachord, Ranjaniraga'},
-			_113221: {_01469: 'Neapolitan Pentachord.1', _01479: 'Neapolitan Pentachord.2'},
-			_040402: {_02468: 'Whole-tone Pentamirror'},
-			_032221: {_02469: 'Dominant-ninth, major-minor, Prometheus Pentamirror'},
+			_114112: {_01369: 'Diminished Minor-ninth chord', _02369: 'Flat-ninth Pentachord, Ranjaniraga'},
+			_113221: {_01469: /*Dominant seventh sharp ninth chord*/'Dominant seventh sharp ninth chord, Neapolitan Pentachord.1', _01479: 'Neapolitan Pentachord.2'},
+			_040402: {_02468: /* Dominant ninth sharp five chord */'Dominant ninth sharp five chord, Whole-tone Pentamirror'},
+			_032221: {_02469: 'Dominant ninth, major-minor, Prometheus Pentamirror'},
 			_032140: {_02479: '"Black Key" Pentatonic, Slendro, Bilahariraga, Quartal Pentamirror, Yo'},
 			_543210: {_012345: 'Chromatic Hexamirror, 1st ord. all-comb (P6, Ib, RI5)'},
 			_443211: {_012346: 'comb I (b)', _023456: 'comb I (1)'},
@@ -158,7 +158,7 @@ define(function() {
 			_223431: {_013589: 'comb I (7)', _014689: 'comb I (b)'},
 			_143250: {_024579: 'Arezzo major Diatonic, major hexamirror, quartal hexamirror, 1st ord.all-comb P (6), I (3), RI (9)'},
 			_143241: {_023579: 'Dorian Hexachord, comb I (1)', _024679: 'Dominant-11th, Lydian Hexachord, comb I (5)'},
-			_142422: {_013579: 'Scriabin\'s Mystic Chord or Prometheus Hexachord, comb I (B)', _024689: 'Harmonic Hexachord, Augmented-11th, Indian Sviraga, comb I (7)'},
+			_142422: {_013579: 'Scriabin\'s Mystic chord or Prometheus Hexachord, comb I (B)', _024689: 'Harmonic Hexachord, Augmented-11th, Indian Sviraga, comb I (7)'},
 			_060603: {_02468A: 'Wholetone scale, Messiaen\'s mode 1, Raga Gopriya, Anhemitonic Hexatonic, 6th ord.all-comb.(P+IoddT, R+RIevenT)'},
 			_654321: {_0123456: 'Chromatic Heptamirror'},
 			_554331: {_0123457: '', _0234567: ''},
@@ -213,7 +213,7 @@ define(function() {
 			_554563: {_01235789: '', _01246789: 'Enigmatic Octatonic, Free-constructed'},
 			_546652: {_01345689: ''},
 			_546553: {_01235689: '', _01346789: ''},
-			_545752: {_0134568A: '', _01245689: '', _01345789: 'Mela Jyotisvarupini, Raga Jotismatti', 'Raga Saurastra'},
+			_545752: {_0134568A: '', _01245689: '', _01345789: 'Mela Jyotisvarupini, Raga Jotismatti'},
 			_545662: {_01245789: ''},
 			_474643: {_0123468A: ''},
 			_465562: {_0123568A: 'Spanish Octatonic', _0123579A: 'Spanish Octatonic Scale (r9)'},
@@ -233,7 +233,7 @@ define(function() {
 			_676764: {_01234678A: '', _01234689A: ''},
 			_676683: {_01235678A: 'Major-minor Nonatonic, Ramdasi Malhar', _01235678A: 'Raga Ramdasi Malhar (r2)'},
 			_668664: {_01234679A: ''},
-			_667773: {_01235679A: 'Diminishing Nonachord?', _01235689A: 'Diminishing Nonachord', 01245679A: 'Diminishing Nonachord'},
+			_667773: {_01235679A: 'Diminishing Nonachord?', _01235689A: 'Diminishing Nonachord', _01245679A: 'Diminishing Nonachord'},
 			_666963: {_01245689A: 'Messiaen mode 3, Tsjerepnin'},
 			_988884: {_0123456789: 'Chromatic Decamirror'},
 			_898884: {_012345678A: ''},
@@ -628,6 +628,14 @@ function ComparePartialPrimes()
 			}
 		},
 
+		getChordName: function(notes) {
+			var allNames = this._getAllChordNames(notes);
+			if (allNames === '') {
+				return 'No info available';
+			}
+			return allNames.split(',')[0];
+		},
+
 		/**
 			Finds the set using the interval vector as the key.
 			After the set is found, further distinction is made 
@@ -636,7 +644,7 @@ function ComparePartialPrimes()
 			after the distincion is made, inversions are calculated
 			knowing the original pitches and the grade of inversions, maybe root can be detected.
 		*/
-    	getChordName: function(notes) {
+    	_getAllChordNames: function(notes) {
 
     		var setLookupKey = '_' + this._getHexadecimal(this._getIntervalVector(notes));
 
@@ -675,7 +683,7 @@ function ComparePartialPrimes()
 
     			//return this.chordTable[intervalVector][0];
     		}
-    		return 'Unknown Chord';
+    		return '';
 
     		/*
 				my approach
