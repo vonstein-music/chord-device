@@ -7,7 +7,7 @@ define(
             test('getPrimeForm works', function() {
                 _.each(
                 [
-                    /*{pitches: [0,1], expected: '01'},
+                    {pitches: [0,1], expected: '01'},
                     {pitches: [0,1,2], expected: '012'},
 
                     {pitches: [0,1,2,3,4,5], expected: '012345'},
@@ -19,13 +19,11 @@ define(
                     {pitches: [0,4,7], expected: '037'},
                     {pitches: [0,7,10], expected: '025'},
                     
-                    {pitches: [0,3,7,10,11], expected: '03458'},*/
+                    {pitches: [0,3,7,10,11], expected: '03458'},
                     {pitches: [1,3,7,10,11], expected: '02458'},
 
                     {pitches: [1,3,7,10,11, 13, 22], expected: '02458'},
 
-                    //{pitches: [0,2,3,4,6], expected: '223111'},
-                    //{pitches: [0,1,2,4,6], expected: [2,2,3,1,1,1]},     
                 ], function(p){
                     deepEqual(midi.getPrimeForm(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
                 });

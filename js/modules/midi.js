@@ -588,8 +588,18 @@ function ComparePartialPrimes()
 
 		_getDistanceOfRotation: function(orderedPitchClasses, rotationIndex, indexToCompareWith, cardinality){
 
+			console.log('--orderedPitchClasses', orderedPitchClasses);
+			console.log('--rotationIndex', rotationIndex);
+			console.log('--indexToCompareWith', indexToCompareWith);
+
+
 			var firstPitchOfRotation = orderedPitchClasses[rotationIndex];
-			var pitchToSubstractFrom = orderedPitchClasses[(indexToCompareWith + cardinality - 1) % cardinality];
+			var pitchToSubstractFrom = orderedPitchClasses[(indexToCompareWith + cardinality) % cardinality];
+
+						console.log('--firstPitchOfRotation', firstPitchOfRotation);
+			console.log('--pitchToSubstractFrom', pitchToSubstractFrom);
+
+			console.log('--result: ', (pitchToSubstractFrom + 12 - firstPitchOfRotation) % 12);
 
 			return (pitchToSubstractFrom + 12 - firstPitchOfRotation) % 12;
 		},
@@ -600,12 +610,10 @@ function ComparePartialPrimes()
 			var normalForm = this._getNormalForm(orderedPC);
 			var normalFormInvertedSet = this._getNormalForm(this._getInvertedSet(orderedPC));
 
-			return this._getPitchClassesStartingAtZero(
-				this._getSetWithSmallerPitchesToTheLeft(
-					normalForm, 
-					normalFormInvertedSet
-				)
-			).join('');
+			return this._getSetWithSmallerPitchesToTheLeft(
+					  this._getPitchClassesStartingAtZero(normalForm), 
+					  this._getPitchClassesStartingAtZero(normalFormInvertedSet)
+				   ).join('');
 		},
 
 		_getSetWithSmallerPitchesToTheLeft: function(setOne, setTwo){
@@ -629,6 +637,7 @@ function ComparePartialPrimes()
 
 		_getNormalForm: function(orderedPC){
 
+//console.log(orderedPC);
 			var bestRotationIndex = 0;
 			var cardinality = orderedPC.length;
 
@@ -636,7 +645,7 @@ function ComparePartialPrimes()
 
 				var lastIndexOfBestRotation  = (bestRotationIndex + cardinality - 1) % cardinality;
 				var lastIndexOfCurrentRotation  = (i + cardinality - 1) % cardinality;
-
+//    if( (pc[i+card-1] - pc[i]) < (pc[best+card-1] - pc[best]) ) {
 				var smallestDistanceFirstToLastSoFar = this._getDistanceOfRotation(
 					orderedPC, 
 					bestRotationIndex, 
@@ -651,13 +660,18 @@ function ComparePartialPrimes()
 					cardinality
 				);
 
+				console.log('smallestDistanceFirstToLastSoFar', smallestDistanceFirstToLastSoFar);
+				console.log('distanceFirstToLastCurrentRotation',distanceFirstToLastCurrentRotation);
+
 				if (distanceFirstToLastCurrentRotation < smallestDistanceFirstToLastSoFar) {
+					console.log('---->new is smaller');
 					bestRotationIndex = i;
 					continue;
 				}
 
 				if (distanceFirstToLastCurrentRotation === smallestDistanceFirstToLastSoFar) {
 
+					console.log('---->rotation is same as best');
 					for (var k = 1; k < (cardinality - 1) ; k++ ) {
 
 						var distanceFirstToKthBestRotation = this._getDistanceOfRotation(
@@ -685,6 +699,8 @@ function ComparePartialPrimes()
 				     }				
 				}
 			}
+
+			console.log(bestRotationIndex);
 
 			return orderedPC.slice(bestRotationIndex, cardinality).concat(orderedPC.slice(0, bestRotationIndex));
 		},
