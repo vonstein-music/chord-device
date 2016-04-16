@@ -80,6 +80,7 @@ define(function() {
     		});
     	},*/
     	_getPitchClasses: function(notes) {
+    		//console.log(notes);
     		return _.uniq(_.map(notes, function(note){
     			return note%12;
     		})); 
@@ -595,13 +596,39 @@ function ComparePartialPrimes()
 
 		getPrimeForm: function(notes) {
 
+			notes = _.sortBy(notes);
+			console.log('asdf');
+
 			var normalForm = this._getNormalForm(notes);
-			var normalFormTransposed = this._getPitcheClassesStartingAtZero(normalForm);
+			var normalFormInvertedSet = this._getNormalForm(this._getInvertedSet(notes));
+
+			return this._getPitchClassesStartingAtZero(
+				this._getSetWithSmallerPitchesToTheLeft(
+					normalForm, 
+					normalFormInvertedSet
+				)
+			).join('');
+
+
+  //console.log('pcOriginal', notes);
+  //console.log('pcInversion', invertedSet);
+
+
+
+			/*var normalFormTransposed = this._getPitcheClassesStartingAtZero(normalForm);
+
+
+//console.log('normalFormTransposed', normalFormTransposed);
+
 			var orderedAndinverted = _.sortBy(this._getInvertedSet(normalFormTransposed));
+
 			var normalFormOfInverted = this._getNormalForm(orderedAndinverted);
 			var normalFormOfInvertedTransposed = this._getPitcheClassesStartingAtZero(this._getNormalForm(normalFormOfInverted));
 
-			return this._getSetWithSmallerPitchesToTheLeft(normalFormTransposed, normalFormOfInvertedTransposed);
+			console.log('normalFormTransposed', normalFormTransposed);
+			console.log('normalFormOfInvertedTransposed', normalFormOfInvertedTransposed)
+
+			return this._getSetWithSmallerPitchesToTheLeft(normalFormTransposed, normalFormOfInvertedTransposed).join('');*/
 		},
 
 		_getSetWithSmallerPitchesToTheLeft: function(setOne, setTwo){
@@ -617,13 +644,78 @@ function ComparePartialPrimes()
 				if (setOne[i] > setTwo[i]) {
 					return setTwo;
 				}
+
+				i++;
 			}
 			return setOne;
 		},
 
-		_getNormalForm: function(notes){
+		_getNormalForm__: function(notes) {
+
+
 
 			var orderedPC = _.sortBy(this._getPitchClasses(notes));
+			var pc = [];
+			var card = orderedPC.length;
+			var isForte = true;
+
+			for (var i = 0; i < card; i++) {
+				pc[i] = orderedPC[i];
+				pc[i + card - 1] = orderedPC[i] + 12;
+			}
+
+
+			var best = 0;    // The best rotation found so far
+			  var adj = 0;     // Adjustment applied based on the algorithm type (Temp var)
+
+			  // Find the best rotation
+
+			  for(i = 1 ; i < card ; i++) {
+			    // Test to see if the size of the set is smaller than we've found so far
+			    if( (pc[i+card-1] - pc[i]) < (pc[best+card-1] - pc[best]) ) {
+			      best = i;
+			      continue;
+			    }
+
+			    // Test to see if the sizes are the same, if so, we go into tie-breaker mode
+			    if( (pc[i+card-1] - pc[i]) == (pc[best+card-1] - pc[best]) ) {
+			      for(j = 1 ; j < (card-1) ; j++ ) {
+			        if(isForte)  adj = j;
+			        else         adj = card-j-1;
+
+			        // is the new interval better?
+			        if( (pc[i+adj] - pc[i]) < (pc[best+adj] - pc[best]) )  {
+			          best = i;  // then it becomes the best and we're done
+			          break;
+			        }
+			        // is the new interval worse?
+			        else if( (pc[i+adj] - pc[i]) > (pc[best+adj] - pc[best]) )
+			          break;  // then the old best is still best and we're done
+
+			        // otherwise, we are still tied, so keep looking
+			      }
+			    }
+			  }
+
+			  var pcout = [];
+
+			  // Found the best rotation, so now copy it into pcout and transpose down
+			  for(i = 0 ; i < card ; i++) {
+				pcout[i] = pc[best+i] - pc[best];
+			  }
+
+			  return pcout;			    
+		},
+
+		_getNormalForm: function(notes){
+
+
+
+			var orderedPC = _.sortBy(this._getPitchClasses(notes));
+
+console.log('orderedPC', orderedPC);
+
+
 			var bestRotationIndex = 0;
 			var cardinality = orderedPC.length;
 
@@ -650,6 +742,8 @@ function ComparePartialPrimes()
 					bestRotationIndex = i;
 					continue;
 				}
+
+				console.log('bestRotationIndex before tie mode', bestRotationIndex);
 
 				if (distanceFirstToLastCurrentRotation === smallestDistanceFirstToLastSoFar) {
 
@@ -681,11 +775,13 @@ function ComparePartialPrimes()
 				}
 			}
 
+			console.log(bestRotationIndex);
+
 			return orderedPC.slice(bestRotationIndex, cardinality).concat(orderedPC.slice(0, bestRotationIndex));
 			//return this._getPitcheClassesStartingAtZero(bestRotationPitchClasses);
 		},
 
-		_getPitcheClassesStartingAtZero: function (pitches) {
+		_getPitchClassesStartingAtZero: function (pitches) {
 			var semitonesToTransposeDown = pitches[0];
 			return _.map(pitches, function(pitch){
 				return (pitch - semitonesToTransposeDown + 12) % 12;
@@ -693,9 +789,15 @@ function ComparePartialPrimes()
 		},
 
 		_getInvertedSet: function (pitches) {
-			return _.map(pitches, function(pitch){
+			var invertedSet = [];
+			for(var i = pitches.length; i > 0; i--) {
+				invertedSet.push(12 - pitches[i - 1]);
+			}
+			return invertedSet;
+
+			/*return _.map(pitches, function(pitch){
 				return (12 - pitch) % 12;
-			});
+			}).reverse();*/
 		},
 
     	getChordName: function(notes) {
