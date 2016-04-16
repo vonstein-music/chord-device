@@ -22,6 +22,8 @@ define(
                     {pitches: [0,3,7,10,11], expected: '03458'},*/
                     {pitches: [1,3,7,10,11], expected: '02458'},
 
+                    {pitches: [1,3,7,10,11, 13, 22], expected: '02458'},
+
                     //{pitches: [0,2,3,4,6], expected: '223111'},
                     //{pitches: [0,1,2,4,6], expected: [2,2,3,1,1,1]},     
                 ], function(p){

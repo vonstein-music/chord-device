@@ -596,11 +596,9 @@ function ComparePartialPrimes()
 
 		getPrimeForm: function(notes) {
 
-			notes = _.sortBy(notes);
-			console.log('asdf');
-
-			var normalForm = this._getNormalForm(notes);
-			var normalFormInvertedSet = this._getNormalForm(this._getInvertedSet(notes));
+			var orderedPC = _.sortBy(this._getPitchClasses(notes));
+			var normalForm = this._getNormalForm(orderedPC);
+			var normalFormInvertedSet = this._getNormalForm(this._getInvertedSet(orderedPC));
 
 			return this._getPitchClassesStartingAtZero(
 				this._getSetWithSmallerPitchesToTheLeft(
@@ -608,27 +606,6 @@ function ComparePartialPrimes()
 					normalFormInvertedSet
 				)
 			).join('');
-
-
-  //console.log('pcOriginal', notes);
-  //console.log('pcInversion', invertedSet);
-
-
-
-			/*var normalFormTransposed = this._getPitcheClassesStartingAtZero(normalForm);
-
-
-//console.log('normalFormTransposed', normalFormTransposed);
-
-			var orderedAndinverted = _.sortBy(this._getInvertedSet(normalFormTransposed));
-
-			var normalFormOfInverted = this._getNormalForm(orderedAndinverted);
-			var normalFormOfInvertedTransposed = this._getPitcheClassesStartingAtZero(this._getNormalForm(normalFormOfInverted));
-
-			console.log('normalFormTransposed', normalFormTransposed);
-			console.log('normalFormOfInvertedTransposed', normalFormOfInvertedTransposed)
-
-			return this._getSetWithSmallerPitchesToTheLeft(normalFormTransposed, normalFormOfInvertedTransposed).join('');*/
 		},
 
 		_getSetWithSmallerPitchesToTheLeft: function(setOne, setTwo){
@@ -650,71 +627,7 @@ function ComparePartialPrimes()
 			return setOne;
 		},
 
-		_getNormalForm__: function(notes) {
-
-
-
-			var orderedPC = _.sortBy(this._getPitchClasses(notes));
-			var pc = [];
-			var card = orderedPC.length;
-			var isForte = true;
-
-			for (var i = 0; i < card; i++) {
-				pc[i] = orderedPC[i];
-				pc[i + card - 1] = orderedPC[i] + 12;
-			}
-
-
-			var best = 0;    // The best rotation found so far
-			  var adj = 0;     // Adjustment applied based on the algorithm type (Temp var)
-
-			  // Find the best rotation
-
-			  for(i = 1 ; i < card ; i++) {
-			    // Test to see if the size of the set is smaller than we've found so far
-			    if( (pc[i+card-1] - pc[i]) < (pc[best+card-1] - pc[best]) ) {
-			      best = i;
-			      continue;
-			    }
-
-			    // Test to see if the sizes are the same, if so, we go into tie-breaker mode
-			    if( (pc[i+card-1] - pc[i]) == (pc[best+card-1] - pc[best]) ) {
-			      for(j = 1 ; j < (card-1) ; j++ ) {
-			        if(isForte)  adj = j;
-			        else         adj = card-j-1;
-
-			        // is the new interval better?
-			        if( (pc[i+adj] - pc[i]) < (pc[best+adj] - pc[best]) )  {
-			          best = i;  // then it becomes the best and we're done
-			          break;
-			        }
-			        // is the new interval worse?
-			        else if( (pc[i+adj] - pc[i]) > (pc[best+adj] - pc[best]) )
-			          break;  // then the old best is still best and we're done
-
-			        // otherwise, we are still tied, so keep looking
-			      }
-			    }
-			  }
-
-			  var pcout = [];
-
-			  // Found the best rotation, so now copy it into pcout and transpose down
-			  for(i = 0 ; i < card ; i++) {
-				pcout[i] = pc[best+i] - pc[best];
-			  }
-
-			  return pcout;			    
-		},
-
-		_getNormalForm: function(notes){
-
-
-
-			var orderedPC = _.sortBy(this._getPitchClasses(notes));
-
-console.log('orderedPC', orderedPC);
-
+		_getNormalForm: function(orderedPC){
 
 			var bestRotationIndex = 0;
 			var cardinality = orderedPC.length;
@@ -742,8 +655,6 @@ console.log('orderedPC', orderedPC);
 					bestRotationIndex = i;
 					continue;
 				}
-
-				console.log('bestRotationIndex before tie mode', bestRotationIndex);
 
 				if (distanceFirstToLastCurrentRotation === smallestDistanceFirstToLastSoFar) {
 
@@ -775,10 +686,7 @@ console.log('orderedPC', orderedPC);
 				}
 			}
 
-			console.log(bestRotationIndex);
-
 			return orderedPC.slice(bestRotationIndex, cardinality).concat(orderedPC.slice(0, bestRotationIndex));
-			//return this._getPitcheClassesStartingAtZero(bestRotationPitchClasses);
 		},
 
 		_getPitchClassesStartingAtZero: function (pitches) {
@@ -794,22 +702,12 @@ console.log('orderedPC', orderedPC);
 				invertedSet.push(12 - pitches[i - 1]);
 			}
 			return invertedSet;
-
-			/*return _.map(pitches, function(pitch){
-				return (12 - pitch) % 12;
-			}).reverse();*/
 		},
 
     	getChordName: function(notes) {
 
-    		/*var pitchClasses = _.sortBy(this._getPitchClasses(notes));
-    		var intervalKey = this._getIntervalKey(pitchClasses);
-	
-    		if (_.has(this.chordTable, intervalKey)) {
-    			return this.chordTable[intervalKey];
-    		}*/
-
     		var intervalVector = '_' + this._getIntervalVectorString(notes);
+
     		if (_.has(this.chordTable, intervalVector)) {
     			// @todo: inversions, testen, getroot verfeinern, sets vergleichen, namen ergänzen, omit/sus hinzufügen
     			// scale erkennung, akkord-funktion (tonic, dominant etc.)
