@@ -4,11 +4,10 @@ define(
     function(midi) {
         var run = function() {
 
-
-            test('_getTnSetClass works', function() {
+            test('_getNormalForm works', function() {
                 _.each(
                 [
-                    {pitches: [5, 2, 11, 3, 9], expected: '100011'},     
+                    {pitches: [8,0,4,6], expected: [0, 2, 4, 8]},     
                     /*{pitches: [0,2,6], expected: '010101'},
                     {pitches: [0,2,3,6], expected: '112101'},
                     {pitches: [4,6,0,1,3], expected: '223111'},
@@ -16,9 +15,22 @@ define(
                     //{pitches: [0,2,3,4,6], expected: '223111'},
                     //{pitches: [0,1,2,4,6], expected: [2,2,3,1,1,1]},     
                 ], function(p){
-                    deepEqual(midi._getTnSetClass(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
+                    deepEqual(midi._getNormalForm(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected.join());
                 });
             });
+
+           /* test('_getTnSetClass works', function() {
+                _.each(
+                [
+                    {pitches: [5, 2, 11, 3, 9], expected: '100011'},     
+
+                    //{pitches: [0,2,3,4,6], expected: '223111'},
+                    //{pitches: [0,1,2,4,6], expected: [2,2,3,1,1,1]},     
+                ], function(p){
+                    deepEqual(midi._getTnSetClass(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
+                });
+            });*/
+
 /*
             test('_getIntervalVector works', function() {
                 _.each(
