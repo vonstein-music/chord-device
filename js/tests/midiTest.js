@@ -4,7 +4,7 @@ define(
     function(midi) {
         var run = function() {
 
-            test('getPrimeForm works', function() {
+            /*test('getPrimeForm works', function() {
                 _.each(
                 [
                     {pitches: [0,1], expected: '01'},
@@ -24,10 +24,18 @@ define(
 
                     {pitches: [1,3,7,10,11, 13, 22], expected: '02458'},
 
+                    {pitches: [1,2,4,6,7,9,10], expected: '0134689'},
+                    {pitches: [13,2,16,22, 6,7,4, 9], expected: '0134689'},
+
+                    {pitches: [0,1,2,5,6,8], expected: '012568'},
+                    {pitches: [6,7,10], expected: '014'},
+                    {pitches: [0,9,10], expected: '013'},
+
+
                 ], function(p){
                     deepEqual(midi.getPrimeForm(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
                 });
-            });
+            });*/
 
             /*test('_getNormalForm works', function() {
                 _.each(
@@ -138,7 +146,128 @@ define(
                 });
             });*/
 
-            /*test('getChordName works', function() {
+
+/*
+         [
+             ["maj", "major"],
+             [0, 4, 7], "Major"
+         ], [
+             ["m", "min", "minor"],
+             [0, 3, 7], "Minor"
+         ], [
+             ["7"],
+             [0, 4, 7, 10], "Dominant Seventh"
+         ], [
+             ["min7", "m7", "minor7"],
+             [0, 3, 7, 10], "Minor Seventh"
+         ], [
+             ["maj7", "Major7"],
+             [0, 4, 7, 11], "Major Seventh"
+         ], [
+             ["sus4", "sus"],
+             [0, 5, 7], "Suspended Fourth"
+         ], [
+             ["7sus4", "7sus"],
+             [0, 5, 7, 10], "Seventh Suspended Fourth"
+         ], [
+             ["6", "maj6", "major6"],
+             [0, 4, 7, 9], "Sixth"
+         ], [
+             ["min6", "m6", "minor6"],
+             [0, 3, 7, 9], "Minor Sixth"
+         ], [
+             ["dim", "dim7", "diminished", "o"],
+             [0, 3, 6],
+             "Diminished Seventh"
+         ], [
+             ["aug", "+", "augmented"],
+             [0, 4, 8], "Augmented"
+         ], [
+             ["7-5", "7b5"],
+             [0, 4, 6, 10], "Seventh Diminished Fifth"
+         ], [
+             ["7+5", "7#5"],
+             [0, 4, 8, 10], "Seventh Augmented Fifth"
+         ], [
+             ["m7-5", "m7b5", "0"],
+             [0, 3, 6, 10], "Half Diminished Seventh"
+         ], [
+             ["m/maj7"],
+             [0, 3, 7, 11], "Minor/Major Seventh"
+         ], [
+             ["maj7+5", "maj7#5"],
+             [0, 4, 8, 11], "Major Seventh Augmented Fifth"
+         ], [
+             ["maj7-5", "maj7b5"],
+             [0, 4, 6, 11], "Major Seventh Diminished Fifth"
+         ], [
+             ["9"],
+             [0, 4, 7, 10, 14], "Ninth"
+         ], [
+             ["m9"],
+             [0, 3, 7, 10, 14], "Minor Ninth"
+         ], [
+             ["maj9"],
+             [0, 4, 7, 11, 14], "Major Ninth"
+         ], [
+             ["7+9", "7#9"],
+             [0, 4, 7, 10, 15], "Seventh Augmented Ninth"
+         ], [
+             ["7-9", "7b9"],
+             [0, 4, 7, 10, 13], "Seventh Diminished Ninth"
+         ], [
+             ["7+9-5", "7#9b5"],
+             [0, 4, 6, 10, 15],
+             "Seventh Augmented Ninth Diminished Fifth"
+         ], [
+             ["6/9", "69"],
+             [0, 4, 7, 9, 14], "Sixth/Ninth"
+         ], [
+             ["9+5", "9#5"],
+             [0, 4, 8, 10, 14], "Ninth Augmented Fifth"
+         ], [
+             ["9-5", "9b5"],
+             [0, 4, 6, 10, 14], "Ninth Diminished Fifth"
+         ], [
+             ["m9-5", "m9b5"],
+             [0, 3, 6, 10, 14],
+             "Minor Ninth Diminished Fifth"
+         ], [
+             ["11"],
+             [0, 4, 7, 10, 14, 17], "Eleventh"
+         ], [
+             ["m11"],
+             [0, 3, 7, 10, 14, 17], "Minor Eleventh"
+         ], [
+             ["11-9", "11b9"],
+             [0, 4, 7, 10, 13, 17],
+             "Eleventh Diminished Ninth"
+         ], [
+             ["13"],
+             [0, 4, 7, 10, 14, 17, 21], "Thirteenth"
+         ], [
+             ["m13"],
+             [0, 3, 7, 10, 14, 17, 21], "Minor Thirteenth"
+         ], [
+             ["maj13"],
+             [0, 4, 7, 11, 14, 17, 21], "Major Thirteenth"
+         ], [
+             ["add9", "(add9)"],
+             [0, 4, 7, 14], "Major (Add Ninth)"
+         ], [
+             ["madd9", "m(add9)"],
+             [0, 3, 7, 14], "Minor (Add Ninth)"
+         ], [
+             ["sus2"],
+             [0, 2, 7], "Suspended Second"
+         ], [
+             ["5"],
+             [0, 7], "Power Chord"
+         ]
+
+*/
+
+            test('getChordName works', function() {
                 _.each(
                 [
                     {pitches: [0, 3, 6], expected: 'Diminished Chord'},
@@ -166,7 +295,7 @@ define(
                 ], function(p){
                     equal(midi.getChordName(p.pitches), p.expected, p.pitches.join() + ' has name: ' + p.expected);
                 });
-            });*/
+            });
 
 
 

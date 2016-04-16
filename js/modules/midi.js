@@ -12,7 +12,7 @@ define(function() {
     	getNoteNameForPitch: function(pitch, isFlat) {
     		return this._getNoteName(pitch, isFlat) + (Math.floor(pitch/12) - 2);
     	},
-    	_getIntervalVectorString: function(pitches) {
+    	_getIntervalVector: function(pitches) {
 
     		var intervalVector = [0, 0, 0, 0, 0, 0];    		
     		var pitchClasses = _.sortBy(this._getPitchClasses(pitches));
@@ -26,7 +26,7 @@ define(function() {
 					intervalVector[intervalClass - 1]++;
     			}
     		}
-    		return intervalVector.join('');
+    		return intervalVector;
     	},
     	_getIntervalKey: function(pitchClasses) {
 
@@ -588,18 +588,8 @@ function ComparePartialPrimes()
 
 		_getDistanceOfRotation: function(orderedPitchClasses, rotationIndex, indexToCompareWith, cardinality){
 
-			console.log('--orderedPitchClasses', orderedPitchClasses);
-			console.log('--rotationIndex', rotationIndex);
-			console.log('--indexToCompareWith', indexToCompareWith);
-
-
 			var firstPitchOfRotation = orderedPitchClasses[rotationIndex];
 			var pitchToSubstractFrom = orderedPitchClasses[(indexToCompareWith + cardinality) % cardinality];
-
-						console.log('--firstPitchOfRotation', firstPitchOfRotation);
-			console.log('--pitchToSubstractFrom', pitchToSubstractFrom);
-
-			console.log('--result: ', (pitchToSubstractFrom + 12 - firstPitchOfRotation) % 12);
 
 			return (pitchToSubstractFrom + 12 - firstPitchOfRotation) % 12;
 		},
@@ -637,7 +627,6 @@ function ComparePartialPrimes()
 
 		_getNormalForm: function(orderedPC){
 
-//console.log(orderedPC);
 			var bestRotationIndex = 0;
 			var cardinality = orderedPC.length;
 
@@ -645,7 +634,7 @@ function ComparePartialPrimes()
 
 				var lastIndexOfBestRotation  = (bestRotationIndex + cardinality - 1) % cardinality;
 				var lastIndexOfCurrentRotation  = (i + cardinality - 1) % cardinality;
-//    if( (pc[i+card-1] - pc[i]) < (pc[best+card-1] - pc[best]) ) {
+
 				var smallestDistanceFirstToLastSoFar = this._getDistanceOfRotation(
 					orderedPC, 
 					bestRotationIndex, 
@@ -660,18 +649,13 @@ function ComparePartialPrimes()
 					cardinality
 				);
 
-				console.log('smallestDistanceFirstToLastSoFar', smallestDistanceFirstToLastSoFar);
-				console.log('distanceFirstToLastCurrentRotation',distanceFirstToLastCurrentRotation);
-
 				if (distanceFirstToLastCurrentRotation < smallestDistanceFirstToLastSoFar) {
-					console.log('---->new is smaller');
 					bestRotationIndex = i;
 					continue;
 				}
 
 				if (distanceFirstToLastCurrentRotation === smallestDistanceFirstToLastSoFar) {
 
-					console.log('---->rotation is same as best');
 					for (var k = 1; k < (cardinality - 1) ; k++ ) {
 
 						var distanceFirstToKthBestRotation = this._getDistanceOfRotation(
@@ -700,8 +684,6 @@ function ComparePartialPrimes()
 				}
 			}
 
-			console.log(bestRotationIndex);
-
 			return orderedPC.slice(bestRotationIndex, cardinality).concat(orderedPC.slice(0, bestRotationIndex));
 		},
 
@@ -720,11 +702,28 @@ function ComparePartialPrimes()
 			return invertedSet;
 		},
 
+		getChordFunction: function(scaleIndex, modeIndex, rootNote, set){
+
+			// in: 0, 1, 0 (C, major, C-2)
+			// out: Tonic
+
+			// in: 0, 1, 7 (C, major, G-2)
+			// out: Dominant
+		},
+
+		/**
+			Finds the set using the interval vector as the key.
+			After the set is found, further distinction is made 
+			using the pitch classes in order to distinct e.g. major
+			trichord vs. minor trichord
+			after the distincion is made, inversions are calculated
+			knowing the original pitches and the grade of inversions, maybe root can be detected.
+		*/
     	getChordName: function(notes) {
 
-    		var intervalVector = '_' + this._getIntervalVectorString(notes);
+    		var setLookupKey = '_' + this._getIntervalVector(notes).join('');
 
-    		if (_.has(this.chordTable, intervalVector)) {
+    		if (_.has(this.chordTable, setLookupKey)) {
     			// @todo: inversions, testen, getroot verfeinern, sets vergleichen, namen ergänzen, omit/sus hinzufügen
     			// scale erkennung, akkord-funktion (tonic, dominant etc.)
     			// vorschläge
@@ -733,26 +732,32 @@ function ComparePartialPrimes()
     			// evtl. intervalVektor zur Bewertung oder root-findung heranziehen
     			// chord found, now try to be more precise (major/minor, inversions etc.)
 
-    			console.log(this.chordTable[intervalVector]);
+    			//console.log(this.chordTable[setLookupKey]);
 
-    			var pitchClasses = _.sortBy(this._getPitchClasses(notes));
-    			console.log(pitchClasses);
 
-    			var lowestValue = pitchClasses[0];
-    			pitchClasses = _.map(pitchClasses, function(pitch){
-    				return pitch - lowestValue;
-    			});
-    			console.log(pitchClasses);
+    			//var notesOrdered = _.sortBy(notes);
 
-    			var pitchesKey = '_' + pitchClasses.join('');
 
-    			if (_.has(this.chordTable[intervalVector], pitchesKey)) {
-    				console.log(this.chordTable[intervalVector][pitchesKey]);
-    				return this.chordTable[intervalVector][pitchesKey]
+    			var pitchClassesStartingAtZero = this._getPitchClassesStartingAtZero(
+    				_.sortBy(this._getPitchClasses(notes))
+    			);
+
+
+    			//console.log(pitchClasses);
+
+
+    			
+    			//console.log(pitchClasses);
+
+    			var pitchClassesKey = '_' + pitchClassesStartingAtZero.join('');
+
+    			if (_.has(this.chordTable[setLookupKey], pitchClassesKey)) {
+    				//console.log(this.chordTable[setLookupKey][pitchesKey]);
+    				return this.chordTable[setLookupKey][pitchClassesKey]
     			} else {
     				// return first
-    				for(var key in this.chordTable[intervalVector]) break;
-    				return this.chordTable[intervalVector][key];
+    				for(var key in this.chordTable[setLookupKey]) break;
+    				return this.chordTable[setLookupKey][key];
     			}
 
 
