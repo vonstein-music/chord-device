@@ -659,6 +659,17 @@ function ComparePartialPrimes()
     			//console.log(this.chordTable[setLookupKey]);
 
 
+    			/*
+					TODO NEXT
+						- dort wo es nicht eindeutig ist (z.B. dominant seventh / half diminished seventh etc.)
+							mit den übermittelten pitches arbeiten, z.B. [0,4,8,11] / [0,3,7,11] etc.
+							übermittelte der reihe ordnen, transponieren dass mit 0 beginnen, vergleichen
+							bei table zusätzlichen level bei diesen sonderfällen _101310: {_0148: {_0-4-8-10: 'augmented seventh chord',...}
+						- harmonizität
+						- tonic / dominant character via interval-rating
+    			*/
+
+
     			//var notesOrdered = _.sortBy(notes);
 
     			var pitchClassesFromOrderedNotes = this._getPitchClasses(_.sortBy(notes));
