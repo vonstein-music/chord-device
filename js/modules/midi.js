@@ -28,59 +28,16 @@ define(function() {
     		}
     		return intervalVector;
     	},
-    	_getIntervalKey: function(pitchClasses) {
+    	_getHexadecimal: function(intervalVector){
 
-
-
-
-
-    		//var ordered = _.sortBy(pitchClasses);
-
-			var biggestUnder12 = _.sortBy(_.filter(pitchClasses, function(pitch){ return pitch < 12})).pop();
-			var diff = 12 - biggestUnder12;
-
-			var newPitchClasses = _.sortBy(_.map(pitchClasses, function(pitch){
-				return (pitch + diff)%12;
-			}));
-
-			//console.log(biggestUnder12);
-
-    		var intervalKey = '';
-
-    		for (var i = 1, l = newPitchClasses.length; i < l; i++) {
-    			intervalKey += Math.abs(newPitchClasses[i] - newPitchClasses[i-1]);
-    		}
-    		return intervalKey;
-
-    		
-    		/*pitchClasses = _.sortBy(pitchClasses);
-
-    		var intervalKey = '';
-
-    		for (var i = 1, l = pitchClasses.length; i < l; i++) {
-    			intervalKey += Math.abs(pitchClasses[i] - pitchClasses[i-1]);
-    		}
-    		console.log(intervalKey);
-    		return intervalKey;*/
-
-
-    		/*
-				-> chords mit hinterlegten intervallen, z.B. [0, 3, 7, 11, 14]
-				-> pitchklassen nehmen, z.B. [0, 3, 7, 11, 2]
-				-> grösste unter 12 auf 12 bringen (differenz zu allen addieren)
-				-> 1 4 8 0 3
-				-> ordnen 0 1 3 4 8
-				-> abstände berechnen 1 2 1 4
-    		*/
-    	},
-    	/*getPitchClasses: function(notes) {
-    		//console.log(_.VERSION);
-    		return _.uniqBy(notes, function(note){
-    			return note%12;
+    		var hexadecimal = '';
+    		var hexaLookup = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+    		_.each(intervalVector, function(intervalCount){
+    			hexadecimal += hexaLookup[intervalCount];
     		});
-    	},*/
+    		return hexadecimal;
+    	},
     	_getPitchClasses: function(notes) {
-    		//console.log(notes);
     		return _.uniq(_.map(notes, function(note){
     			return note%12;
     		})); 
@@ -595,7 +552,6 @@ function ComparePartialPrimes()
 		},
 
 		getPrimeForm: function(notes) {
-
 			var orderedPC = _.sortBy(this._getPitchClasses(notes));
 			var normalForm = this._getNormalForm(orderedPC);
 			var normalFormInvertedSet = this._getNormalForm(this._getInvertedSet(orderedPC));
@@ -613,7 +569,7 @@ function ComparePartialPrimes()
 
 			while (i < cardinality) {
 				if (setOne[i] < setTwo[i]) {
-					return setOne;
+					return setOne; 
 				}
 
 				if (setOne[i] > setTwo[i]) {
@@ -710,6 +666,32 @@ function ComparePartialPrimes()
 			// in: 0, 1, 7 (C, major, G-2)
 			// out: Dominant
 		},
+		_getInversionNumber: function(pitchClassesOnlyOrdered, pitchClassesStartingAtZero){
+
+			var cardinality = pitchClassesOnlyOrdered.length;
+			var inversionNumber = 0;
+
+			while (inversionNumber < cardinality) {
+
+				if (pitchClassesOnlyOrdered[inversionNumber] === pitchClassesStartingAtZero[0]) {
+					return (cardinality - inversionNumber) % cardinality;
+				}
+				inversionNumber++;				
+			}
+			return 0;
+		},
+		_getInversionText: function(inversionNumber) {
+			var prefix = ' (';
+			var suffix = ' inv)';
+
+			switch(inversionNumber) {
+				case 0: return '';
+				case 1: return prefix + '1st' + suffix;
+				case 2: return prefix + '2nd' + suffix;
+				case 3: return prefix + '3rd' + suffix;
+				default: return prefix + inversionNumber + 'th' + suffix;
+			}
+		},
 
 		/**
 			Finds the set using the interval vector as the key.
@@ -721,14 +703,13 @@ function ComparePartialPrimes()
 		*/
     	getChordName: function(notes) {
 
-    		var setLookupKey = '_' + this._getIntervalVector(notes).join('');
+    		var setLookupKey = '_' + this._getHexadecimal(this._getIntervalVector(notes));
 
     		if (_.has(this.chordTable, setLookupKey)) {
     			// @todo: inversions, testen, getroot verfeinern, sets vergleichen, namen ergänzen, omit/sus hinzufügen
     			// scale erkennung, akkord-funktion (tonic, dominant etc.)
     			// vorschläge
     			// im display jeweils die skalen anzeigen (aufleuchten), in welchen der akkord vorkommt und welche funktion er darin hat (V, vii etc.)
-    			// grenzfälle abdecken AAAAA5 etc.
     			// evtl. intervalVektor zur Bewertung oder root-findung heranziehen
     			// chord found, now try to be more precise (major/minor, inversions etc.)
 
@@ -737,25 +718,23 @@ function ComparePartialPrimes()
 
     			//var notesOrdered = _.sortBy(notes);
 
+    			var pitchClassesFromOrderedNotes = this._getPitchClasses(_.sortBy(notes));
 
     			var pitchClassesStartingAtZero = this._getPitchClassesStartingAtZero(
-    				_.sortBy(this._getPitchClasses(notes))
+    				_.sortBy(pitchClassesFromOrderedNotes)
     			);
 
-
-    			//console.log(pitchClasses);
-
-
-    			
-    			//console.log(pitchClasses);
-
-    			var pitchClassesKey = '_' + pitchClassesStartingAtZero.join('');
+    			var pitchClassesKey = '_' + this._getHexadecimal(pitchClassesStartingAtZero);
 
     			if (_.has(this.chordTable[setLookupKey], pitchClassesKey)) {
-    				//console.log(this.chordTable[setLookupKey][pitchesKey]);
-    				return this.chordTable[setLookupKey][pitchClassesKey]
+
+    				// found, now check inversion
+    				var inversionNumber = this._getInversionNumber(pitchClassesFromOrderedNotes, pitchClassesStartingAtZero);
+
+    				//console.log(this.chordTable[setLookupKey][pitchClassesKey]);
+    				return this.chordTable[setLookupKey][pitchClassesKey] + this._getInversionText(inversionNumber);
     			} else {
-    				// return first
+    				// return first key
     				for(var key in this.chordTable[setLookupKey]) break;
     				return this.chordTable[setLookupKey][key];
     			}
@@ -763,7 +742,7 @@ function ComparePartialPrimes()
 
     			//return this.chordTable[intervalVector][0];
     		}
-    		return '?';
+    		return 'Unknown Chord';
 
     		/*
 				my approach

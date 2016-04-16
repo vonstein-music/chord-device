@@ -4,7 +4,18 @@ define(
     function(midi) {
         var run = function() {
 
-            /*test('getPrimeForm works', function() {
+                test('_getHexadecimal works', function() {
+                _.each(
+                [
+                    {pitches: [0,1,2,3,4,5,6,7,8,9,10,11,12], expected: '0123456789ABC'},
+
+                ], function(p){
+                    deepEqual(midi._getHexadecimal(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
+                });
+            });
+
+
+            test('getPrimeForm works', function() {
                 _.each(
                 [
                     {pitches: [0,1], expected: '01'},
@@ -35,7 +46,7 @@ define(
                 ], function(p){
                     deepEqual(midi.getPrimeForm(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
                 });
-            });*/
+            });
 
             /*test('_getNormalForm works', function() {
                 _.each(
@@ -267,6 +278,23 @@ define(
 
 */
 
+
+
+
+            test('_getInversionNumber works', function() {
+                _.each(
+                [
+                    {pitchClassesOnlyOrdered: [0, 3, 7], pitchClassesAsInLookup: [0, 3, 7], expected: 0},
+                    {pitchClassesOnlyOrdered: [3, 7, 0], pitchClassesAsInLookup: [0, 3, 7], expected: 1},
+                    {pitchClassesOnlyOrdered: [7, 0, 3], pitchClassesAsInLookup: [0, 3, 7], expected: 2},
+                    // @TODO more tests
+
+                ], function(p){
+                    equal(midi._getInversionNumber(p.pitchClassesOnlyOrdered, p.pitchClassesAsInLookup), p.expected, p.pitchClassesOnlyOrdered.join() + ' is: ' + p.expected + '. inversion');
+                });
+            });
+
+
             test('getChordName works', function() {
                 _.each(
                 [
@@ -274,14 +302,13 @@ define(
                     {pitches: [3, 6, 9], expected: 'Diminished Chord'},
                     {pitches: [0, 3, 7], expected: 'Minor Chord'},
                     {pitches: [0, 4, 7], expected: 'Major Chord'},
-                    {pitches: [4, 7, 12], expected: 'Major Chord'},
+                    {pitches: [4, 7, 12], expected: 'Major Chord (1st inv)'},
                     {pitches: [0, 4, 7, 12, 24], expected: 'Major Chord'},
                     {pitches: [0, 3, 7, 10], expected: 'Minor-seventh Chord'},                     
                     {pitches: [0, 3, 6, 10], expected: 'Half-diminished Seventh Chord'}, 
 
                     {pitches: [0, 3, 7, 11, 14], expected: 'Minor-major Ninth Chord'}, // 3 4 4 3 nö, 1 4 8 0 3 -> 01348 -> 1 2 1 4
                     {pitches: [0, 3, 7, 10, 14], expected: 'Major-Ninth Chord'}, // 2 5 9 0 4, 0 2 4 5 9, 1 2 1 4
-
 
                     // +3: 3 6 10 13 15 -> 3 6 10 1
 
