@@ -28,10 +28,10 @@ define(function() {
     		}
     		return intervalVector;
     	},
-    	_getHexadecimal: function(intervalVector){
+    	_getSickodecimal: function(intervalVector){
 
     		var hexadecimal = '';
-    		var hexaLookup = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+    		var hexaLookup = [0,1,2,3,4,5,6,7,8,9,'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
     		_.each(intervalVector, function(intervalCount){
     			hexadecimal += hexaLookup[intervalCount];
     		});
@@ -150,7 +150,7 @@ define(function() {
 			_234222: {_023568: 'Super-Locrian Hexamirror, comb RI (8)', _023469: 'comb RI (6)'},
 			_233331: {_013468: '', _024578: 'Melodic-minor Hexachord', _012469: '', _024569: ''},
 			_233241: {_013568: 'Locrian Hexachord, Suddha Saveriraga', _023578: 'Minor Hexachord', _012479: '', _023479: 'Indian, Blues mode.1'},
-			_232341: {_013578: 'Phrygian Hexamirror, comb RI (8)', _012579: 'comb RI (2)', _012579: 'comb RI (2)'},
+			_232341: {_013578: 'Phrygian Hexamirror, comb RI (8)', _012579: 'comb RI (2)'},
 			_225222: {_013469: 'comb I (b)', _023569: 'Pyramid Hexachord, comb I (1)'},
 			_224322: {_013569: 'Double-Phrygian Hexachord, comb RI (6)', _013479: 'Prometheus Neapolitan mode, Indian Dipaka, comb RI (4)'},
 			_224232: {_013689: 'comb RI (9)', _014679: 'comb RI (1)', _023679: 'Bridge chord'},
@@ -351,131 +351,76 @@ define(function() {
 		 	]
 		 ],
 
-/*
-next steps:
-
-- methode für berechnung von prime
-- wird verwendet um für die gespielten noten die prime zu berechnen
-- der akkord wird immer noch über den vektor gefunden
-- die prime wird aber verwendet um die untervariante zu finden
-- wenn die untervariante gefunden ist, rotation (inverse berechnen)
-- bestimmte inversen haben besondere namen
-	- ist kein Name angegeben, einfach "x. inverse" angeben
-- tabelle vervollständigen/prüfen
-	- form: 
-		- objekt, keys level 1 sind interval-vektoren
-		- bei interval-vektor code sind objekte hinterlegt, welche mit der primeform(forte) als key angesprochen werden
-		- innerhalb einer bestimmten Primeform gibt es wieder ein objekt für die besondere benennung von inversen, die keys sind nummern
-
-- sus, omit prüfen
-- versuchen root über anzahl rotationen herauszufinden
-
-- festlegen von key und scale
-- einbauen von funktionstheorie (anzeige funktion)
-
-- harmonizität anzeige
-	- funktion getConsonance([0,3,7]): 100%
-		- durchschnitt aller intervalle (bewertung) 03 37 07 / 3
-
-
-
-- prüfen, was es mit verwandten sets auf sich hat
-
-- vorschläge für tension, übergang, aufläsung
-	- anzeige? button zum vorhören?
-
-- chord explorer
-	- scale und key wählen
-	- pitchrange oben und unten begrenzen
-	- inverse wählen (1. inverse = tiefster Ton +1 oktave)
-	- save/export favs
-
-
-
-Separates Device:
-	- Key und Scale werden erst festgelegt
-	- funktion pitchInScale(key, scale) z.B. (0, [0, 1, 5, 7, 8]) (C in Japanese)
-	- wird benötigt für die anzeige des keyboards (rot nicht in scale, blau in scale)
-
-
-
-
-
-*/
-
-
 // http://vladimir_ladma.sweb.cz/english/music/structs/mus_rot.htm
 // http://solomonsmusic.net/pcsets.htm#Explanation%20of%20This%20Table
 // view-source:http://composertools.com/Tools/PCSets/setfinder.html
 // https://en.wikipedia.org/wiki/Set_theory_(music)
 
-/*
-function ComputePartialPrime(pc, pcout)
-{
-  var best = 0;    // The best rotation found so far
-  var adj = 0;     // Adjustment applied based on the algorithm type (Temp var)
+		commonChordsLookupTable: {
 
-  // Find the best rotation
-
-  for(i = 1 ; i < card ; i++) {
-    // Test to see if the size of the set is smaller than we've found so far
-    if( (pc[i+card-1] - pc[i]) < (pc[best+card-1] - pc[best]) ) {
-      best = i;
-      continue;
-    }
-
-    // Test to see if the sizes are the same, if so, we go into tie-breaker mode
-    if( (pc[i+card-1] - pc[i]) == (pc[best+card-1] - pc[best]) ) {
-      for(j = 1 ; j < (card-1) ; j++ ) {
-        if(isForte)  adj = j;
-        else         adj = card-j-1;
-
-        // is the new interval better?
-        if( (pc[i+adj] - pc[i]) < (pc[best+adj] - pc[best]) )  {
-          best = i;  // then it becomes the best and we're done
-          break;
-        }
-        // is the new interval worse?
-        else if( (pc[i+adj] - pc[i]) > (pc[best+adj] - pc[best]) )
-          break;  // then the old best is still best and we're done
-
-        // otherwise, we are still tied, so keep looking
-      }
-    }
-  }
-
-  // Found the best rotation, so now copy it into pcout and transpose down
-  for(i = 0 ; i < card ; i++)
-    pcout[i] = pc[best+i] - pc[best];
-}
-
-
-function ComparePartialPrimes()
-{
-  var bestPrime = 0;  // Assume pcOrigPrime is best until we know otherwise
-
-  for(i = 0 ; i < card ; i++) {
-    if(isForte)  adj = i;
-
-    // is the new interval better?
-    if( (pcInvPPrime[i] - pcInvPPrime[0]) < (pcOrigPPrime[i] - pcOrigPPrime[0]) )  {
-      bestPrime = 1;  // then inverted form becomes the best and we're done
-      break;
-    }
-    // is the new interval worse?
-    else if( (pcInvPPrime[i] - pcInvPPrime[0]) > (pcOrigPPrime[i] - pcOrigPPrime[0]) )
-      break;  // then the original is definitiely best and we're done
-
-    // otherwise, we are still tied, so keep looking
-  }
-
-  if(bestPrime == 0) {
-    for(i = 0 ; i < card ; i++)  pcPrime[i] = pcOrigPPrime[i];
-  }
-  else {
-    for(i = 0 ; i < card ; i++)  pcPrime[i] = pcInvPPrime[i];
-  }
-}*/
+_047AEH: ['Eleventh'],
+_047AEHL: ['Thirteenth'],
+_047: ['Major Triad'],
+_037: ['Minor Triad'],
+_036: ['Diminished Triad'],
+_048: ['Augmented Triad'],
+_047B: ['Major seventh chord'],
+_037A: ['Minor seventh chord'],
+_047A: ['Dominant seventh chord'],
+_0369: ['Diminished seventh chord'],
+_036A: ['Minor seventh flat five chord'],
+_037B: ['Minor major seventh chord'],
+_048B: ['Major seventh sharp five chord'],
+_036B: ['Diminished major seventh chord'],
+_046A: ['Dominant seventh flat five chord'],
+_047E: ['Added ninth chord'],
+_047BE: ['major ninth chord'],
+_037AE: ['minor ninth chord'],
+_037BE: ['Minor-major ninth chord'],
+_037E: ['Minor added ninth chord'],
+_036AE: ['Minor Ninth Diminished Fifth'],
+_047EI: ['Major ninth sharp eleventh chord', 'Major seventh sharp eleventh chord'],
+_048AE: ['Dominant ninth sharp five chord'],
+_046AE: ['Dominant ninth flat five chord'],
+_047AE: ['Dominant 9th'],
+_047AD: ['Dominant minor 9th'],
+_047AF: ['Dominant seventh sharp ninth chord'],
+_048AF: ['Dominant seventh sharp five sharp ninth chord'],
+_048AD: ['Dominant seventh sharp five flat ninth chord'],
+_048A: ['dominant seventh sharp five chord'],
+_047ADI: ['Dominant seventh sharp eleventh chord'],
+_046AF: ['Dominant seventh flat five sharp ninth chord'],
+_0379E: ['Minor seventh sharp five chord', 'Minor six-nine chord'],
+_046B: ['Major seventh flat five chord'],
+_0379: ['Minor sixth chord'],
+_0479: ['Major sixth chord'],
+_0479E: ['Major six-nine chord'],
+_037AEH: ['Minor eleventh chord'],
+_047BEH: ['Major eleventh chord'],
+_047ADH: ['Dominant eleventh flat ninth chord'],
+_047EH: ['Dominant eleventh chord'],
+_037AEHL: ['Minor Thirteenth'],
+_047BEIL: ['Major thirteenth sharp eleventh chord'],
+_047BEHL: ['Major Thirteenth'],
+_047AFL: ['Dominant thirteenth sharp ninth chord'],
+_047AEIL: ['Dominant thirteenth sharp eleventh chord'],
+_047ADL: ['Dominant thirteenth flat ninth chord'],
+_047AEL: ['Dominant thirteenth chord'],
+_0257: ['Suspended second suspended fourth chord'],
+_027: ['Suspended Second Chord'],
+_057: ['Suspended Fourth Chord'],
+_027B: ['Major seventh suspended second chord'],
+_057B: ['Major seventh suspended fourth chord'],
+_057AEL: ['Dominant thirteenth suspended fourth chord'],
+_027A: ['Dominant seventh suspended second chord'],
+_057A: ['Dominant seventh suspended fourth chord'],
+_057AE: ['Dominant ninth suspended fourth chord'],
+_07: ['Power Chord'],
+_07C: ['Power Chord Octave Doubled'],
+_046: ['Flat five chord'],
+_026: ['Flat five chord'],
+_0247: ['Mu chord'],
+		},
 
 
 		_getDistanceOfRotation: function(orderedPitchClasses, rotationIndex, indexToCompareWith, cardinality){
@@ -491,9 +436,9 @@ function ComparePartialPrimes()
 			var normalForm = this._getNormalForm(orderedPC);
 			var normalFormInvertedSet = this._getNormalForm(this._getInvertedSet(orderedPC));
 
-			console.log(normalForm);
-			console.log(this._getIntervalSetStartingAtZero(normalForm));
-			console.log(this._getPitchClassesStartingAtZero(normalForm));
+			//console.log(normalForm);
+			//console.log(this._getIntervalSetStartingAtZero(normalForm));
+			//console.log(this._getPitchClassesStartingAtZero(normalForm));
 
 			return this._getSetWithSmallerPitchesToTheLeft(
 					  this._getPitchClassesStartingAtZero(normalForm), 
@@ -581,6 +526,17 @@ function ComparePartialPrimes()
 
 			return orderedPC.slice(bestRotationIndex, cardinality).concat(orderedPC.slice(0, bestRotationIndex));
 		},
+
+		/*
+			@todo evtl. rahn prime auch einbauen (neben forte)
+		*/
+
+		/*_getOrderedPitchesStartingAtZero: function (orderedPitches) {
+			var lowestPitch = orderedPitches[0];
+			return _.map(orderedPitches, function(pitch){
+				return (pitch - lowestPitch);
+			});
+		},*/
 
 		_getIntervalSetStartingAtZero: function (unorderedPitches) {
 			var orderedPitches = _.sortBy(unorderedPitches);
@@ -795,52 +751,74 @@ function ComparePartialPrimes()
 			return allNames.split(',')[0];
 		},
 
+
 		/**
-			Finds the set using the interval vector as the key.
-			After the set is found, further distinction is made 
-			using the pitch classes in order to distinct e.g. major
-			trichord vs. minor trichord
-			after the distincion is made, inversions are calculated
-			knowing the original pitches and the grade of inversions, maybe root can be detected.
+			todo
+			----
+
+			- keine sortierungen, operationen auf sets
+				- alle zu Beginn berechnen und erklären wofür
+
+			- commonChordTableLookup einbauen
+
+			- testen, ob lookup auf common geht mit ordered pitchclasses
+				- [12,4,7,0,16]->[0,4,7]->maj
+				- [1,4,8,13]->min 
+
+			- fallback auf sets wenn nicht geklappt hat in commonChordTableLookup
+				(weil zu exotisch?)
+
+			- bei fallback wie bisher (mit ordered pitchclasses versuchen mehr details zu finden)
+
+			- aufräumen, refactoring
+
+			- testing
+
 		*/
     	_getAllChordNames: function(notes) {
 
-    		var setLookupKey = '_' + this._getHexadecimal(this._getIntervalVector(notes));
+    		// first try to go with the transposed input notes
+
+    		var orderedPitches = _.sortBy(notes);
+    		//console.log('orderedPitches', orderedPitches);
+
+    		var startingAtZero = this._getIntervalSetStartingAtZero(orderedPitches);    		
+    		//console.log('startingAtZero', startingAtZero);
+
+    		var commonChordsLookupKey = '_' + this._getSickodecimal(startingAtZero);
+    		//console.log('commonChordsLookupKey', commonChordsLookupKey);
+
+
+    		if (_.has(this.commonChordsLookupTable, commonChordsLookupKey)) {
+    			//console.log('gefunden: ', this.commonChordsLookupTable[commonChordsLookupKey]);
+
+    			//
+    			if (this.commonChordsLookupTable[commonChordsLookupKey][1]) {
+    				console.log('------------->', this.commonChordsLookupTable[commonChordsLookupKey]);
+    			}
+
+
+    		} else {
+    			console.log('nicht gefunden: ', orderedPitches, commonChordsLookupKey);
+    		}
+
+    		var setLookupKey = '_' + this._getSickodecimal(this._getIntervalVector(notes));
 
     		if (_.has(this.chordTable, setLookupKey)) {
-    			// @todo: inversions, testen, getroot verfeinern, sets vergleichen, namen ergänzen, omit/sus hinzufügen
-    			// scale erkennung, akkord-funktion (tonic, dominant etc.)
-    			// vorschläge
-    			// im display jeweils die skalen anzeigen (aufleuchten), in welchen der akkord vorkommt und welche funktion er darin hat (V, vii etc.)
-    			// evtl. intervalVektor zur Bewertung oder root-findung heranziehen
-    			// chord found, now try to be more precise (major/minor, inversions etc.)
 
-    			//console.log(this.chordTable[setLookupKey]);
-
-
-    			/*
-					TODO NEXT
-						- PITCHKLASSE MIT PRIME FINDEN, NICHT MIT "pitchClassesStartingAtZero"
-						- dort wo es nicht eindeutig ist (z.B. dominant seventh / half diminished seventh etc.)
-							mit den übermittelten pitches arbeiten, z.B. [0,4,8,11] / [0,3,7,11] etc.
-							übermittelte der reihe ordnen, transponieren dass mit 0 beginnen, vergleichen
-							bei table zusätzlichen level bei diesen sonderfällen _101310: {_0148: {_0-4-8-10: 'augmented seventh chord',...}
-						- harmonizität
-						- tonic / dominant character via interval-rating
-    			*/
 
 
     			//var notesOrdered = _.sortBy(notes);
 
     			var primeForm = this.getPrimeForm(notes);
-    			var primeFormKey = this._getHexadecimal(primeForm);
+    			var primeFormKey = this._getSickodecimal(primeForm);
 
     			// half-diminished seventh chord [0,3,6,10] -> _036A
     			/*var pitchClassesFromOrderedNotes = this._getPitchClasses(_.sortBy(notes));
     			var pitchClassesStartingAtZero = this._getIntervalSetStartingAtZero(
     				_.sortBy(pitchClassesFromOrderedNotes)
     			);
-    			var pitchClassesKey = '_' + this._getHexadecimal(pitchClassesStartingAtZero);*/
+    			var pitchClassesKey = '_' + this._getSickodecimal(pitchClassesStartingAtZero);*/
 
 
     			// half-diminished seventh chord [0,3,6,10] -> 0258
@@ -858,14 +836,14 @@ function ComparePartialPrimes()
     			var pitchClassesStartingAtZero = this._getPitchClassesStartingAtZero(
     				_.sortBy(pitchClassesFromOrderedNotes)
     			);
-    			var pitchClassesKey = '_' + this._getHexadecimal(pitchClassesStartingAtZero);
+    			var pitchClassesKey = '_' + this._getSickodecimal(pitchClassesStartingAtZero);
 
 				var orderedPC = _.sortBy(this._getPitchClasses(notes));
 				var normalForm = this._getPitchClassesStartingAtZero(this._getNormalForm(orderedPC));
 
 				var normalFormInvertedSet = this._getPitchClassesStartingAtZero(this._getNormalForm(this._getInvertedSet(orderedPC)));
 
-    			console.log('[' + notes.join(',') + ']: setLookupKey: ' + setLookupKey + ', normalForm: ' + normalForm + ', normalFormInvertedSet: ' + normalFormInvertedSet + ', pitchClassesKey: ' + pitchClassesKey + ', primeFormKey: ' + primeFormKey);
+    			//console.log('[' + notes.join(',') + ']: setLookupKey: ' + setLookupKey + ', normalForm: ' + normalForm + ', normalFormInvertedSet: ' + normalFormInvertedSet + ', pitchClassesKey: ' + pitchClassesKey + ', primeFormKey: ' + primeFormKey);
 
     			if (_.has(this.chordTable[setLookupKey], pitchClassesKey)) {
 
@@ -883,63 +861,6 @@ function ComparePartialPrimes()
     			//return this.chordTable[intervalVector][0];
     		}
     		return '';
-
-    		/*
-				my approach
-
-				-> chords mit hinterlegten intervallen, z.B. [0, 3, 7, 11, 14]
-				-> pitchklassen nehmen, z.B. [0, 3, 7, 11, 2]
-				-> kleinste unter 12 auf 12 bringen (differenz zu allen addieren)
-				-> 1 4 8 0 3
-				-> ordnen 0 1 3 4 8
-				-> abstände berechnen 1 2 1 4
-
-				-> gespielte pitches nehmen, z.B. [1, 4, 8, 12, 15]				
-				-> pitchklassen nehmen, z.B. [1, 4, 8, 0, 3]
-				-> der reihe nach ordnen 0 1 3 4 8
-
-				-> abstände berechnen, z.B. [1 2 1 4]
-
-
-
-    		*/
-
-
-
-
-
-    		/**
-
-    		TODO NEXT
-
-				- mit regexes table.txt aufbereiten, sodass
-				\d+\s:\s(.*)?\n\s+\d\/\d+\s+(.*)\(
-				\d{6}\s:\s(.*)\n\s
-
-
-
-				gut: aufräum: \(.*\s*,[#\w]+\s*:	
-					- interval-combo (z.B. 1 1 1 2 1) auf chord-namen mappt
-
-					- falls kein Akkord-Name vorhandne leeren String zurückgeben
-
-				- in getChordName (Algorithmus)			
-					- noten als input [0, 3, 7, 11, 14]
-					- wir wollen nur einstellige, deshalb alles was über 9 verändern
-					- niedrigste zahl über 9 so viel addieren, dass 12 ergibt und dann %12 (pitchklasse)
-					- bei allen diese niedrigste zahl addieren, z.B. +1 = 1 4 8 0 3
-					- nach grösse ordnen (fuer finden) -> z.B. 01348
-					- intervalle nehmen, z.B. 1->1 = 1, 1->3 = 2 etc., ergibt interval-combo 1214
-					- interval-combo in tabelle finden und auf namen mappen
-					- evtl. weiterer algorithmus für welche inversion verwendet wurde
-						- dazu original pitch-set verwenden (vor pitch class transformation)
-						- idee: 1 dial für range oben, 1 dial für range unten
-					- fertig :-)
-					- optimierung: tree für selektion
-						4
-						 3: minor trichord
-						 4: augmented trichord
-    		*/
     	},
     	getRoot: function(notes) {
 

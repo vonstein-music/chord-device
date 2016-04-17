@@ -309,7 +309,7 @@ cases:
                 });
             });
 
-            test('customLookup works', function() {
+           /* test('customLookup works', function() {
                 _.each(
                 [
                     {pitches: [0,4,7], expected: 'Major Triad'},
@@ -380,7 +380,7 @@ cases:
                 ], function(p){
                     equal(midi.customLookup(p.pitches), p.expected, p.pitches.join() + ' is ' + p.expected);
                 });
-            });
+            });*/
 
 
             /*test('_getIntervalSetStartingAtZero works', function() {
@@ -418,7 +418,7 @@ cases:
                     equal(midi._getInversionNumber(p.pitchClassesOnlyOrdered, p.pitchClassesAsInLookup), p.expected, p.pitchClassesOnlyOrdered.join() + ' is: ' + p.expected + '. inversion');
                 });
             });
-
+*/
             test('getChordName works', function() {
                 _.each(
                 [
