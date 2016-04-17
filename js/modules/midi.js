@@ -491,10 +491,14 @@ function ComparePartialPrimes()
 			var normalForm = this._getNormalForm(orderedPC);
 			var normalFormInvertedSet = this._getNormalForm(this._getInvertedSet(orderedPC));
 
+			console.log(normalForm);
+			console.log(this._getIntervalSetStartingAtZero(normalForm));
+			console.log(this._getPitchClassesStartingAtZero(normalForm));
+
 			return this._getSetWithSmallerPitchesToTheLeft(
 					  this._getPitchClassesStartingAtZero(normalForm), 
 					  this._getPitchClassesStartingAtZero(normalFormInvertedSet)
-				   ).join('');
+				   );
 		},
 
 		_getSetWithSmallerPitchesToTheLeft: function(setOne, setTwo){
@@ -578,9 +582,17 @@ function ComparePartialPrimes()
 			return orderedPC.slice(bestRotationIndex, cardinality).concat(orderedPC.slice(0, bestRotationIndex));
 		},
 
-		_getPitchClassesStartingAtZero: function (pitches) {
-			var semitonesToTransposeDown = pitches[0];
-			return _.map(pitches, function(pitch){
+		_getIntervalSetStartingAtZero: function (unorderedPitches) {
+			var orderedPitches = _.sortBy(unorderedPitches);
+			var lowestPitch = orderedPitches[0];
+			return _.map(orderedPitches, function(pitch){
+				return (pitch - lowestPitch);
+			});
+		},
+
+		_getPitchClassesStartingAtZero: function (setOfPitchClasses) {
+			var semitonesToTransposeDown = setOfPitchClasses[0];
+			return _.map(setOfPitchClasses, function(pitch){
 				return (pitch - semitonesToTransposeDown + 12) % 12;
 			});
 		},
@@ -628,6 +640,153 @@ function ComparePartialPrimes()
 			}
 		},
 
+		customLookup: function(notes){
+
+			var chords = [ 
+{pitches: [0,4,7], expected: 'Major Triad'},
+{pitches: [0,3,8], expected: 'Major Triad (1st inv)'},
+{pitches: [0,5,9], expected: 'Major Triad (2nd inv)'},
+
+{pitches: [0,3,7], expected: 'Minor Triad'},
+{pitches: [0,3,6], expected: 'Diminished Triad'},
+{pitches: [0,4,8], expected: 'Augmented Triad'},
+{pitches: [0,4,7,11], expected: 'Major seventh chord'},
+{pitches: [0,3,7,10], expected: 'Minor seventh chord'},
+{pitches: [0,4,7,10], expected: 'Dominant seventh chord, major/minor seventh chord, 7th chord'},
+{pitches: [0,3,6,9], expected: 'Diminished seventh chord, full diminished seventh chord, Diminished 7th (with Flat 5th)'},
+{pitches: [0,3,6,10], expected: 'Minor seventh flat five chord, Half-diminished seventh chord'},
+{pitches: [0,3,7,11], expected: 'Minor major seventh chord'},
+{pitches: [0,4,8,11], expected: 'Major seventh sharp five chord, augmented major seventh chord'},
+{pitches: [0,3,6,11], expected: 'Diminished major seventh chord'},
+{pitches: [0,4,6,10], expected: 'Dominant seventh flat five chord, Seven Flat Five'},
+{pitches: [0,4,7,14], expected: 'Added ninth chord'},
+{pitches: [0,4,7,11,14], expected: 'major ninth chord'},
+{pitches: [0,3,7,10,14], expected: 'minor ninth chord'},
+{pitches: [0,3,7,11,14], expected: 'Minor-major ninth chord'},
+{pitches: [0,3,7,14], expected: 'Minor added ninth chord'},
+{pitches: [0,4,7,14,18], expected: 'Major ninth sharp eleventh chord|Major seventh sharp eleventh chord'},
+{pitches: [0,4,8,10,14], expected: 'Dominant ninth sharp five chord'},
+{pitches: [0,4,6,10,14], expected: 'Dominant ninth flat five chord'},
+{pitches: [0,4,7,10,14], expected: 'Dominant 9th, Dominant ninth chord'},
+{pitches: [0,4,7,10,13], expected: 'Dominant minor 9th, Dominant seventh flat ninth chord'},
+{pitches: [0,4,7,10,15], expected: 'Dominant seventh sharp ninth chord, dominant 7â™¯9 chord, Hendrix chord'},
+{pitches: [0,4,8,10,15], expected: 'Dominant seventh sharp five sharp ninth chord'},
+{pitches: [0,4,8,10,13], expected: 'Dominant seventh sharp five flat ninth chord'},
+{pitches: [0,4,8,10], expected: 'dominant seventh sharp five chord, augmented seventh chord, Seven Sharp Five'},
+{pitches: [0,4,7,10,13,18], expected: 'Dominant seventh sharp eleventh chord'},
+{pitches: [0,4,6,10,15], expected: 'Dominant seventh flat five sharp ninth chord'},
+{pitches: [0,3,7,9,14], expected: 'Minor seventh sharp five chord, minor six-nine chord'},
+{pitches: [0,4,6,11], expected: 'Major seventh flat five chord'},
+{pitches: [0,4,7,14,18], expected: 'Major seventh sharp eleventh chord'},
+{pitches: [0,3,7,9], expected: 'Minor sixth chord'},
+{pitches: [0,4,7,9], expected: 'Major sixth chord'},
+{pitches: [0,4,7,9,14], expected: 'Major six-nine chord'},
+{pitches: [0,3,7,10,14,17], expected: 'Minor eleventh chord'},
+{pitches: [0,4,7,11,14,17], expected: 'Major eleventh chord'},
+{pitches: [0,4,7,10,13,17], expected: 'Dominant eleventh flat ninth chord'},
+{pitches: [0,4,7,14,17], expected: 'Dominant eleventh chord'},
+{pitches: [0,3,7,10,14,21], expected: 'Minor thirteenth chord'},
+{pitches: [0,4,7,11,14,18,21], expected: 'Major thirteenth sharp eleventh chord'},
+{pitches: [0,4,7,11,14,21], expected: 'Major thirteenth chord'},
+{pitches: [0,4,7,10,15,21], expected: 'Dominant thirteenth sharp ninth chord'},
+{pitches: [0,4,7,10,14,18,21], expected: 'Dominant thirteenth sharp eleventh chord'},
+{pitches: [0,4,7,10,13,21], expected: 'Dominant thirteenth flat ninth chord'},
+{pitches: [0,4,7,10,14,21], expected: 'Dominant thirteenth chord'},
+{pitches: [0,2,5,7], expected: 'Suspended second suspended fourth chord'},
+{pitches: [0,2,7], expected: 'Suspended Second Chord'},
+{pitches: [0,5,7], expected: 'Suspended Fourth Chord'},
+{pitches: [0,2,7,11], expected: 'Major seventh suspended second chord'},
+{pitches: [0,5,7,11], expected: 'Major seventh suspended fourth chord'},
+{pitches: [0,5,7,10,14,21], expected: 'Dominant thirteenth suspended fourth chord'},
+{pitches: [0,2,7,10], expected: 'Dominant seventh suspended second chord'},
+{pitches: [0,5,7,10], expected: 'Dominant seventh suspended fourth chord'},
+{pitches: [0,5,7,10,14], expected: 'Dominant ninth suspended fourth chord'},
+{pitches: [0,7], expected: 'Power Chord'},
+{pitches: [0,7,12], expected: 'Power Chord Octave Doubled'},
+{pitches: [0,4,6], expected: 'Flat five chord'},
+{pitches: [0,2,6], expected: 'Flat five chord'},
+{pitches: [0,2,4,7], expected: 'Mu chord'}
+];
+
+			//var intervalsOrdered = _.sortBy(notes);
+			//var transposedBy = intervalsOrdered[0];
+			var intervalsStartingAtZero = this._getIntervalSetStartingAtZero(notes);
+			var hit = _.find(chords, function(chord) {
+				return _.isEqual(intervalsStartingAtZero, chord.pitches); 
+			});
+
+			if (!_.isUndefined(hit)) {
+				return hit.expected;
+			}
+			return'not found';
+
+			/*
+				new strategy 17.4.2016:
+
+				- try to get the most specific via custom (limit: voicings)
+				- if that fails, use sets
+					- testen: die untervariante finden via normalForm / normalFormInvertedSet, um dennoch genauer zu sein.
+
+			*/
+
+		},
+
+		getConsonanceRating: function(notes){
+			var intervalConsonanceRating = [
+				10, // (0 semitones) unison
+				-2,  // (1 semitones) minor 2nd
+				3,  // (2 semitones) 2nd
+				7,  // (3 semitones) minor 3rd
+				7,  // (4 semitones) major 3rd
+				3,  // (5 semitones) perfect 4th
+				3,  // (6 semitones) augmented 4th
+				9, // (7 semitones) perfect 5th
+				4,  // (8 semitones) minor 6th
+				4,  // (9 semitones) major 6th
+				3,  // (10 semitones) minor 7th
+				1   // (11 semitones) major 7th
+			];
+
+			var sum = 0;
+			var count = 0;
+
+			for (var i = notes.length - 1; i >= 0; i--) {
+				for (var k = notes.length - 1; k >= 0; k--) {
+					var interval = Math.abs(notes[i]%12 - notes[k]%12);
+					sum += intervalConsonanceRating[interval];
+					count++;				
+				};
+			};
+
+			return Math.round(sum/count);
+		},
+
+		getConsonanceRating2: function(notes){
+			var intervalConsonanceRating = [
+				-2,  // (1 semitones) minor 2nd
+				3,  // (2 semitones) 2nd
+				8,  // (3 semitones) minor 3rd
+				8,  // (4 semitones) major 3rd
+				6,  // (5 semitones) perfect 4th
+				3,  // (6 semitones) augmented 4th
+			];
+
+			var sum = 0;
+			var count = 0;
+			var intervalVector = this._getIntervalVector(notes);
+
+			for (var i = 0, len = intervalVector.length; i < len; i++) {
+				sum += intervalVector[i] * intervalConsonanceRating[i];
+				count += intervalVector[i];
+			};
+
+			if (count === 0) {
+				return 10;
+			}
+
+			return Math.round(sum/count);
+		},
+
 		getChordName: function(notes) {
 			var allNames = this._getAllChordNames(notes);
 			if (allNames === '') {
@@ -661,6 +820,7 @@ function ComparePartialPrimes()
 
     			/*
 					TODO NEXT
+						- PITCHKLASSE MIT PRIME FINDEN, NICHT MIT "pitchClassesStartingAtZero"
 						- dort wo es nicht eindeutig ist (z.B. dominant seventh / half diminished seventh etc.)
 							mit den übermittelten pitches arbeiten, z.B. [0,4,8,11] / [0,3,7,11] etc.
 							übermittelte der reihe ordnen, transponieren dass mit 0 beginnen, vergleichen
@@ -672,13 +832,40 @@ function ComparePartialPrimes()
 
     			//var notesOrdered = _.sortBy(notes);
 
-    			var pitchClassesFromOrderedNotes = this._getPitchClasses(_.sortBy(notes));
+    			var primeForm = this.getPrimeForm(notes);
+    			var primeFormKey = this._getHexadecimal(primeForm);
 
+    			// half-diminished seventh chord [0,3,6,10] -> _036A
+    			/*var pitchClassesFromOrderedNotes = this._getPitchClasses(_.sortBy(notes));
+    			var pitchClassesStartingAtZero = this._getIntervalSetStartingAtZero(
+    				_.sortBy(pitchClassesFromOrderedNotes)
+    			);
+    			var pitchClassesKey = '_' + this._getHexadecimal(pitchClassesStartingAtZero);*/
+
+
+    			// half-diminished seventh chord [0,3,6,10] -> 0258
+    			// Dominant-seventh/German-sixth Chord [[0,4,7,10]]-> 0368
+
+    			/*
+				
+
+    			*/
+
+
+
+
+				var pitchClassesFromOrderedNotes = this._getPitchClasses(_.sortBy(notes));
     			var pitchClassesStartingAtZero = this._getPitchClassesStartingAtZero(
     				_.sortBy(pitchClassesFromOrderedNotes)
     			);
-
     			var pitchClassesKey = '_' + this._getHexadecimal(pitchClassesStartingAtZero);
+
+				var orderedPC = _.sortBy(this._getPitchClasses(notes));
+				var normalForm = this._getPitchClassesStartingAtZero(this._getNormalForm(orderedPC));
+
+				var normalFormInvertedSet = this._getPitchClassesStartingAtZero(this._getNormalForm(this._getInvertedSet(orderedPC)));
+
+    			console.log('[' + notes.join(',') + ']: setLookupKey: ' + setLookupKey + ', normalForm: ' + normalForm + ', normalFormInvertedSet: ' + normalFormInvertedSet + ', pitchClassesKey: ' + pitchClassesKey + ', primeFormKey: ' + primeFormKey);
 
     			if (_.has(this.chordTable[setLookupKey], pitchClassesKey)) {
 
@@ -686,6 +873,7 @@ function ComparePartialPrimes()
     				return this.chordTable[setLookupKey][pitchClassesKey] + this._getInversionText(inversionNumber);
 
     			} else {
+    				//console.log('did not find pitchClassesKey: ' + pitchClassesKey);
     				// return first key
     				for(var key in this.chordTable[setLookupKey]) break;
     				return this.chordTable[setLookupKey][key];

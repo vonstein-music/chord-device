@@ -4,7 +4,7 @@ define(
     function(midi) {
         var run = function() {
 
-                test('_getHexadecimal works', function() {
+            /*test('_getHexadecimal works', function() {
                 _.each(
                 [
                     {pitches: [0,1,2,3,4,5,6,7,8,9,10,11,12], expected: '0123456789ABC'},
@@ -12,41 +12,41 @@ define(
                 ], function(p){
                     deepEqual(midi._getHexadecimal(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
                 });
-            });
+            });*/
 
 
-            test('getPrimeForm works', function() {
+            /*test('getPrimeForm works', function() {
                 _.each(
                 [
-                    {pitches: [0,1], expected: '01'},
-                    {pitches: [0,1,2], expected: '012'},
+                    {pitches: [0,1], expected: [0,1,]},
+                    {pitches: [0,1,2], expected: [0,1,2]},
 
-                    {pitches: [0,1,2,3,4,5], expected: '012345'},
-                    {pitches: [3,4,5,6,7,8], expected: '012345'},
+                    {pitches: [0,1,2,3,4,5], expected: [0,1,2,3,4,5]},
+                    {pitches: [3,4,5,6,7,8], expected: [0,1,2,3,4,5]},
 
-                    {pitches: [3,7,11], expected: '048'},
+                    {pitches: [3,7,11], expected: [0,4,8]},
 
 
-                    {pitches: [0,4,7], expected: '037'},
-                    {pitches: [0,7,10], expected: '025'},
+                    {pitches: [0,4,7], expected: [0,3,7]},
+                    {pitches: [0,7,10], expected: [0,2,5]},
                     
-                    {pitches: [0,3,7,10,11], expected: '03458'},
-                    {pitches: [1,3,7,10,11], expected: '02458'},
+                    {pitches: [0,3,7,10,11], expected: [0,3,4,5,8]},
+                    {pitches: [1,3,7,10,11], expected: [0,2,4,5,8]},
 
-                    {pitches: [1,3,7,10,11, 13, 22], expected: '02458'},
+                    {pitches: [1,3,7,10,11, 13, 22], expected: [0,2,4,5,8]},
 
-                    {pitches: [1,2,4,6,7,9,10], expected: '0134689'},
-                    {pitches: [13,2,16,22, 6,7,4, 9], expected: '0134689'},
+                    {pitches: [1,2,4,6,7,9,10], expected: [0,1,3,4,6,8,9]},
+                    {pitches: [13,2,16,22, 6,7,4, 9], expected: [0,1,3,4,6,8,9]},
 
-                    {pitches: [0,1,2,5,6,8], expected: '012568'},
-                    {pitches: [6,7,10], expected: '014'},
-                    {pitches: [0,9,10], expected: '013'},
+                    {pitches: [0,1,2,5,6,8], expected: [0,1,2,5,6,8]},
+                    {pitches: [6,7,10], expected: [0,1,4]},
+                    {pitches: [0,9,10], expected: [0,1,3]},
 
 
                 ], function(p){
                     deepEqual(midi.getPrimeForm(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
                 });
-            });
+            });*/
 
             /*test('_getNormalForm works', function() {
                 _.each(
@@ -278,9 +278,134 @@ define(
 
 */
 
+            /*test('intervalVector return corresponds primeform return', function() {
+                _.each(
+                [
+   
+                ], function(p){
+                    deepEqual(midi._getPitchClasses(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected.join());
+                });
+            });*/
 
 
+/*
+cases:
+- voicing below
+- voicing above
+*/
 
+            test('getConsonanceRating', function() {
+                _.each(
+                [
+                    {pitches: [0,4,7]},
+                    {pitches: [0,3,7]},
+                    {pitches: [0,4,8]},
+                    {pitches: [0,1,2,3]},
+                    {pitches: [0,12,24]},
+
+                ], function(p){
+
+                    equal(1,1, p.pitches.join() + ' has rating: ' + midi.getConsonanceRating(p.pitches));
+                });
+            });
+
+            test('customLookup works', function() {
+                _.each(
+                [
+                    {pitches: [0,4,7], expected: 'Major Triad'},
+                    {pitches: [11,15,18], expected: 'Major Triad'}, // transposed
+                    {pitches: [15,18,11], expected: 'Major Triad'}, // differentOrder
+                    {pitches: [4,7,12], expected: 'Major Triad (1st inv)'}, // first inversion
+                    {pitches: [7,12,16], expected: 'Major Triad (2nd inv)'}, // second inversion
+                    {pitches: [0,4,7,12], expected: 'Major Triad'}, // additional voicing
+
+                    {pitches: [0,3,7], expected: 'Minor Triad'},
+                    {pitches: [0,3,6], expected: 'Diminished Triad'},
+                    {pitches: [0,4,8], expected: 'Augmented Triad'},
+                    {pitches: [0,4,7,11], expected: 'Major seventh chord'},
+                    {pitches: [0,3,7,10], expected: 'Minor seventh chord'},
+                    {pitches: [0,4,7,10], expected: 'Dominant seventh chord, major/minor seventh chord, 7th chord'},
+                    {pitches: [0,3,6,9], expected: 'Diminished seventh chord, full diminished seventh chord, Diminished 7th (with Flat 5th)'},
+                    {pitches: [0,3,6,10], expected: 'Minor seventh flat five chord, Half-diminished seventh chord'},
+                    {pitches: [0,3,7,11], expected: 'Minor major seventh chord'},
+                    {pitches: [0,4,8,11], expected: 'Major seventh sharp five chord, augmented major seventh chord'},
+                    {pitches: [0,3,6,11], expected: 'Diminished major seventh chord'},
+                    {pitches: [0,4,6,10], expected: 'Dominant seventh flat five chord, Seven Flat Five'},
+                    {pitches: [0,4,7,14], expected: 'Added ninth chord'},
+                    {pitches: [0,4,7,11,14], expected: 'major ninth chord'},
+                    {pitches: [0,3,7,10,14], expected: 'minor ninth chord'},
+                    {pitches: [0,3,7,11,14], expected: 'Minor-major ninth chord'},
+                    {pitches: [0,3,7,14], expected: 'Minor added ninth chord'},
+                    {pitches: [0,4,7,14,18], expected: 'Major ninth sharp eleventh chord|Major seventh sharp eleventh chord'},
+                    {pitches: [0,4,8,10,14], expected: 'Dominant ninth sharp five chord'},
+                    {pitches: [0,4,6,10,14], expected: 'Dominant ninth flat five chord'},
+                    {pitches: [0,4,7,10,14], expected: 'Dominant 9th, Dominant ninth chord'},
+                    {pitches: [0,4,7,10,13], expected: 'Dominant minor 9th, Dominant seventh flat ninth chord'},
+                    {pitches: [0,4,7,10,15], expected: 'Dominant seventh sharp ninth chord, dominant 7â™¯9 chord, Hendrix chord'},
+                    {pitches: [0,4,8,10,15], expected: 'Dominant seventh sharp five sharp ninth chord'},
+                    {pitches: [0,4,8,10,13], expected: 'Dominant seventh sharp five flat ninth chord'},
+                    {pitches: [0,4,8,10], expected: 'dominant seventh sharp five chord, augmented seventh chord, Seven Sharp Five'},
+                    {pitches: [0,4,7,10,13,18], expected: 'Dominant seventh sharp eleventh chord'},
+                    {pitches: [0,4,6,10,15], expected: 'Dominant seventh flat five sharp ninth chord'},
+                    {pitches: [0,3,7,9,14], expected: 'Minor seventh sharp five chord, minor six-nine chord'},
+                    {pitches: [0,4,6,11], expected: 'Major seventh flat five chord'},
+                    {pitches: [0,3,7,9], expected: 'Minor sixth chord'},
+                    {pitches: [0,4,7,9], expected: 'Major sixth chord'},
+                    {pitches: [0,4,7,9,14], expected: 'Major six-nine chord'},
+                    {pitches: [0,3,7,10,14,17], expected: 'Minor eleventh chord'},
+                    {pitches: [0,4,7,11,14,17], expected: 'Major eleventh chord'},
+                    {pitches: [0,4,7,10,13,17], expected: 'Dominant eleventh flat ninth chord'},
+                    {pitches: [0,4,7,14,17], expected: 'Dominant eleventh chord'},
+                    {pitches: [0,3,7,10,14,21], expected: 'Minor thirteenth chord'},
+                    {pitches: [0,4,7,11,14,18,21], expected: 'Major thirteenth sharp eleventh chord'},
+                    {pitches: [0,4,7,11,14,21], expected: 'Major thirteenth chord'},
+                    {pitches: [0,4,7,10,15,21], expected: 'Dominant thirteenth sharp ninth chord'},
+                    {pitches: [0,4,7,10,14,18,21], expected: 'Dominant thirteenth sharp eleventh chord'},
+                    {pitches: [0,4,7,10,13,21], expected: 'Dominant thirteenth flat ninth chord'},
+                    {pitches: [0,4,7,10,14,21], expected: 'Dominant thirteenth chord'},
+                    {pitches: [0,2,5,7], expected: 'Suspended second suspended fourth chord'},
+                    {pitches: [0,2,7], expected: 'Suspended Second Chord'},
+                    {pitches: [0,5,7], expected: 'Suspended Fourth Chord'},
+                    {pitches: [0,2,7,11], expected: 'Major seventh suspended second chord'},
+                    {pitches: [0,5,7,11], expected: 'Major seventh suspended fourth chord'},
+                    {pitches: [0,5,7,10,14,21], expected: 'Dominant thirteenth suspended fourth chord'},
+                    {pitches: [0,2,7,10], expected: 'Dominant seventh suspended second chord'},
+                    {pitches: [0,5,7,10], expected: 'Dominant seventh suspended fourth chord'},
+                    {pitches: [0,5,7,10,14], expected: 'Dominant ninth suspended fourth chord'},
+                    {pitches: [0,7], expected: 'Power Chord'},
+                    {pitches: [0,7,12], expected: 'Power Chord Octave Doubled'},
+                    {pitches: [0,4,6], expected: 'Flat five chord'},
+                    {pitches: [0,2,6], expected: 'Flat five chord'},
+                    {pitches: [0,2,4,7], expected: 'Mu chord'},
+                ], function(p){
+                    equal(midi.customLookup(p.pitches), p.expected, p.pitches.join() + ' is ' + p.expected);
+                });
+            });
+
+
+            /*test('_getIntervalSetStartingAtZero works', function() {
+                _.each(
+                [
+                    {pitchesOrdered: [0, 3, 7, 9, 15, 18], expected: [0, 3, 7, 9, 15, 18]},
+                    {pitchesOrdered: [3, 7, 9, 15, 18], expected: [0, 4, 6, 12, 15]},
+                    {pitchesOrdered: [14, 15, 18, 45], expected: [0, 1, 4, 31]},
+                ], function(p){
+                    deepEqual(midi._getIntervalSetStartingAtZero(p.pitchesOrdered), p.expected);
+                });
+            });*/
+
+            /*test('_getPitchClassesStartingAtZero works', function() {
+                _.each(
+                [
+                    {pitchesOrdered: [0, 3, 7, 9, 15, 18], expected: [0, 3, 7, 9, 3, 6]},
+                    {pitchesOrdered: [3, 7, 9], expected: [0, 4, 6]},
+                    {pitchesOrdered: [14, 15, 18, 45], expected: [0, 1, 4, 7]},
+                ], function(p){
+                    deepEqual(midi._getPitchClassesStartingAtZero(p.pitchesOrdered), p.expected, p.pitchesOrdered.join() + ' becomes ' + p.expected.join());
+                });
+            });
+*/
+/*
             test('_getInversionNumber works', function() {
                 _.each(
                 [
@@ -294,10 +419,12 @@ define(
                 });
             });
 
-
             test('getChordName works', function() {
                 _.each(
                 [
+                    {pitches: [0,4,7,10], expected: 'Dominant seventh chord OR Half-diminished seventh chord'}, // tricky The dominant-seventh (0368), as another example, is subsumed into the half-diminished seventh (0258), making them indistinguishable. 
+                    {pitches: [0, 3, 6, 10], expected: 'Half-diminished Seventh Chord'}, 
+                
                     {pitches: [0,4,7], expected: 'Major Triad'},
                     {pitches: [0,3,7], expected: 'Minor Triad'},
                     {pitches: [0,3,6], expected: 'Diminished Triad'},
@@ -372,7 +499,8 @@ define(
                     {pitches: [0, 3, 7, 10, 14], expected: 'Major-Ninth Chord'}, // 2 5 9 0 4, 0 2 4 5 9, 1 2 1 4
 
 
-                    {pitches: [0, 4, 6, 10], expected: 'Dominant seventh flat five chord'}, // 2 5 9 0 4, 0 2 4 5 9, 1 2 1 4
+                    {pitches: [0, 4, 6, 10], expected: 'Dominant seventh flat five chord'}, // 2 5 9 0 4, 0 2 4 5 9, 1 2 1 4 
+                    
 
                     // +3: 3 6 10 13 15 -> 3 6 10 1
 
