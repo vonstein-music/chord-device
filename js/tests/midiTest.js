@@ -422,22 +422,23 @@ cases:
             test('getChordInfo works', function() {
                 _.each(
                 [
+                    {pitches: [0,5,9,12], expected: ''}, // http://www.shanemcdonald.org/music/piano-chord-C-with-G-Bass.html
+                    {pitches: [0,5,9], expected: ''}, // http://www.shanemcdonald.org/music/piano-chord-C-with-G-Bass.html
                     {pitches: [0,4,7], expected: 'Major Triad'},
-                    {pitches: [4,7,12], expected: 'Major Triad'},
-    /*                 
+                    {pitches: [4,7,12], expected: 'Major Triad (1st inv)'},
+                    {pitches: [7,12,16], expected: 'Major Triad (2nd inv)'},
+             
 
-                    {pitches: [0,4,7,10], expected: 'Dominant seventh chord OR Half-diminished seventh chord'}, // tricky The dominant-seventh (0368), as another example, is subsumed into the half-diminished seventh (0258), making them indistinguishable. 
                     {pitches: [0, 3, 6, 10], expected: 'Half-diminished Seventh Chord'}, 
                
-                    {pitches: [0,4,7], expected: 'Major Triad'},
                     {pitches: [0,3,7], expected: 'Minor Triad'},
                     {pitches: [0,3,6], expected: 'Diminished Triad'},
                     {pitches: [0,4,8], expected: 'Augmented Triad'},
                     {pitches: [0,4,7,11], expected: 'Major seventh chord'},
-                    {pitches: [0,3,7,10], expected: 'Minor seventh chord'},
-                    {pitches: [0,4,7,10], expected: 'Dominant seventh chord OR Half-diminished seventh chord'}, // tricky The dominant-seventh (0368), as another example, is subsumed into the half-diminished seventh (0258), making them indistinguishable. 
+                    {pitches: [0,3,7,10], expected: 'Minor seventh chord, Major sixth chord (3rd inv)'},
+                    {pitches: [0,4,7,10], expected: 'Dominant seventh chord'}, // tricky The dominant-seventh (0368), as another example, is subsumed into the half-diminished seventh (0258), making them indistinguishable. 
                     {pitches: [0,3,6,9], expected: 'Diminished seventh chord'},
-                    {pitches: [0,3,6,10], expected: 'Dominant seventh chord OR Half-diminished seventh chord'},
+                    {pitches: [0,3,6,10], expected: 'Minor seventh flat five chord, Minor sixth chord (3rd inv)'},
                     {pitches: [0,3,7,11], expected: 'Minor major seventh chord OR Major Seventh Augmented Fifth OR augmented major seventh chord'},
                     {pitches: [0,4,8,11], expected: 'Minor major seventh chord OR Major Seventh Augmented Fifth OR augmented major seventh chord'},
                     {pitches: [0,3,6,11], expected: 'Diminished major seventh chord OR Major diminished Tetrachord'},
@@ -505,7 +506,7 @@ cases:
 
                     {pitches: [0, 4, 6, 10], expected: 'Dominant seventh flat five chord'}, // 2 5 9 0 4, 0 2 4 5 9, 1 2 1 4 
                     
-*/
+
                     // +3: 3 6 10 13 15 -> 3 6 10 1
 
                     // 1 4 8 11 15 -> 1 4 8 11 3 -> 1 3 4 8 11 -> 2 1 4 3
@@ -516,7 +517,7 @@ cases:
 
 
                 ], function(p){
-                    equal(midi.getChordInfo(p.pitches).chordName, p.expected, p.pitches.join() + ' has name: ' + p.expected);
+                    equal(midi.getChordInfo(p.pitches).chordNames, p.expected, p.pitches.join() + ' has name: ' + p.expected);
                 });
             });
 

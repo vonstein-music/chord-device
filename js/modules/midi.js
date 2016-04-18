@@ -604,7 +604,7 @@ _025A: [['Mu chord', 1], ],
 _038A: [['Mu chord', 2], ],
 _0579: [['Mu chord', 3], ],
 		},
-
+//http://www.jazzguitar.be/jazz_chord_progressions.html
 
 		_getDistanceOfRotation: function(orderedPitchClasses, rotationIndex, indexToCompareWith, cardinality){
 
@@ -981,12 +981,34 @@ _0579: [['Mu chord', 3], ],
 			// 047  4-7-12
     		if (_.has(this.commonChordsLookupTable, commonChordsLookupKey)) {
 
-    			console.log(this.commonChordsLookupTable[commonChordsLookupKey][0][0]);
+			console.log(this.commonChordsLookupTable[commonChordsLookupKey]);
+
+    			var chordNames = '';
+    			var that = this;
+    			_.each(this.commonChordsLookupTable[commonChordsLookupKey], function(possibleChord){ 
+    			// @todo: remove redundant names, Augmented Triad, Augmented Triad (1st inv), Augmented Triad (2nd inv)
+    			// @todo: nicht-inversen an erster stelle
+    			    chordNames += ', ' + possibleChord[0] + that._getInversionText(possibleChord[1]);
+    			});
+
+    			chordNames = chordNames.substr(2);
+
+
+    			console.log(this.commonChordsLookupTable[commonChordsLookupKey]);
     			// find root
     			var semitonesTransposed = orderedPitches[0];
+    			console.log('semitonesTransposed', semitonesTransposed);
+    			console.log('startingAtZero', startingAtZero);
+
+
+
+    			//var actualRootNoteIfNotInversion = 
+
+    			var rootNoteName = this.getNoteNameForPitch(orderedPitches[0]);
+    			console.log(rootNoteName);
     			return {
-    				root: orderedPitches[0], 
-    				chordName: this.commonChordsLookupTable[commonChordsLookupKey][0][0]
+    				rootNoteName: rootNoteName, 
+    				chordNames: chordNames
     			}; // @todo return multiple names if there
 
 
