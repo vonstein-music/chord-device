@@ -1,0 +1,148 @@
+
+TODO next
+---------
+
+vorgehen 18-04
+
+- dataTables (datenquellen)
+	- setsData
+	- chordsData http://www.smithfowler.org/music/Chord_Formulas.htm
+
+- grundidee: multiple-fallback-solution
+	- erst mit fullpath (alle pitches, sortieren, alle pitches runtertransponieren sodass 1. pitch 0 ist) in "fullPathLookupTable"
+	- dann mit pitchclass (pitches auf pitchclasses reduzieren, sortieren, transponieren) in "pitchClassesLookupTable"
+	- dann mit prime in "setLookupTable" (wo als Wert die Liste aller Akkorde(referenzen) drin steht die in Frage kommen)
+
+- neu: tabelle mit chords
+	- prinzipiell commonChords-Tabelle
+	- mit namen als identifier
+	- enthält die infos zu einem chord, ergänzen mit 
+		- "tendencyToResolve"
+		- "stability" (resolution vs. tension)
+
+- common chords "fullpath lookup tabelle" neu erstellen
+	- wie gehabt mit "full-path-keys" z. B. [0, 4, 7, 14] (und jeweiligen inversen)
+	- als werte jeweils eine Liste der Akkorde (referenzen zu den keys der commonChordsLookupTable, z.B. ['sus2', 'asdf'])
+
+- common chords "pitchclass lookup tabelle" neu erstellen
+	- als keys unique pitchclasses z. B. [0, 4, 7, 14, 16]->[0, 2, 4, 7] (und jeweiligen inversen)
+	- als werte jeweils eine Liste der Akkorde (referenzen zu den keys der commonChordsLookupTable, z.B. ['sus2', 'asdf'])
+
+- "intervalVectorlLookupTable" neu erstellen
+	- 
+
+idee: mit dials die verschiedenen benammslungen anzeigen lassen
+
+idee: chordprogressiontool: eingabe von akkordnamen, dann einlesen/abspielen
+
+todo 17-04-2016: 1433
+
+- meine Akkordliste komplettieren
+	- fehlen intervalle?
+	- namen mergen mit anderen
+	- evtl. funktion schreiben, welche akkorde (intervalle) und deren Namen automatisch generiert, deckung prüfen
+	- als chord-master-list ablegen
+		- wird in zukunft erweitert, dient als strukturierte informationsablage
+	- tranformierungsfiles auch ablegen
+
+- sets-file erstellen
+	- allfällige Korrekturen
+	- schöner strukturieren
+
+- setsLookupTable erzeugen
+	- ??nur mit intervalVektor und Array von möglichen Namen 
+		- Prime weglassen, bringen eh nichts da nicht eindeutig (?)
+	- doch Grenzfall z.B. aufgrund von voicings wird z.B. major triad nicht gefunden
+		- in set wird 037 gefunden, dann kann nochmals versucht 
+			werden aus den input-noten 047 unter den prime zu finden, dann wie bisher
+
+//https://en.wikipedia.org/wiki/Chord_names_and_symbols_(popular_music)
+- commonChordsLookupTable erzeugen
+	- sauber, nur mit benötigten daten
+
+- getChordName umbauen
+	- erst versuchen in commonChordsLookupTable zu finden
+	- bei Misserfolg Fallback auf Sets
+
+- sobald klar ist was alles geht, tabellen aufs wesentliche reduzieren und
+	mit referenzen arbeiten statt dupliziertem Text.
+
+
+
+TODO allgemein
+--------------
+- akkordliste komplettieren/prüfen
+	- gibt es einer regel, mit der alle gebildet werden (anhand intervalle, dann autom. benennung omit/sus)
+
+- set liste prüfen
+
+
+
+
+TODO OLD
+--------
+
+// @todo: inversions, testen, getroot verfeinern, sets vergleichen, namen ergänzen, omit/sus hinzufügen
+// scale erkennung, akkord-funktion (tonic, dominant etc.)
+// vorschläge
+// im display jeweils die skalen anzeigen (aufleuchten), in welchen der akkord vorkommt und welche funktion er darin hat (V, vii etc.)
+// evtl. intervalVektor zur Bewertung oder root-findung heranziehen
+// chord found, now try to be more precise (major/minor, inversions etc.)
+
+//console.log(this.chordTable[setLookupKey]);
+
+next steps:
+
+- methode für berechnung von prime
+- wird verwendet um für die gespielten noten die prime zu berechnen
+- der akkord wird immer noch über den vektor gefunden
+- die prime wird aber verwendet um die untervariante zu finden
+- wenn die untervariante gefunden ist, rotation (inverse berechnen)
+- bestimmte inversen haben besondere namen
+	- ist kein Name angegeben, einfach "x. inverse" angeben
+- tabelle vervollständigen/prüfen
+	- form: 
+		- objekt, keys level 1 sind interval-vektoren
+		- bei interval-vektor code sind objekte hinterlegt, welche mit der primeform(forte) als key angesprochen werden
+		- innerhalb einer bestimmten Primeform gibt es wieder ein objekt für die besondere benennung von inversen, die keys sind nummern
+
+- sus, omit prüfen
+- versuchen root über anzahl rotationen herauszufinden
+
+- festlegen von key und scale
+- einbauen von funktionstheorie (anzeige funktion)
+
+- harmonizität anzeige
+	- funktion getConsonance([0,3,7]): 100%
+		- durchschnitt aller intervalle (bewertung) 03 37 07 / 3
+
+
+
+- prüfen, was es mit verwandten sets auf sich hat
+
+- vorschläge für tension, übergang, aufläsung
+	- anzeige? button zum vorhören?
+
+- chord explorer
+	- scale und key wählen
+	- pitchrange oben und unten begrenzen
+	- inverse wählen (1. inverse = tiefster Ton +1 oktave)
+	- save/export favs
+
+
+
+Separates Device:
+	- Key und Scale werden erst festgelegt
+	- funktion pitchInScale(key, scale) z.B. (0, [0, 1, 5, 7, 8]) (C in Japanese)
+	- wird benötigt für die anzeige des keyboards (rot nicht in scale, blau in scale)
+
+
+		- PITCHKLASSE MIT PRIME FINDEN, NICHT MIT "pitchClassesStartingAtZero"
+		- dort wo es nicht eindeutig ist (z.B. dominant seventh / half diminished seventh etc.)
+			mit den übermittelten pitches arbeiten, z.B. [0,4,8,11] / [0,3,7,11] etc.
+			übermittelte der reihe ordnen, transponieren dass mit 0 beginnen, vergleichen
+			bei table zusätzlichen level bei diesen sonderfällen _101310: {_0148: {_0-4-8-10: 'augmented seventh chord',...}
+		- harmonizität
+		- tonic / dominant character via interval-rating
+
+

@@ -1,0 +1,1019 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0038)http://tools.markabout.com/cspell3.htm -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1250">
+
+<meta name="Author" content="Mark Klan">
+<title>ChordSpell -- Note Entry</title>
+<link rel="stylesheet" href="./ChordSpell -- Note Entry_files/style.css" type="text/css">
+</head>
+
+<body>
+
+<center><h1><font color="#0000ff">ChordSpell -- Note Entry</font></h1></center>
+
+<script type="text/Javascript" language="JavaScript">
+<!-- begin cloaking
+//  ****************
+var chord = "?"
+var info = "?"
+var tstring = "?"
+var chordRL = "?"  //****new rootless stuff
+var infoRL = "?"
+var tstringRL = "?"
+// ******************
+// global variables:
+var TextNote = new Array(12)
+TextNote[0] = "E"
+TextNote[1] = "F"
+TextNote[2] = "Gb"
+TextNote[3] = "G"
+TextNote[4] = "Ab"
+TextNote[5] = "A"
+TextNote[6] = "Bb"
+TextNote[7] = "B"
+TextNote[8] = "C"
+TextNote[9] = "Db"
+TextNote[10] = "D"
+TextNote[11] = "Eb"
+var Rchosen = 99
+var RLchosen = 99  //****new rootless stuff
+var note = new Array(23)
+var errflag = 0
+//
+// ************************************************************
+function CheckInput()
+{
+	// Put each checked note into note array variable
+	var notetxt = " "
+	note[0] = 99
+	note[1] = 99
+	note[2] = 99
+	note[3] = 99
+	note[4] = 99
+	note[5] = 99
+	note[6] = 99
+	note[7] = 99
+	note[8] = 99
+	note[9] = 99
+	note[10] = 99
+	note[11] = 99
+	note[12] = 99
+	note[13] = 99
+	note[14] = 99
+	note[15] = 99
+	note[16] = 99
+	note[17] = 99
+	note[18] = 99
+	note[19] = 99
+	note[20] = 99
+	note[21] = 99
+	note[22] = 99
+	//
+	if (document.formNR.n0.checked) {
+			notetxt = document.formNR.n0.value
+			note[0] = parseInt(notetxt)
+			}
+	if (document.formNR.n1.checked) {
+			notetxt = document.formNR.n1.value
+			note[1] = parseInt(notetxt)
+			}	
+	if (document.formNR.n2.checked) {
+			notetxt = document.formNR.n2.value
+			note[2] = parseInt(notetxt)
+			}
+	if (document.formNR.n3.checked) {
+			notetxt = document.formNR.n3.value
+			note[3] = parseInt(notetxt)
+			}
+	if (document.formNR.n4.checked) {
+			notetxt = document.formNR.n4.value
+			note[4] = parseInt(notetxt)
+			}
+	if (document.formNR.n5.checked) {
+			notetxt = document.formNR.n5.value
+			note[5] = parseInt(notetxt)
+			}	
+	if (document.formNR.n6.checked) {
+			notetxt = document.formNR.n6.value
+			note[6] = parseInt(notetxt)
+			}
+	if (document.formNR.n7.checked) {
+			notetxt = document.formNR.n7.value
+			note[7] = parseInt(notetxt)
+			}
+	if (document.formNR.n8.checked) {
+			notetxt = document.formNR.n8.value
+			note[8] = parseInt(notetxt)
+			}
+	if (document.formNR.n9.checked) {
+			notetxt = document.formNR.n9.value
+			note[9] = parseInt(notetxt)
+			}
+	if (document.formNR.n10.checked) {
+			notetxt = document.formNR.n10.value
+			note[10] = parseInt(notetxt)
+			}
+	if (document.formNR.n11.checked) {
+			notetxt = document.formNR.n11.value
+			note[11] = parseInt(notetxt)
+			}
+	// 
+	//
+	// Check to make sure no. of checked notes >1 and <8; if not, alert & stop
+	var notecount = 0
+	for (var j = 0; j < 12 ; j++) {
+		if (note[j] < 99) {notecount++}
+		}
+	//
+	if (notecount > 1 && notecount < 8) {
+		ProcessInput()
+	} else {
+	alert("You must select at least 2 notes, but not more than 7.")
+	}
+	//
+}
+//
+// ************************************************************
+function MetaReset()
+{
+	// First empty the chord-variables used buttons in the results table
+		document.formNR.CN1.value = ""
+		document.formNR.CN2.value = ""
+		document.formNR.CN3.value = ""
+		document.formNR.CN4.value = ""
+	// Next, do a generic reset()
+		document.formNR.reset()
+	//
+	//
+}
+// ***************************************************
+function MajTriad(MTrootNum, MTchordname) {
+		MTrootNumIV = MTrootNum + 7
+		if (MTrootNumIV > 11) {MTrootNumIV = MTrootNumIV - 12}
+		MTrootNumV = MTrootNum + 5
+		if (MTrootNumV > 11) {MTrootNumV = MTrootNumV - 12}
+		alert(MTchordname.value + " can function as the I chord of " + TextNote[MTrootNum] + " major, the IV chord of " 
+			+ TextNote[MTrootNumIV] + ", and the V chord of " + TextNote[MTrootNumV] + ".")
+	}
+// *******************************************************
+function Dominant(DMrootNum, DMchordname) {
+		DMrootNumV = DMrootNum + 5
+		if (DMrootNumV > 11) {DMrootNumV = DMrootNumV - 12}
+		alert(DMchordname.value + " can function as the V chord of " + TextNote[DMrootNumV] + " major.")
+	}
+// ********************************************************
+function MajFam(MFrootNum, MFchordname) {
+		MFrootNumIV = MFrootNum + 7
+		if (MFrootNumIV > 11) {MFrootNumIV = MFrootNumIV - 12}
+		MFrootNumV = MFrootNum + 5
+		if (MFrootNumV > 11) {MFrootNumV = MFrootNumV - 12}
+		alert(MFchordname.value + " can function as the I chord of " + TextNote[MFrootNum] + " major and the IV chord of " 
+			+ TextNote[MFrootNumIV] + ".")
+	}
+// *********************************************************
+function Minor(MNrootNum, MNchordname) {
+		MNrootNumii = MNrootNum + 10
+		if (MNrootNumii > 11) {MNrootNumii = MNrootNumii - 12}
+		MNrootNumiii = MNrootNum + 8
+		if (MNrootNumiii > 11) {MNrootNumiii = MNrootNumiii - 12}
+		MNrootNumvi = MNrootNum + 3
+		if (MNrootNumvi > 11) {MNrootNumvi = MNrootNumvi - 12}
+		alert(MNchordname.value + " can function as the ii chord of " + TextNote[MNrootNumii] + " major, the iii chord of " 
+			+ TextNote[MNrootNumiii] + ", and the vi chord of " + TextNote[MNrootNumvi] + ".")
+	}
+// **********************************************************
+function HalfDim(HDrootNum, HDchordname) {
+		HDrootNumvii = HDrootNum + 1
+		if (HDrootNumvii > 11) {HDrootNumvii = HDrootNumvii - 12}
+		alert(HDchordname.value + " can function as the vii° chord of " + TextNote[HDrootNumvii] + " major.")
+	}
+// **********************************************************
+function ChordFunc(CFroot, CFchordname, CFtstring) {
+	// Uses switch to call subfunctions to determine chord function
+	var CFrootNum = 0
+	for (var j = 0; j < 12 ; j++) {
+		if (CFroot.value == " " + TextNote[j]) {CFrootNum = j}
+		}
+	// Switch starts here
+	switch (CFtstring.value)
+	{
+	case " 135":
+		MajTriad(CFrootNum, CFchordname)
+		break    
+	case " 135b7":
+		Dominant(CFrootNum, CFchordname)
+		break
+	case " 135b7":
+		Dominant(CFrootNum, CFchordname)
+		break
+	case " 135b79":
+		Dominant(CFrootNum, CFchordname)
+		break
+	case " 135b79E":
+		Dominant(CFrootNum, CFchordname)
+		break
+	case " 135b79ET":
+		Dominant(CFrootNum, CFchordname)
+		break
+	case " 13b7":
+		Dominant(CFrootNum, CFchordname)
+		break
+	case " 13b79":
+		Dominant(CFrootNum, CFchordname)
+		break
+	case " 13b79":
+		Dominant(CFrootNum, CFchordname)
+		break
+	case " 13b79E":
+		Dominant(CFrootNum, CFchordname)
+		break
+	case " 13b79ET":
+		Dominant(CFrootNum, CFchordname)
+		break
+	case " 13b7E":
+		Dominant(CFrootNum, CFchordname)
+		break
+	case " 13b7T":
+		Dominant(CFrootNum, CFchordname)
+		break
+	case " (1)35b79":
+		Dominant(CFrootNum, CFchordname)
+		break
+	case " 135b79T":
+		Dominant(CFrootNum, CFchordname)
+		break
+	case " 135b7ET":
+		Dominant(CFrootNum, CFchordname)
+		break
+	case " 135b7T":
+		Dominant(CFrootNum, CFchordname)
+		break
+	case " 1356":
+		MajFam(CFrootNum, CFchordname)
+		break
+	case " 136":
+		MajFam(CFrootNum, CFchordname)
+		break
+	case " 135n7":
+		MajFam(CFrootNum, CFchordname)
+		break
+	case " 13n7":
+		MajFam(CFrootNum, CFchordname)
+		break
+	case " 13569":
+		MajFam(CFrootNum, CFchordname)
+		break
+	case " 1369":
+		MajFam(CFrootNum, CFchordname)
+		break
+	case " 135n79":
+		MajFam(CFrootNum, CFchordname)
+		break
+	case " 13n79":
+		MajFam(CFrootNum, CFchordname)
+		break
+	case " 1359":
+		MajFam(CFrootNum, CFchordname)
+		break
+	case " 139":
+		MajFam(CFrootNum, CFchordname)
+		break
+	case " 1b35":
+		Minor(CFrootNum, CFchordname)
+		break
+	case " 1b35b7":
+		Minor(CFrootNum, CFchordname)
+		break
+	case " 1b3b7":
+		Minor(CFrootNum, CFchordname)
+		break
+	case " 1b35b79":
+		Minor(CFrootNum, CFchordname)
+		break
+	case " 1b3b79":
+		Minor(CFrootNum, CFchordname)
+		break
+	case " 1b3b5":
+		HalfDim(CFrootNum, CFchordname)
+		break
+	case " 1b3b5b7":
+		HalfDim(CFrootNum, CFchordname)
+		break
+	default:
+		alert("No additional information available.")
+	}
+}
+// **********************************************************
+function ProcessInput() 
+{
+	//
+	// Compute all notes relative to root note (as tones in major scale; e.g. 1-3-5-b7)
+	// Select root and start cycling here:
+	var Matched
+	Matched = 0
+	var p
+	p = 0
+	var m
+	m = 0
+	while (m < 12) {
+	if (note[m] < 99) {
+		Rchosen = note[m]
+		// translate notes to be above root:
+		for (var k = 0; k < 12; k++) {
+			if (k < Rchosen && note[k] < 99) {note[k + 12] = k + 12}
+			}
+		//
+		// declare and separately initialize concatenation string variables:
+		var concat1
+		var concat2
+		var concat3
+		var concat4
+		var concat5
+		var concat6
+		var concat7
+		var concat9
+		var concat11
+		var concat13
+		concat1 = "1"
+		concat2 = ""
+		concat3 = ""
+		concat4 = ""
+		concat5 = ""
+		concat6 = ""	
+		concat7 = ""
+		concat9 = ""
+		concat11 = ""
+		concat13 = ""
+		errflag = 0
+		//
+		// evaluate notes above root and load concat strings:
+		//
+		if (note[Rchosen + 4] < 99) {concat3="3"}
+		//
+		if (note[Rchosen + 3] < 99) {
+			if (concat3=="") {concat3="b3"}
+			else
+			{concat9="#9"}
+			}
+		//
+		if (note[Rchosen + 2] < 99) {	
+			if (concat3=="") {concat2="2"}
+			else
+				{
+				if (concat9=="") {concat9="9"}
+				else
+				{errflag++}
+				}
+			}
+		//
+		if (note[Rchosen + 1] < 99) {
+			if (concat9=="") {concat9="b9"}
+			else
+			{errflag++}
+			}
+		//
+		if (note[Rchosen + 7] < 99) {concat5="5"}
+		//
+		if (note[Rchosen + 6] < 99) { 
+			if (concat5=="") {concat5="b5"}
+			else
+				{
+				if (concat11=="") {concat11="#E"}
+				else
+				{errflag++}
+				}
+			}
+		//
+		if (note[Rchosen + 8] < 99) {
+			if (concat5=="") {concat5="#5"}	
+		else
+			{concat13="bT"}
+			}
+		//
+		if (note[Rchosen + 10] < 99) {concat7="b7"}
+		//
+		if (note[Rchosen + 5] < 99) {
+			if (concat3=="") {concat4="4"}
+			else
+			{concat11="E"}
+			}
+		//	
+		if (note[Rchosen + 11] < 99) {
+			if (concat7=="") {concat7="n7"}
+			else
+			{errflag++}
+			}
+		//
+		if (note[Rchosen + 9] < 99) {
+			if (concat7=="") {concat6="6"}
+			else
+				{	
+			if (concat13=="") {concat13="T"}	
+			else	
+			{errflag++}
+				}
+			}
+		//
+		// write out chord string:
+		tstring = concat1 + concat2 + concat3 + concat4 + concat5 + 
+			concat6 + concat7 + concat9 + concat11 + concat13
+		chordRL = "?"  //****new rootless stuff
+		infoRL = "?"
+		tstringRL = "?"
+		RLchosen = 99
+		// #5 end **	
+		//
+		// **#6 Find and output if exact match
+		chord = "?"
+		infor = "?"
+		// matching text below:	
+		// major 3rd:	
+		if (tstring == "135") {
+			chord = " " + TextNote[Rchosen]
+			info = " major"}
+		if (tstring == "13b5") {
+			chord = " " + TextNote[Rchosen]+ " b5"
+			info = " major + flat 5"}
+		if (tstring == "13#5") {
+			chord = " " + TextNote[Rchosen]+ " aug"
+			info = " augmented 5th"}
+		if (tstring == "1356") {
+			chord = " " + TextNote[Rchosen]+ "6"
+			info = " major + sixth"}
+		if (tstring == "136") {
+			chord = " " + TextNote[Rchosen]+ "6"
+			info = " major + sixth; no 5"}  //***added 9.9.00
+		if (tstring == "135b7") {
+			chord = " " + TextNote[Rchosen]+ "7"
+			info = " dominant seventh"}
+		if (tstring == "13b7") {
+			chord = " " + TextNote[Rchosen]+ "7"
+			info = " dominant seventh; no 5"}	
+		if (tstring == "135n7") {
+			chord = " " + TextNote[Rchosen]+ "M7"
+			info = " major seventh"
+			tstringRL = "(1)b35b79"  //****new rootless stuff
+			if (Rchosen >= 3) {
+				RLchosen = Rchosen - 3
+				} else {
+				RLchosen = Rchosen + 9
+				}
+			chordRL = " " + TextNote[RLchosen] + "m9 no root"
+			infoRL = " minor 9th (*rootless*)"
+			}
+		if (tstring == "13n7") {
+			chord = " " + TextNote[Rchosen]+ "M7"
+			info = " major seventh; no 5"}
+		if (tstring == "13#5b7") {
+			chord = " " + TextNote[Rchosen]+ "7#5"
+			info = " dominant seventh + sharp 5"}
+		if (tstring == "13b5b7") {
+			chord = " " + TextNote[Rchosen]+ "7b5"
+			info = " dominant seventh + flat 5"}
+		if (tstring == "13#5n7") {
+			chord = " " + TextNote[Rchosen]+ "M7#5"
+			info = " major seventh + sharp 5"
+			tstringRL = "(1)b35n79"  //****new rootless stuff
+			if (Rchosen >= 3) {
+				RLchosen = Rchosen - 3
+				} else {
+				RLchosen = Rchosen + 9
+				}
+			chordRL = " " + TextNote[RLchosen] + "m(M7) no root"
+			infoRL = " minor w/major 7 (*rootless*)"
+			}
+		if (tstring == "13b5n7") {
+			chord = " " + TextNote[Rchosen]+ "M7b5"
+			info = " major seventh + flat 5"}
+		if (tstring == "135b79") {
+			chord = " " + TextNote[Rchosen]+ "9"
+			info = " ninth"}
+		if (tstring == "13b79") {
+			chord = " " + TextNote[Rchosen]+ "9"
+			info = " ninth; no 5"}
+		if (tstring == "13#5b79") {
+			chord = " " + TextNote[Rchosen]+ "9#5"
+			info = " ninth + sharp 5"}
+		if (tstring == "13#5n79") {
+			chord = " " + TextNote[Rchosen]+ "M9#5"
+			info = " major 7th + sharp 5 + 9"}
+		if (tstring == "13#5b7#9") {
+			chord = " " + TextNote[Rchosen]+ "7#5#9"
+			info = " 7th + sharp 5 + sharp 9"}   //**added 11.05.00
+		if (tstring == "13b5b79") {
+			chord = " " + TextNote[Rchosen]+ "9b5"
+			info = " ninth + flat 5"}
+		if (tstring == "13b5n79") {
+			chord = " " + TextNote[Rchosen]+ "M9b5"
+			info = " major 7th + flat 5 + 9"}
+		if (tstring == "13b5n7b9") {
+			chord = "" + TextNote[Rchosen]+ "M7b5b9"
+			info = "major 7th + flat 5/9"}
+		if (tstring == "135n79") {
+			chord = " " + TextNote[Rchosen]+ "M9"
+			info = " major 7th + 9"}
+		if (tstring == "13n79") {
+			chord = " " + TextNote[Rchosen]+ "M9"
+			info = " major 7th + 9; no 5"}
+		if (tstring == "1359") {
+			chord = " " + TextNote[Rchosen]+ " add 9"
+			info = " major + 9th"}
+		if (tstring == "139") {
+			chord = " " + TextNote[Rchosen]+ " add 9"
+			info = " major + 9th; no 5"}
+		if (tstring == "13569") {
+			chord = " " + TextNote[Rchosen]+ " 6/9"
+			info = " major + 6th + 9th"}
+		if (tstring == "1369") {
+			chord = " " + TextNote[Rchosen]+ " 6/9"
+			info = " major + 6th + 9th; no 5"}
+		if (tstring == "135b7#9") {
+			chord = " " + TextNote[Rchosen]+ "7#9"
+			info = " dominant 7th; sharp 9"}
+		if (tstring == "13b7#9") {
+			chord = " " + TextNote[Rchosen]+ "7#9"
+			info = " dominant 7th; sharp 9; no 5"}
+		if (tstring == "135b7b9") {
+			chord = " " + TextNote[Rchosen]+ "7b9"
+			info = " dominant 7th; flat 9"}
+		if (tstring == "13b7b9") {
+			chord = " " + TextNote[Rchosen]+ "7b9"
+			info = " dominant 7th; flat 9; no 5"}
+		if (tstring == "135b79E") {
+			chord = " " + TextNote[Rchosen]+ "11"
+			info = " eleventh"}
+		if (tstring == "13b79E") {
+			chord = " " + TextNote[Rchosen]+ "11"
+			info = " eleventh; no 5"}
+		if (tstring == "135b7E") {
+			chord = " " + TextNote[Rchosen]+ "11"
+			info = " eleventh; no 9"}
+		if (tstring == "13b7E") {
+			chord = " " + TextNote[Rchosen]+ "11"
+			info = " eleventh; no 5; no 9"}
+		if (tstring == "135n79E") {
+			chord = " " + TextNote[Rchosen]+ "M11"
+			info = " major eleventh"}
+		if (tstring == "135E") {      //**added 7.1.01
+			chord = " " + TextNote[Rchosen]+ " add 11"
+			info = " add eleventh"}
+		if (tstring == "1359E") {      //**added 7.1.01
+			chord = " " + TextNote[Rchosen]+ " add 9/11"
+			info = " add 9th and 11th"}
+		if (tstring == "13n79E") {
+			chord = " " + TextNote[Rchosen]+ "M11"
+			info = " major eleventh; no 5"}
+		if (tstring == "135n7E") {
+			chord = " " + TextNote[Rchosen]+ "M11"
+			info = " major eleventh; no 9"}
+		if (tstring == "13n7E") {
+			chord = " " + TextNote[Rchosen]+ "M11"
+			info = " major eleventh; no 5; no 9"}
+		if (tstring == "135b79#E") {
+			chord = " " + TextNote[Rchosen]+ "9#11"
+			info = " ninth; sharp 11"}
+		if (tstring == "13b79#E") {
+			chord = " " + TextNote[Rchosen]+ "9#11"
+			info = " ninth; sharp 11; no 5"} //***added 9.9.00
+		if (tstring == "135b7b9#E") {
+			chord = " " + TextNote[Rchosen]+ "7b9#11"
+			info = " seventh; flat 9; sharp 11"}  //***added 9.9.00
+		if (tstring == "13b5b7b9") {
+			chord = " " + TextNote[Rchosen]+ "7b9#11"
+			info = " 7th; flat 9; sharp 11; no 5"}  //***added 9.9.00
+		if (tstring == "135b79ET") {
+			chord = " " + TextNote[Rchosen]+ "13"
+			info = " thirteenth"}
+		if (tstring == "135b79EbT") {
+			chord = " " + TextNote[Rchosen]+ "11b13"
+			info = " eleventh; flat 13"}
+		if (tstring == "13b79ET") {
+			chord = " " + TextNote[Rchosen]+ "13"
+			info = " thirteenth; no 5"}
+		if (tstring == "135b7ET") {
+			chord = " " + TextNote[Rchosen]+ "13"
+			info = " thirteenth; no 9"}
+		if (tstring == "135b79T") {
+			chord = " " + TextNote[Rchosen]+ "13"
+			info = " thirteenth; no 11"}
+		if (tstring == "13b7ET") {
+			chord = " " + TextNote[Rchosen]+ "13"
+			info = " thirteenth; no 5; no 9"}
+		if (tstring == "13b79T") {
+			chord = " " + TextNote[Rchosen]+ "13"
+			info = " thirteenth; no 5; no 11"}
+		if (tstring == "135b7T") {
+			chord = " " + TextNote[Rchosen]+ "13"
+			info = " thirteenth; no 9; no 11"}
+		if (tstring == "13b7T") {
+			chord = " " + TextNote[Rchosen]+ "13"
+			info = " thirteenth; no 5, 9, or 11"}
+		if (tstring == "135n79ET") {
+			chord = " " + TextNote[Rchosen]+ "M13"
+			info = " (major 13th"}
+		if (tstring == "13n79ET") {
+			chord = " " + TextNote[Rchosen]+ "M13"
+			info = " major 13th; no 5"}
+		if (tstring == "135n7ET") {
+			chord = " " + TextNote[Rchosen]+ "M13"
+			info = " major 13th; no 9"}
+		if (tstring == "135n79T") {
+			chord = " " + TextNote[Rchosen]+ "M13"
+			info = " major 13th; no 11"}
+		if (tstring == "13n7ET") {
+			chord = " " + TextNote[Rchosen]+ "M13"
+			info = " major 13th; no 5 or 9"}
+		if (tstring == "13n7T") {
+			chord = " " + TextNote[Rchosen]+ "M13"
+			info = " major 13th; no 5, 9, or 11"}
+		if (tstring == "135n7T") {
+			chord = " " + TextNote[Rchosen]+ "M13"
+			info = " major 13th; no 9 or 11"}
+		// ...
+		// minor 3rd:
+		if (tstring == "1b35") {
+			chord = " " + TextNote[Rchosen]+ "m"
+			info = " minor"}
+		if (tstring == "1b356") {
+			chord = " " + TextNote[Rchosen]+ "m6"
+			info = " minor + sixth"}
+		if (tstring == "1b36") {
+			chord = " " + TextNote[Rchosen]+ "m6"
+			info = " minor + sixth; no 5"} //***added 9.9.00
+		if (tstring == "1b35b7") {
+			chord = " " + TextNote[Rchosen]+ "m7"
+			info = " minor + flat 7"
+			tstringRL = "(1)35n79"  //****new rootless stuff
+			if (Rchosen >= 4) {
+				RLchosen = Rchosen - 4
+				} else {
+				RLchosen = Rchosen + 8
+				}
+			chordRL = " " + TextNote[RLchosen] + "M9 no root"
+			infoRL = " major 9th (*rootless*)"
+			}
+		if (tstring == "1b3b7") {
+			chord = " " + TextNote[Rchosen]+ "m7"
+			info = " minor + flat 7; no 5"}
+		if (tstring == "1b35n7") {
+			chord = " " + TextNote[Rchosen]+ "m/M7"
+			info = " minor + major-7th"}
+		if (tstring == "1b3n7") {
+			chord = " " + TextNote[Rchosen]+ "n/M7"
+			info = " minor + major-7th; no 5"}
+		if (tstring == "1b3#5b7") {
+			chord = " " + TextNote[Rchosen]+ "m7#5"
+			info = " minor with sharp 5 and flat 7"}
+		if (tstring == "1b35b79") {
+			chord = " " + TextNote[Rchosen]+ "m9"
+			info = " minor ninth"}
+		if (tstring == "1b3b79") {
+			chord = " " + TextNote[Rchosen]+ "m9"
+			info = " minor ninth; no 5"}
+		if (tstring == "1b3b5b79") {
+			chord = " " + TextNote[Rchosen]+ "m9b5"
+			info = " minor ninth + flat 5"}
+		if (tstring == "1b35n79") {
+			chord = " " + TextNote[Rchosen]+ "m/M9"
+			info = " minor w/major 7th + 9"}
+		if (tstring == "1b3n79") {
+			chord = " " + TextNote[Rchosen]+ "m/M9"
+			info = " minor w/major 7th + 9; no 5"}
+		if (tstring == "1b359") {
+			chord = " " + TextNote[Rchosen]+ "m add 9"
+			info = " minor + 9th"}
+		if (tstring == "1b3b7E") {
+			chord = " " + TextNote[Rchosen]+ "m11"
+			info = " minor 11th; no 5; no 9"} //added 9.9.00
+		if (tstring == "1b35bT") {
+			chord = " " + TextNote[Rchosen]+ "m add b13"
+			info = " minor + b13th"}  //***added 9.9.00
+		if (tstring == "1b3569") {
+			chord = " " + TextNote[Rchosen]+ "m6/9"
+			info = " minor + 6th + 9th"}
+		if (tstring == "1b369") {
+			chord = " " + TextNote[Rchosen]+ "m6/9"
+			info = " minor + 6th + 9th; no 5"}
+		if (tstring == "1b35b7b9") {
+			chord = " " + TextNote[Rchosen]+ "m7b9"
+			info = " minor 7th; flat 9"}
+		if (tstring == "1b3b7b9") {
+			chord = " " + TextNote[Rchosen]+ "m7b9"
+			info = " minor 7th; flat 9; no 5"}
+		if (tstring == "1b3b5") {
+			chord = " " + TextNote[Rchosen]+ " dim"
+			info = " diminished"
+			// ***4/4/04
+			tstringRL = "(1)35b7"  //****new rootless stuff
+			if (Rchosen >= 4) {
+				RLchosen = Rchosen - 4
+				} else {
+				RLchosen = Rchosen + 8
+				}
+			chordRL = " " + TextNote[RLchosen] + "7 no root"
+			infoRL = " 7th (*rootless*)"
+			// end 4/4/04***
+			}
+		if (tstring == "1b3b56") {
+			chord = " " + TextNote[Rchosen]+ " dim7"
+			info = " diminished 7th"}
+		if (tstring == "1b3b5b7") {
+			chord = " " + TextNote[Rchosen]+ "m7b5"
+			info = " half diminished"
+			tstringRL = "(1)35b79"  //****new rootless stuff
+			if (Rchosen >= 4) {
+				RLchosen = Rchosen - 4
+				} else {
+				RLchosen = Rchosen + 8
+				}
+			chordRL = " " + TextNote[RLchosen] + "9 no root"
+			infoRL = " 9th (*rootless*)"
+			}
+		// ...
+		// Chords Without Thirds:
+		if (tstring == "15") {
+			chord = " " + TextNote[Rchosen]+ "5"
+			info = " power chord"}
+		if (tstring == "145") {
+			chord = " " + TextNote[Rchosen]+ " sus4"
+			info = " suspended 4th"}
+		if (tstring == "125") {
+			chord = " " + TextNote[Rchosen]+ " sus2"
+			info = " suspended 2nd"}
+		if (tstring == "145b7") {
+			chord = " " + TextNote[Rchosen]+ "7sus4"
+			info = " 7th + suspended 4th"}
+		if (tstring == "14b7T") {   //**added 7.1.01
+			chord = " " + TextNote[Rchosen]+ "13sus4"
+			info = " 13th + suspended 4th"}
+		if (tstring == "145b7T") {   //**added 7.1.01
+			chord = " " + TextNote[Rchosen]+ "13sus4"
+			info = " 13th + suspended 4th"}
+		if (tstring == "125b7") {
+			chord = " " + TextNote[Rchosen]+ "7sus2"
+			info = " 7th + suspended 2nd"}
+		if (tstring == "125n7") {     //**added 7.1.01
+			chord = " " + TextNote[Rchosen]+ "M7sus2"
+			info = " major 7th + suspended 2nd"}
+		if (tstring == "125n7T") {     //**added 7.1.01
+			chord = " " + TextNote[Rchosen]+ "M13sus2"
+			info = " major 13th + suspended 2nd"}
+		if (tstring == "1245b7") {
+			chord = " " + TextNote[Rchosen]+ "9sus4"
+			info = " 9th + suspended 4th"}  //***added 9.9.00
+		if (tstring == "1245") {
+			chord = " " + TextNote[Rchosen]+ "sus4+9"
+			info = " suspended 4th + 9th"}  //***added 11.28.02
+		if (tstring == "1256") {
+			chord = " " + TextNote[Rchosen]+ "6/9"
+			info = " 6th + 9th (no 3rd)"}  //***added 11.28.02
+		// write output here:
+		if (errflag > 0) {chord = "?"}
+		if (chord !="?") {
+			Matched++
+			p++
+			if (p == 1) {
+			document.formNR.R1.value = " " + TextNote[Rchosen]
+			document.formNR.CN1.value = chord
+			document.formNR.CI1.value = info
+			document.formNR.CT1.value = " " + tstring
+			document.formNR.R2.value = ""
+			document.formNR.CN2.value = ""
+			document.formNR.CI2.value = ""
+			document.formNR.CT2.value = ""
+			document.formNR.R3.value = ""
+			document.formNR.CN3.value = ""
+			document.formNR.CI3.value = ""
+			document.formNR.CT3.value = ""
+			document.formNR.R4.value = ""
+			document.formNR.CN4.value = ""
+			document.formNR.CI4.value = ""
+			document.formNR.CT4.value = ""
+			}
+			if (p == 2) {
+			document.formNR.R2.value = " " + TextNote[Rchosen]
+			document.formNR.CN2.value = chord
+			document.formNR.CI2.value = info
+			document.formNR.CT2.value = " " + tstring
+			document.formNR.R3.value = ""
+			document.formNR.CN3.value = ""
+			document.formNR.CI3.value = ""
+			document.formNR.CT3.value = ""
+			document.formNR.R4.value = ""
+			document.formNR.CN4.value = ""
+			document.formNR.CI4.value = ""
+			document.formNR.CT4.value = ""
+			}
+			if (p == 3) {
+			document.formNR.R3.value = " " + TextNote[Rchosen]
+			document.formNR.CN3.value = chord
+			document.formNR.CI3.value = info
+			document.formNR.CT3.value = " " + tstring
+			document.formNR.R4.value = ""
+			document.formNR.CN4.value = ""
+			document.formNR.CI4.value = ""
+			document.formNR.CT4.value = ""
+			}
+			if (p == 4) {
+			document.formNR.R4.value = " " + TextNote[Rchosen]
+			document.formNR.CN4.value = chord
+			document.formNR.CI4.value = info
+			document.formNR.CT4.value = " " + tstring
+			}
+		}	
+			//****new rootless stuff
+			if (chordRL !="?") {
+			Matched++
+			p++
+			if (p == 2) {
+			document.formNR.R2.value = " " + TextNote[RLchosen]
+			document.formNR.CN2.value = chordRL
+			document.formNR.CI2.value = infoRL
+			document.formNR.CT2.value = " " + tstringRL
+			document.formNR.R3.value = ""
+			document.formNR.CN3.value = ""
+			document.formNR.CI3.value = ""
+			document.formNR.CT3.value = ""
+			document.formNR.R4.value = ""
+			document.formNR.CN4.value = ""
+			document.formNR.CI4.value = ""
+			document.formNR.CT4.value = ""
+			}
+			if (p == 3) {
+			document.formNR.R3.value = " " + TextNote[RLchosen]
+			document.formNR.CN3.value = chordRL
+			document.formNR.CI3.value = infoRL
+			document.formNR.CT3.value = " " + tstringRL
+			document.formNR.R4.value = ""
+			document.formNR.CN4.value = ""
+			document.formNR.CI4.value = ""
+			document.formNR.CT4.value = ""
+			}
+			if (p == 4) {
+			document.formNR.R4.value = " " + TextNote[RLchosen]
+			document.formNR.CN4.value = chordRL
+			document.formNR.CI4.value = infoRL
+			document.formNR.CT4.value = " " + tstringRL
+			}
+		}	
+	}
+	m++
+	}	
+	if (Matched == 0) {
+		document.formNR.R1.value = " ???"
+		document.formNR.CN1.value = " ???"
+		document.formNR.CI1.value = " ???"
+		document.formNR.CT1.value = " ???"
+		document.formNR.R2.value = " ???"
+		document.formNR.CN2.value = " ???"
+		document.formNR.CI2.value = " ???"
+		document.formNR.CT2.value = " ???"
+		document.formNR.R3.value = " ???"
+		document.formNR.CN3.value = " ???"
+		document.formNR.CI3.value = " ???"
+		document.formNR.CT3.value = " ???"
+		document.formNR.R4.value = " ???"
+		document.formNR.CN4.value = " ???"
+		document.formNR.CI4.value = " ???"
+		document.formNR.CT4.value = " ???"
+		}
+	// function end:
+}
+// ***************************************************************
+// end cloaking -->
+</script>
+
+<center>
+
+<form name="formNR" action="">
+<table border="0" cellspacing="1" cellpadding="1" width="100">
+<tbody><tr>
+<td width="25"><strong>Check&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>Notes:&nbsp;&nbsp;&nbsp;</strong></td>
+<td align="center"><input type="button" name="nselect" value="PRESS to Calculate!" onclick="CheckInput()"></td>
+<td align="center"><input type="button" name="nclear" value="Clear Entries" onclick="MetaReset()"></td>
+</tr>
+<tr>
+<td><input type="checkbox" name="n0" value="0">E&nbsp;&nbsp;&nbsp;</td>
+</tr>
+<tr>
+<td><input type="checkbox" name="n1" value="1">F&nbsp;&nbsp;&nbsp;</td>
+
+<td rowspan="12" colspan="2">
+<center>
+<big><strong>Results of ChordSpell</strong></big><br><br>
+</center>
+
+<table border="3" width="100%" bgcolor="#66FFFF">
+<tbody><tr align="center">
+<td width="10%"><font><strong>Root</strong></font></td>
+<td width="23%"><font><strong>Chord Name</strong></font></td>
+<td width="44%"><font><strong>Chord Info</strong></font></td>
+<td width="23%"><font><strong>Chord Tones</strong></font></td>
+</tr>
+</tbody></table>
+
+<table border="3" width="100%" bgcolor="#66FFFF">
+<tbody><tr>
+<td><input type="text" size="3" name="R1">
+</td><td bgcolor="white"><input type="button" name="CN1" style="width: 112" onclick="ChordFunc(R1, CN1, CT1)" value=" Em6">
+</td><td><input type="text" size="31" name="CI1">
+</td><td><input type="text" size="14" name="CT1">
+</td></tr>
+<tr>
+<td><input type="text" size="3" name="R2">
+</td><td bgcolor="white"><input type="button" name="CN2" style="width: 112" onclick="ChordFunc(R2, CN2, CT2)" value=" Db dim">
+</td><td><input type="text" size="31" name="CI2">
+</td><td><input type="text" size="14" name="CT2">
+</td></tr>
+<tr>
+<td><input type="text" size="3" name="R3">
+</td><td bgcolor="white"><input type="button" name="CN3" style="width: 112" onclick="ChordFunc(R3, CN3, CT3)" value=" A7 no root">
+</td><td><input type="text" size="31" name="CI3">
+</td><td><input type="text" size="14" name="CT3">
+</td></tr>
+<tr>
+<td><input type="text" size="3" name="R4">
+</td><td bgcolor="white"><input type="button" name="CN4" style="width: 112" onclick="ChordFunc(R4, CN4, CT4)" value="">
+</td><td><input type="text" size="31" name="CI4">
+</td><td><input type="text" size="14" name="CT4">
+</td></tr>
+</tbody></table>
+</td>
+
+</tr>
+<tr>
+<td><input type="checkbox" name="n2" value="2">F#/Gb</td>
+</tr>
+<tr>
+<td><input type="checkbox" name="n3" value="3">G&nbsp;&nbsp;&nbsp;</td>
+</tr>
+<tr>
+<td><input type="checkbox" name="n4" value="4">G#/Ab</td>
+</tr>
+<tr>
+<td><input type="checkbox" name="n5" value="5">A&nbsp;&nbsp;&nbsp;</td>
+</tr>
+<tr>
+<td><input type="checkbox" name="n6" value="6">A#/Bb</td>
+</tr>
+<tr>
+<td><input type="checkbox" name="n7" value="7">B&nbsp;&nbsp;&nbsp;</td>
+</tr>
+<tr>
+<td><input type="checkbox" name="n8" value="8">C&nbsp;&nbsp;&nbsp;</td>
+</tr>
+<tr>
+<td><input type="checkbox" name="n9" value="9">C#/Db</td>
+</tr>
+<tr>
+<td><input type="checkbox" name="n10" value="10">D&nbsp;&nbsp;&nbsp;</td>
+</tr>
+<tr>
+<td><input type="checkbox" name="n11" value="11">D#/Eb</td>
+</tr>
+</tbody></table>
+</form>
+
+<table>
+<tbody><tr>
+<td width="70">&nbsp;</td>
+<td><center><i>After results are displayed, press button in "Chord Name" column 
+  for possible chord function.</i></center></td>
+</tr>
+</tbody></table>
+
+</center>
+
+<br>
+<hr width="100%">
+<br>
+
+<center>
+<p>
+<font color="#0000FF" size="+2">Acoustic Music Webtools</font>
+<br>
+<a href="http://tools.markabout.com/index.html"><img src="./ChordSpell -- Note Entry_files/Home.gif" alt="home button" border="0" height="48" width="48"></a>
+<br>
+<font color="#0000FF" size="+1">tools.markabout.com</font>
+</p>
+</center>
+
+<center>Please send comments via email (removing OMIT from the email address):&nbsp; 
+
+<script src="./ChordSpell -- Note Entry_files/emailscript.js" type="text/javascript" language="JavaScript"></script><a href="mailto:OMITweb1@markabout.com">OMITweb1@markabout.com</a>.
+
+&nbsp; Thanks.&nbsp;&nbsp;<i>~Mark</i></center>
+
+<!-- Start of StatCounter Code -->
+<script type="text/javascript" language="javascript">
+var sc_project=313871; 
+var sc_partition=1; 
+</script>
+
+<script type="text/javascript" language="javascript" src="./ChordSpell -- Note Entry_files/frames.js"></script><span class="statcounter"><a class="statcounter" href="http://www.statcounter.com/" target="_blank"><img src="./ChordSpell -- Note Entry_files/t.php" alt="StatCounter - Free Web Tracker and Counter" border="0"></a></span>
+<noscript>&lt;a href="http://www.statcounter.com" target="_blank"&gt;&lt;img  src="http://c2.statcounter.com/counter.php?sc_project=313871&amp;amp;amp;java=0" alt="web statistics" border="0"&gt;&lt;/a&gt; </noscript>
+<!-- End of StatCounter Code -->
+
+
+
+</body></html>
