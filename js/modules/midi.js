@@ -162,7 +162,7 @@ define(
 			var orderedPitches = _.sortBy(pitches)
 			var lowestPitch = orderedPitches[0];
 			return _.map(orderedPitches, function(pitch){
-				return (pitch - lowestPitch);
+				return (pitch - lowestPitch); 
 			});
 		},
 
@@ -386,8 +386,11 @@ define(
 
     		var setLookupKey = '_' + this._getSickodecimal(this._getIntervalVector(notes));
 
-    		if (_.has(this.setsLookupTable, setLookupKey)) {
+    			console.log('setLookupKey: ', setLookupKey);
 
+    		if (_.has(setsLookupTable, setLookupKey)) {
+
+    			    			console.log('found setLookupKey: ', setLookupKey);
 
 
     			//var notesOrdered = _.sortBy(notes);
@@ -427,20 +430,32 @@ define(
 
     			//console.log('[' + notes.join(',') + ']: setLookupKey: ' + setLookupKey + ', normalForm: ' + normalForm + ', normalFormInvertedSet: ' + normalFormInvertedSet + ', pitchClassesKey: ' + pitchClassesKey + ', primeFormKey: ' + primeFormKey);
 
-    			if (_.has(this.setsLookupTable[setLookupKey], pitchClassesKey)) {
+    			if (_.has(setsLookupTable[setLookupKey], pitchClassesKey)) {
 
     				var inversionNumber = this._getInversionNumber(pitchClassesFromOrderedNotes, pitchClassesStartingAtZero);
-    				return this.setsLookupTable[setLookupKey][pitchClassesKey] + this._getInversionText(inversionNumber);
+
+					return {
+    				rootNoteName: rootNoteName, 
+    				chordNames: (setsLookupTable[setLookupKey][pitchClassesKey] + this._getInversionText(inversionNumber)).split(', ')
+    				};
+    				//return [(setsLookupTable[setLookupKey][pitchClassesKey] + this._getInversionText(inversionNumber))];
 
     			} else {
-    				//console.log('did not find pitchClassesKey: ' + pitchClassesKey);
+    				console.log('did not find pitchClassesKey: ' + pitchClassesKey);
     				// return first key
-    				for(var key in this.setsLookupTable[setLookupKey]) break;
-    				return this.setsLookupTable[setLookupKey][key];
+    				for(var key in setsLookupTable[setLookupKey]) break;
+
+    					    				console.log(setsLookupTable[setLookupKey][key]);
+
+    				return {
+    				rootNoteName: rootNoteName, 
+    				chordNames: setsLookupTable[setLookupKey][key].split(', ')
+    				};
+    				//return [setsLookupTable[setLookupKey][key]];
     			}
 
 
-    			//return this.setsLookupTable[intervalVector][0];
+    			//return setsLookupTable[intervalVector][0];
     		}
     		return '';
     	},

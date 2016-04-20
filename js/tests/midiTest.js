@@ -524,6 +524,10 @@ cases:
 
 {pitches: [7,12,16], expected: 'Major Triad (2nd inv)'},
 
+
+
+{pitches: [1,2,3,4,5,6], expected: 'Chromatic Hexamirror'},
+
                 ], function(p){
                     notEqual(_.indexOf(midi.getChordInfo(p.pitches).chordNames, p.expected), -1, p.expected + ' is among ' + midi.getChordInfo(p.pitches).chordNames.join());
                 });
