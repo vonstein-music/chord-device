@@ -51,8 +51,8 @@ var commonChords = {
     'min7': {
         intervals: [0, 3, 7, 10], // 2 5 9 0 -> 3 4 3
         i2: 'R/1-♭3-5-♭7',
-        fullName: 'Minor seventh chord',
-        desc: '	Consonant, stable, resolved.',
+        fullName: 'Minor seventh',
+        desc: 'Consonant, stable, resolved.',
         comments: 'The minor seventh chord occurs naturally in the harmonized major scale (tetrads) on the II, III and VI.',
         descBuild: 'Minor Triad plus a minor 7th (10 semitones)',
         exampleName: 'Cmi7, CMI7, C–7Cmin7, Cm7, Cmin7, CMIN7, C−7'
@@ -66,13 +66,13 @@ var commonChords = {
         comments: 'The dominant seventh chord is built upon the fifth degree of the harmonized major scale (tetrads), and is widely used in all styles of music. Authentic cadence is achieved when the dominant seventh chord is resolved to the tonic chord (for example: G7 to CMA). The tonality of a dominant seventh chord is somewhat dissonant and unresolved when played as the V chord resolving to the I, but is frequently used as the I chord particularly in Funk and Blues styles. Blues players regularly substitute major chords for dominant seventh chords, for example: a I-IV-V progression in the key of G would normally be GMA, CMA and D7, Blues players may change this to G7, C7 and D7.',
         descBuild: 'Major Triad plus a minor 7th (10 semitones). Important dominant chord (V7)',
         exampleName: 'C7, Cdom7, CDOM7, C7, C(♭7), C7th',
-        go: 'I' // tonic
+        resolveToTonic: 10 //of 10
     },
 
     'dim7': {
         intervals: [0, 3, 6, 9], // 3 3 3
         i2: 'R/1-♭3-♭5-Double Flat7',
-        fullName: 'Diminished seventh chord, full diminished seventh chord, Diminished 7th (with Flat 5th)',
+        fullName: 'Diminished seventh, full diminished seventh, Diminished 7th (with Flat 5th)',
         desc: 'Dissonant, unstable, unresolved. drives towards root resolution',
         comments: 'Flat 5th can be omitted. A diminished seventh chord occurs naturally in a harmonized harmonic minor scale on the seventh scale degree, and although it does not occur naturally in a harmonized major scale, it does appear in a major scales parallel harmonic minor. The double flat (Double Flat) 7th is enharmonically equivalent to a major 6th and is one half-step/semi-tone lower than a minor 7th interval, hence the name diminished 7th. The tonality of a diminished seventh chord is dissonant and distinctly unresolved, it "drives" towards root resolution as opposed to a major seventh chord which is stable and centered.',
         descBuild: 'Diminished triad plus the interval of a diminished seventh',
@@ -83,7 +83,7 @@ var commonChords = {
     'min7f5': {
         intervals: [0, 3, 6, 10],
         i2: 'R/1-♭3-♭5-♭7',
-        fullName: 'Minor seventh flat five chord, Half-diminished seventh chord',
+        fullName: 'Half-diminished seventh, Minor seventh flat five',
         desc: 'Creates suspense. It has been described as a "considerable instability"',
         descBuild: 'Diminished triad plus the interval of a a minor 7th.',
         comments: 'The minor seventh flat five chord is built upon the seventh degree of the harmonized major scale (tetrads) and possesses an extraordinary drive towards root resolution. ',
@@ -93,7 +93,7 @@ var commonChords = {
 
     'minmaj7': {
         intervals: [0, 3, 7, 11],
-        fullName: 'Minor major seventh chord',
+        fullName: 'Minor major seventh',
         desc: 'Weak function, rarely used. Unstable, heavily dissonant and distinctly unresolved.',
         descBuild: 'minor triad plus a major seventh (11 semitones)',
         exampleName: 'Cmi(MA7), C−(ma7), C-(MA7), mM7, mΔ7, -Δ7, mM7, m/M7, m(M7), minmaj7, m⑦,m(♮7), m7+'
@@ -102,7 +102,7 @@ var commonChords = {
     'aug7': { //maj7s5
         intervals: [0, 4, 8, 11],
         i2: 'R/1-3-♯5-7',
-        fullName: 'Major seventh sharp five chord, augmented major seventh chord',
+        fullName: 'augmented major seventh, Major seventh sharp five',
         desc: 'Dissonant, unstable, unresolved',
         comments: 'The tonality of the major seventh sharp five chord is dissonant and unresolved, it does not particularly drive towards the root, but can be used in place of an augmented triad. Major seventh, minor seventh, dominant seventh and minor seventh flat five tetrads occur naturally in the harmonized major scale (tetrads), a major seventh sharp five tetrad is simply an augmented triad with an added major 7th interval.',
         exampleName: 'CMA7(♯5), C⁺(maj7), CΔ7(♯5), +M7, +Δ7, M7♯5, M7(♯5), M7/♯5, M7+5, maj+7, Δ+7, Caug7th',
@@ -227,7 +227,7 @@ var commonChords = {
     'dom9f5': {
         intervals: [0, 4, 6, 10, 14],
         i2: 'R/1-3-♭5-♭7-9',
-        fullName: 'Dominant ninth flat five chord',
+        fullName: 'Dominant ninth flat five chord, Seventh flat five',
         desc: 'Dissonant, unresolved',
         comments: '',
         exampleName: 'C9(♭5), Cdom9(♭5)'
@@ -279,7 +279,7 @@ var commonChords = {
     'dom7s5': {
         intervals: [0, 4, 8, 10],
         i2: 'R/1-3-♯5-♭7',
-        fullName: 'dominant seventh sharp five chord, augmented seventh chord, Seven Sharp Five, augmented major seventh',
+        fullName: 'augmented seventh, dominant seventh sharp five chord, Seven Sharp Five, augmented major seventh',
         desc: 'Dissonant, unstable, unresolved',
         exampleName: 'C7(♯5), C+7 or Caug(7), Caug7th'
     },

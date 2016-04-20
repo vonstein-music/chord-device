@@ -419,105 +419,106 @@ cases:
                 });
             });
 */
+
+            test('_getIntervalSetStartingAtZeroKeepOrder works', function() {
+                _.each(
+                [
+                    {pitches: [0, 3, 7], expected: [0, 3, 7]},
+                    {pitches: [3, 7, 0], expected: [3, 7, 0]},
+                    {pitches: [7, 0, 3], expected: [7, 0, 3]},
+                    {pitches: [4, 6, 9], expected: [0, 2, 5]},
+                    {pitches: [14, 6, 9], expected: [8, 0, 3]},
+                    // @TODO more tests
+
+                ], function(p){
+                    deepEqual(midi._getIntervalSetStartingAtZeroKeepOrder(p.pitches), p.expected, p.pitches.join() + ' is: ' + p.expected.join());
+                });
+            });
+
+
             test('getChordInfo works', function() {
                 _.each(
                 [
-                    {pitches: [0,5,9,12], expected: ''}, // http://www.shanemcdonald.org/music/piano-chord-C-with-G-Bass.html
-                    {pitches: [0,5,9], expected: ''}, // http://www.shanemcdonald.org/music/piano-chord-C-with-G-Bass.html
-                    {pitches: [0,4,7], expected: 'Major Triad'},
-                    {pitches: [4,7,12], expected: 'Major Triad (1st inv)'},
-                    {pitches: [7,12,16], expected: 'Major Triad (2nd inv)'},
-             
-
-                    {pitches: [0, 3, 6, 10], expected: 'Half-diminished Seventh Chord'}, 
-               
-                    {pitches: [0,3,7], expected: 'Minor Triad'},
-                    {pitches: [0,3,6], expected: 'Diminished Triad'},
-                    {pitches: [0,4,8], expected: 'Augmented Triad'},
-                    {pitches: [0,4,7,11], expected: 'Major seventh chord'},
-                    {pitches: [0,3,7,10], expected: 'Minor seventh chord, Major sixth chord (3rd inv)'},
-                    {pitches: [0,4,7,10], expected: 'Dominant seventh chord'}, // tricky The dominant-seventh (0368), as another example, is subsumed into the half-diminished seventh (0258), making them indistinguishable. 
-                    {pitches: [0,3,6,9], expected: 'Diminished seventh chord'},
-                    {pitches: [0,3,6,10], expected: 'Minor seventh flat five chord, Minor sixth chord (3rd inv)'},
-                    {pitches: [0,3,7,11], expected: 'Minor major seventh chord OR Major Seventh Augmented Fifth OR augmented major seventh chord'},
-                    {pitches: [0,4,8,11], expected: 'Minor major seventh chord OR Major Seventh Augmented Fifth OR augmented major seventh chord'},
-                    {pitches: [0,3,6,11], expected: 'Diminished major seventh chord OR Major diminished Tetrachord'},
-                    {pitches: [0,4,6,10], expected: 'Dominant seventh flat five chord'},
-                    {pitches: [0,4,7,14], expected: 'Added ninth chord'},
-                    {pitches: [0,4,7,11,14], expected: 'Major ninth chord'},
-                    {pitches: [0,3,7,10,14], expected: 'Minor ninth chord'},
-                    {pitches: [0,3,7,11,14], expected: 'Minor-major ninth chord'},
-                    {pitches: [0,3,7,14], expected: 'Minor added ninth chord'},
-                    {pitches: [0,4,7,14,18], expected: 'Major ninth sharp eleventh chord'},
-                    {pitches: [0,4,8,10,14], expected: 'Dominant ninth sharp five chord'},
-                    {pitches: [0,4,6,10,14], expected: 'Dominant ninth flat five chord'},
-                    {pitches: [0,4,7,10,14], expected: 'Dominant ninth'},
-                    {pitches: [0,4,7,10,13], expected: 'Dominant minor 9th, Dominant seventh flat ninth chord'},
-                    {pitches: [0,4,7,10,15], expected: 'Dominant seventh sharp ninth chord, dominant 7â™¯9 chord, Hendrix chord'},
-                    {pitches: [0,4,8,10,15], expected: 'Dominant seventh sharp five sharp ninth chord'},
-                    {pitches: [0,4,8,10,13], expected: 'Dominant seventh sharp five flat ninth chord'},
-                    {pitches: [0,4,8,10], expected: 'Augmented seventh chord'},
-                    {pitches: [0,4,7,10,13,18], expected: 'Dominant seventh sharp eleventh chord'},
-                    {pitches: [0,4,6,10,15], expected: 'Dominant seventh flat five sharp ninth chord'},
-                    {pitches: [0,3,7,9,14], expected: 'Minor seventh sharp five chord, minor six-nine chord'},
-                    {pitches: [0,4,6,11], expected: 'Major seventh flat five chord'},
-                    {pitches: [0,4,7,14,18], expected: 'Major seventh sharp eleventh chord'},
-                    {pitches: [0,3,7,9], expected: 'Minor sixth chord'},
-                    {pitches: [0,3,7,9,14], expected: 'Minor six-nine chord'},
-                    {pitches: [0,4,7,9], expected: 'Major sixth chord'},
-                    {pitches: [0,4,7,9,14], expected: 'Major six-nine chord'},
-                    {pitches: [0,3,7,10,14,17], expected: 'Minor eleventh chord'},
-                    {pitches: [0,4,7,11,14,17], expected: 'Major eleventh chord'},
-                    {pitches: [0,4,7,10,13,17], expected: 'Dominant eleventh flat ninth chord'},
-                    {pitches: [0,4,7,14,17], expected: 'Dominant eleventh chord'},
-                    {pitches: [0,3,7,10,14,21], expected: 'Minor thirteenth chord'},
-                    {pitches: [0,4,7,11,14,18,21], expected: 'Major thirteenth sharp eleventh chord'},
-                    {pitches: [0,4,7,11,14,21], expected: 'Major thirteenth chord'},
-                    {pitches: [0,4,7,10,15,21], expected: 'Dominant thirteenth sharp ninth chord'},
-                    {pitches: [0,4,7,10,14,18,21], expected: 'Dominant thirteenth sharp eleventh chord'},
-                    {pitches: [0,4,7,10,13,21], expected: 'Dominant thirteenth flat ninth chord'},
-                    {pitches: [0,4,7,10,14,21], expected: 'Dominant thirteenth chord'},
-                    {pitches: [0,2,5,7], expected: 'Suspended second suspended fourth chord'},
-                    {pitches: [0,2,7], expected: 'Suspended Second Chord'},
-                    {pitches: [0,5,7], expected: 'Suspended Fourth Chord'},
-                    {pitches: [0,2,7,11], expected: 'Major seventh suspended second chord'},
-                    {pitches: [0,5,7,11], expected: 'Major seventh suspended fourth chord'},
-                    {pitches: [0,5,7,10,14,21], expected: 'Dominant thirteenth suspended fourth chord'},
-                    {pitches: [0,2,7,10], expected: 'Dominant seventh suspended second chord'},
-                    {pitches: [0,5,7,10], expected: 'Dominant seventh suspended fourth chord'},
-                    {pitches: [0,5,7,10,14], expected: 'Dominant ninth suspended fourth chord'},
-                    {pitches: [0,7], expected: 'Power Chord'},
-                    {pitches: [0,7,12], expected: 'Power Chord Octave Doubled'},
-                    {pitches: [0,4,6], expected: 'Flat five chord'},
-                    {pitches: [0,2,6], expected: 'Flat five chord'},
-                    {pitches: [0,2,4,7], expected: 'Mu chord'},
-                    {pitches: [0, 3, 6], expected: 'Diminished Chord'},
-                    {pitches: [3, 6, 9], expected: 'Diminished Chord'},
-                    {pitches: [0, 3, 7], expected: 'Minor Chord'},
-                    {pitches: [0, 4, 7], expected: 'Major Chord'},
-                    {pitches: [4, 7, 12], expected: 'Major Chord (1st inv)'},
-                    {pitches: [0, 4, 7, 12, 24], expected: 'Major Chord'},
-                    {pitches: [0, 3, 7, 10], expected: 'Minor-seventh Chord'},                     
-                    {pitches: [0, 3, 6, 10], expected: 'Half-diminished Seventh Chord'}, 
-
-                    {pitches: [0, 3, 7, 11, 14], expected: 'Minor-major Ninth Chord'}, // 3 4 4 3 nö, 1 4 8 0 3 -> 01348 -> 1 2 1 4
-                    {pitches: [0, 3, 7, 10, 14], expected: 'Major-Ninth Chord'}, // 2 5 9 0 4, 0 2 4 5 9, 1 2 1 4
-
-
-                    {pitches: [0, 4, 6, 10], expected: 'Dominant seventh flat five chord'}, // 2 5 9 0 4, 0 2 4 5 9, 1 2 1 4 
                     
 
-                    // +3: 3 6 10 13 15 -> 3 6 10 1
-
-                    // 1 4 8 11 15 -> 1 4 8 11 3 -> 1 3 4 8 11 -> 2 1 4 3
-
-                    //{pitches: [0, 4, 6, 10], expected: 'Dominant seventh flat five chord, Seven Flat Five'}, // 0, 2, 6, 8 // 2 4 2
-                    //{pitches: [0, 2, 5, 6, 7], expected: 'Double-seconds Triple-fourth Pentachord.2'}, // 0, 2, 6, 8 // 2 4 2
-
-
+{pitches: [0,4,7], expected: 'Major Triad'},
+{pitches: [0,3,7], expected: 'Minor Triad'},
+{pitches: [0,3,6], expected: 'Diminished Triad'},
+{pitches: [0,4,8], expected: 'Augmented Triad'},
+{pitches: [0,4,7,11], expected: 'Major seventh'},
+{pitches: [0,3,7,10], expected: 'Minor seventh'},
+{pitches: [0,4,7,10], expected: 'Dominant seventh'},
+{pitches: [0,3,6,9], expected: 'Diminished seventh'},
+{pitches: [0,3,6,10], expected: 'Half-diminished seventh'},
+{pitches: [0,3,7,11], expected: 'Minor major seventh'},
+{pitches: [0,4,8,11], expected: 'augmented major seventh'},
+{pitches: [0,3,6,11], expected: 'Diminished major seventh'},
+{pitches: [0,4,6,10], expected: 'Dominant seventh flat five'},
+{pitches: [0,4,7,14], expected: 'Added ninth'},
+{pitches: [0,4,7,11,14], expected: 'major ninth'},
+{pitches: [0,3,7,10,14], expected: 'minor ninth'},
+{pitches: [0,4,8,11,14], expected: 'Augmented Major 9th'},
+{pitches: [0,3,7,11,14], expected: 'Minor-major ninth'},
+{pitches: [0,3,7,14], expected: 'Minor added ninth'},
+{pitches: [0,3,6,10,14], expected: 'Minor Ninth Diminished Fifth'},
+{pitches: [0,4,7,14,18], expected: 'Major ninth sharp eleventh'},
+{pitches: [0,4,8,10,14], expected: 'Dominant ninth sharp five'},
+{pitches: [0,3,6,9,14], expected: 'Diminished 9th'},
+{pitches: [0,3,6,10,13], expected: 'Half-Diminished Minor 9th'},
+{pitches: [0,3,6,9,13], expected: 'Diminished Minor 9th'},
+{pitches: [0,4,6,10,14], expected: 'Dominant ninth flat five'},
+{pitches: [0,4,7,10,14], expected: 'Dominant 9th'},
+{pitches: [0,4,7,10,13], expected: 'Dominant minor 9th'},
+{pitches: [0,4,7,10,15], expected: 'Dominant seventh sharp ninth'},
+{pitches: [0,4,8,10,15], expected: 'Dominant seventh sharp five sharp ninth'},
+{pitches: [0,4,8,10,13], expected: 'Dominant seventh sharp five flat ninth'},
+{pitches: [0,4,8,10], expected: 'augmented seventh'},
+{pitches: [0,4,7,10,13,18], expected: 'Dominant seventh sharp eleventh'},
+{pitches: [0,4,6,10,15], expected: 'Dominant seventh flat five sharp ninth'},
+{pitches: [0,3,7,9,14], expected: 'Minor seventh sharp five'},
+{pitches: [0,4,6,11], expected: 'Major seventh flat five'},
+{pitches: [0,4,7,14,18], expected: 'Major seventh sharp eleventh'},
+{pitches: [0,3,7,9], expected: 'Minor sixth'},
+{pitches: [0,3,7,9,14], expected: 'Minor six-nine'},
+{pitches: [0,4,7,9], expected: 'Major sixth'},
+{pitches: [0,4,7,9,14], expected: 'Major six-nine'},
+{pitches: [0,3,7,10,14,17], expected: 'Minor eleventh'},
+{pitches: [0,4,7,11,14,17], expected: 'Major eleventh'},
+{pitches: [0,4,7,10,13,17], expected: 'Dominant eleventh flat ninth'},
+{pitches: [0,4,7,10,14,17], expected: 'Dominant 11th'},
+{pitches: [0,3,7,10,14,21], expected: 'Minor thirteenth'},
+{pitches: [0,4,7,11,14,18,21], expected: 'Major thirteenth sharp eleventh'},
+{pitches: [0,4,7,11,14,17,21], expected: 'Major Thirteenth'},
+{pitches: [0,4,7,10,15,21], expected: 'Dominant thirteenth sharp ninth'},
+{pitches: [0,4,7,10,14,18,21], expected: 'Dominant thirteenth sharp eleventh'},
+{pitches: [0,4,7,10,13,21], expected: 'Dominant thirteenth flat ninth'},
+{pitches: [0,4,7,10,14,17,21], expected: 'Dominant 13th'},
+{pitches: [0,2,5,7], expected: 'Suspended second suspended fourth'},
+{pitches: [0,2,7], expected: 'Suspended Second'},
+{pitches: [0,5,7], expected: 'Suspended Fourth'},
+{pitches: [0,2,7,11], expected: 'Major seventh suspended second'},
+{pitches: [0,5,7,11], expected: 'Major seventh suspended fourth'},
+{pitches: [0,4,8,11,14,17], expected: 'Augmented 11th'},
+{pitches: [0,3,6,10,13,17], expected: 'Half-Diminished 11th'},
+{pitches: [0,3,6,9,13,16], expected: 'Diminished 11th'},
+{pitches: [0,4,8,10,14,17,21], expected: 'Augmented Dominant 13th'},
+{pitches: [0,3,7,10,14,17,21], expected: 'Minor Dominant 13th'},
+{pitches: [0,3,7,11,14,17,21], expected: 'Minor Major Thirteenth'},
+{pitches: [0,4,8,11,14,17,21], expected: 'Augmented Major 13th'},
+{pitches: [0,4,8,10,14,17,21], expected: 'Augmented Dominant 13th'},
+{pitches: [0,3,6,10,14,17,21], expected: 'Half-Diminished 13th'},
+{pitches: [0,5,7,10,14,21], expected: 'Dominant thirteenth suspended fourth'},
+{pitches: [0,2,7,10], expected: 'Dominant seventh suspended second'},
+{pitches: [0,5,7,10], expected: 'Dominant seventh suspended fourth'},
+{pitches: [0,5,7,10,14], expected: 'Dominant ninth suspended fourth'},
+{pitches: [0,7], expected: 'Power'},
+{pitches: [0,7,12], expected: 'Power Octave Doubled'},
+{pitches: [0,4,6], expected: 'Flat five'},
+{pitches: [0,2,6], expected: 'Flat five'},
+{pitches: [0,2,4,7], expected: 'Mu'},
 
                 ], function(p){
-                    equal(midi.getChordInfo(p.pitches).chordNames, p.expected, p.pitches.join() + ' has name: ' + p.expected);
+                    notEqual(_.indexOf(midi.getChordInfo(p.pitches).chordNames, p.expected), -1, p.expected + ' is among ' + midi.getChordInfo(p.pitches).chordNames.join());
                 });
             });
 
