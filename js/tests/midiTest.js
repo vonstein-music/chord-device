@@ -517,6 +517,13 @@ cases:
 {pitches: [0,2,6], expected: 'Flat five'},
 {pitches: [0,2,4,7], expected: 'Mu'},
 
+
+
+{pitches: [12,4,7], expected: 'Major Triad (1st inv)'},
+{pitches: [7,12,4], expected: 'Major Triad (1st inv)'},
+
+{pitches: [7,12,16], expected: 'Major Triad (2nd inv)'},
+
                 ], function(p){
                     notEqual(_.indexOf(midi.getChordInfo(p.pitches).chordNames, p.expected), -1, p.expected + ' is among ' + midi.getChordInfo(p.pitches).chordNames.join());
                 });

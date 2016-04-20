@@ -158,12 +158,13 @@ define(
 			@todo evtl. rahn prime auch einbauen (neben forte)
 		*/
 
-		/*_getOrderedPitchesStartingAtZero: function (orderedPitches) {
+		_getOrderedPitchesStartingAtZero: function (pitches) {
+			var orderedPitches = _.sortBy(pitches)
 			var lowestPitch = orderedPitches[0];
 			return _.map(orderedPitches, function(pitch){
 				return (pitch - lowestPitch);
 			});
-		},*/
+		},
 
 		_getIntervalSetStartingAtZero: function(pitches) {
 		    var lowestPitch = pitches[0];
@@ -171,7 +172,7 @@ define(
 		        return (pitch - lowestPitch + 144)%12;
 		    });
 		},
-
+		// not used
 		_getIntervalSetStartingAtZeroKeepOrder: function(pitches) {
 
 			var orderedPitches = _.sortBy(pitches);

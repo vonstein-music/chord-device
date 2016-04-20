@@ -2,6 +2,29 @@
 TODO next
 ---------
 
+
+
+- testen, ob nicht jede inversion als whole-path key verwendet werden kann 
+	- ordnen
+	- das erste sollte ja bereits auf 0 sein (da so hinterlegt)
+	- zwölf zum ersten addieren
+	- rotieren
+	- bei der reihe wieder allen elementen gleichviel abziehen, so dass das erste 0 ist
+	
+	keine inv: [0, 3, 7, 11]  -> key [0, 3, 7, 11]
+	erste inv: [3, 7, 11, 12] -> key [0, 4, 8, 9]
+
+- vor dem lookup wird einfach der input geordnet (keine pitch class ersetzung) und der key daraus generiert
+
+
+
+
+
+
+
+
+
+
 vorgehen 18-04
 
 - dataTables (datenquellen)
