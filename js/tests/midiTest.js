@@ -548,8 +548,11 @@ cases:
 
 // voicings
 {pitches: [0,4,7, 12, 24, 16], expected: 'Major Triad'},
-
 {pitches: [2, 6, 9, 14, 26, 18], expected: 'Major Triad'},
+
+
+{pitches: [0, 3, 7, 12, 15], expected: 'Minor Triad'},
+{pitches: [3, 6, 10, 15, 18], expected: 'Minor Triad'},
 
 {pitches: [1,2,3,4,5,6], expected: 'Chromatic Hexamirror'},
 
