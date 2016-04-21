@@ -420,6 +420,28 @@ cases:
             });
 */
 
+            test('_getPrimeFromNormalForm works', function() {
+                _.each(
+                [
+                    {pitches: [6, 8, 9, 0, 3], expected: [0, 2, 3, 6, 9]},
+
+                ], function(p){
+                    deepEqual(midi._getPrimeFromNormalForm(p.pitches), p.expected, p.pitches.join() + ' is: ' + p.expected.join());
+                });
+            });
+
+            test('_getDirectedIntervalVector works', function() {
+                _.each(
+                [
+                    {pitches: [0, 3, 7], expected: [3, 4, 5]},
+                    {pitches: [3, 7, 0], expected: [4, 5, 3]},
+                    {pitches: [0, 3, 6, 8, 9], expected: [3, 3, 2, 1, 3]},
+
+                ], function(p){
+                    deepEqual(midi._getDirectedIntervalVector(p.pitches), p.expected, p.pitches.join() + ' is: ' + p.expected.join());
+                });
+            });
+
             test('_getIntervalSetStartingAtZeroKeepOrder works', function() {
                 _.each(
                 [
@@ -440,7 +462,7 @@ cases:
                 _.each(
                 [
                     
-
+/*
 {pitches: [0,4,7], expected: 'Major Triad'},
 {pitches: [0,3,7], expected: 'Minor Triad'},
 {pitches: [0,3,6], expected: 'Diminished Triad'},
@@ -461,7 +483,7 @@ cases:
 {pitches: [0,3,7,11,14], expected: 'Minor-major ninth'},
 {pitches: [0,3,7,14], expected: 'Minor added ninth'},
 {pitches: [0,3,6,10,14], expected: 'Minor Ninth Diminished Fifth'},
-{pitches: [0,4,7,14,18], expected: 'Major ninth sharp eleventh'},
+{pitches: [0,4,7,14,18], expected: 'Major seventh sharp eleventh'},
 {pitches: [0,4,8,10,14], expected: 'Dominant ninth sharp five'},
 {pitches: [0,3,6,9,14], expected: 'Diminished 9th'},
 {pitches: [0,3,6,10,13], expected: 'Half-Diminished Minor 9th'},
@@ -517,19 +539,24 @@ cases:
 {pitches: [0,2,6], expected: 'Flat five'},
 {pitches: [0,2,4,7], expected: 'Mu'},
 
-
-
+*/
+{pitches: [1,5,8], expected: 'Major Triad'},
 {pitches: [12,4,7], expected: 'Major Triad (1st inv)'},
 {pitches: [7,12,4], expected: 'Major Triad (1st inv)'},
 
 {pitches: [7,12,16], expected: 'Major Triad (2nd inv)'},
 
+// voicings
+{pitches: [0,4,7, 12, 24, 16], expected: 'Major Triad'},
 
+{pitches: [2, 6, 9, 14, 26, 18], expected: 'Major Triad'},
 
 {pitches: [1,2,3,4,5,6], expected: 'Chromatic Hexamirror'},
 
+{pitches: [0, 2, 4, 7, 9], expected: '"Black Key" Pentatonic'},
+
                 ], function(p){
-                    notEqual(_.indexOf(midi.getChordInfo(p.pitches).chordNames, p.expected), -1, p.expected + ' is among ' + midi.getChordInfo(p.pitches).chordNames.join());
+                    notEqual(_.indexOf(midi.getChordInfo(p.pitches).chordNames, p.expected), -1, p.expected + ' is among ' + midi.getChordInfo(p.pitches).chordNames.join() + ' root: ' + midi.getChordInfo(p.pitches).rootNoteName);
                 });
             });
 

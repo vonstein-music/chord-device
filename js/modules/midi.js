@@ -4,17 +4,37 @@ define(
 	function(commonChordsLookupTable, setsLookupTable, scales) {
     var midi = {   
 
+    	noteNames: {
+    		flat: ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'],
+    		sharp: ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+    	},
+
+    	/*chordFunctions = [
+				{func: 'Tonic', name: 'Tonic', major: 'I', minor: 'i', chordTypeMajor: [0,4,7]},
+				{func: 'Supertonic', name: 'Subdominant parallel', major: 'ii', minor: 'ii°'},
+				{func: 'Mediant', name: 'Dominant parallel/Tonic counter parallel', major: 'iii', minor: 'III'},
+				{func: 'Subdominant', name: 'Subdominant', major: 'IV', minor: 'iv'},
+				{func: 'Dominant', name: 'Dominant', major: 'V', minor: 'V'},
+				{func: 'Submediant', name: 'Tonic parallel', major: 'vi', minor: 'VI'},
+				{func: 'Leading', name: 'incomplete Dominant seventh', major: 'vii°', minor: 'VII'},
+		],*/
+
+		/*_getRomanNumeral: function(isMinor) {
+			var isMinor = isMinor || false;
+			return 
+		},*/
+
     	_getNoteName: function(pitch, isFlat) {
-    		var noteNames = {
-    			flat: ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'],
-    			sharp: ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
-    		};
     		var suffix = isFlat ? 'flat' : 'sharp';
-    		return noteNames[suffix][pitch%12];
+    		return this.noteNames[suffix][pitch%12];
+    	},
+
+    	getNoteNameForPitchWithOctave: function(pitch, isFlat) {
+    		return this._getNoteName(pitch, isFlat) + (Math.floor(pitch/12) - 2);
     	},
 
     	getNoteNameForPitch: function(pitch, isFlat) {
-    		return this._getNoteName(pitch, isFlat) + (Math.floor(pitch/12) - 2);
+    		return this._getNoteName(pitch, isFlat);
     	},
 
     	_getIntervalVector: function(pitches) {
@@ -58,7 +78,7 @@ define(
 			return (pitchToSubstractFrom + 12 - firstPitchOfRotation) % 12;
 		},
 
-		getPrimeForm: function(notes) {
+		getFortePrimeForm: function(notes) {
 			var orderedPC = _.sortBy(this._getPitchClasses(notes));
 			var normalForm = this._getNormalForm(orderedPC);
 			var normalFormInvertedSet = this._getNormalForm(this._getInvertedSet(orderedPC));
@@ -197,7 +217,29 @@ define(
 			return invertedSet;
 		},
 
-		getChordFunction: function(scaleIndex, modeIndex, rootNote, set){
+		getChordFunction: function(keyIndex, scaleIndex, rootNotePitch, isMinorChord){
+
+			/*
+			@todo
+
+			- herausfinden welche akkordtypen welche funktionen wahrnehmen können
+			- herausfinden ob das pauschal so festgelegt werden kann (unabhängig vom kontext/vorher gespielten noten)
+			- dom7, diminshed, major, minor etc. berücksichtigen
+			- wie verhält es sich mit 9th, 11th etc.?
+
+			*/
+			var keyIndex = keyIndex || 0;		// default C
+			var scaleIndex = scaleIndex || 0; 	// default major
+			var isMinorChord = isMinorChord || 0;
+
+			var chordMode = isMinorChord ? 'min' : 'maj';
+
+			var scale = scales[scaleIndex][1];
+
+			var positionInScale = _.indexOf(currentScale, rootNotePitch);
+
+
+
 
 			// in: 0, 1, 0 (C, major, C-2)
 			// out: Tonic
@@ -290,6 +332,38 @@ define(
 			return Math.round(sum/count);
 		},
 
+		// prime, not forte prime
+		_getPrimeFromNormalForm: function(normalForm) {
+			var semitonesToTransposeDown = normalForm[0];
+			return _.map(normalForm, function(value, index){
+				var currentTransposedDown = value - semitonesToTransposeDown;
+				if (currentTransposedDown < 0) {
+					return currentTransposedDown + 12;
+				}
+				return currentTransposedDown;
+			});
+		},
+
+		_getDirectedIntervalVector: function(orderedPitchClasses) {
+			var len = orderedPitchClasses.length;
+			return _.map(orderedPitchClasses, function(value, index){
+				var intervalToTheNext = orderedPitchClasses[(index + 1) % len] - orderedPitchClasses[index];
+				if (intervalToTheNext < 0) {
+					return intervalToTheNext + 12;
+				}
+				return intervalToTheNext;
+			});
+		},
+
+		_getPrimeFromDirectedIntervalVector: function(directedIntervalVector) {
+			
+
+			
+		},
+
+
+
+
 		/*getChordInfo: function(notes) {
 			var allNames = this._getAllChordNames(notes);
 			if (allNames === '') {
@@ -341,8 +415,6 @@ define(
     			var chordNames = '';
     			var that = this;
     			_.each(commonChordsLookupTable[commonChordsLookupKey], function(possibleChord){ 
-    			// @todo: remove redundant names, Augmented Triad, Augmented Triad (1st inv), Augmented Triad (2nd inv)
-    			// @todo: nicht-inversen an erster stelle
     			    chordNames += ', ' + possibleChord[0] + that._getInversionText(possibleChord[1]);
     			});
 
@@ -351,8 +423,8 @@ define(
 
     			//console.log(commonChordsLookupTable[commonChordsLookupKey]);
     			// find root
-    			var semitonesTransposed = orderedPitches[0];
-    			//console.log('semitonesTransposed', semitonesTransposed);
+    			var lowestInputPitch = orderedPitches[0];
+    			console.log('lowestInputPitch', lowestInputPitch);
     			//console.log('startingAtZero', startingAtZero);
 
 
@@ -395,8 +467,8 @@ define(
 
     			//var notesOrdered = _.sortBy(notes);
 
-    			var primeForm = this.getPrimeForm(notes);
-    			var primeFormKey = this._getSickodecimal(primeForm);
+    			var fortePrimeForm = this.getFortePrimeForm(notes);
+    			//var fortePrimeFormKey = this._getSickodecimal(primeForm);
 
     			// half-diminished seventh chord [0,3,6,10] -> _036A
     			/*var pitchClassesFromOrderedNotes = this._getPitchClasses(_.sortBy(notes));
@@ -421,35 +493,37 @@ define(
     			var pitchClassesStartingAtZero = this._getPitchClassesStartingAtZero(
     				_.sortBy(pitchClassesFromOrderedNotes)
     			);
-    			var pitchClassesKey = '_' + this._getSickodecimal(pitchClassesStartingAtZero);
+    			//var pitchClassesKey = '_' + this._getSickodecimal(pitchClassesStartingAtZero);
 
 				var orderedPC = _.sortBy(this._getPitchClasses(notes));
-				var normalForm = this._getPitchClassesStartingAtZero(this._getNormalForm(orderedPC));
+				var normalForm = this._getNormalForm(orderedPC);
+				var primeForm = this._getPrimeFromNormalForm(normalForm)
+				var primeFormKey = '_' + this._getSickodecimal(primeForm);
 
-				var normalFormInvertedSet = this._getPitchClassesStartingAtZero(this._getNormalForm(this._getInvertedSet(orderedPC)));
+				//var normalFormInvertedSet = this._getPitchClassesStartingAtZero(this._getNormalForm(this._getInvertedSet(orderedPC)));
 
     			//console.log('[' + notes.join(',') + ']: setLookupKey: ' + setLookupKey + ', normalForm: ' + normalForm + ', normalFormInvertedSet: ' + normalFormInvertedSet + ', pitchClassesKey: ' + pitchClassesKey + ', primeFormKey: ' + primeFormKey);
 
-    			if (_.has(setsLookupTable[setLookupKey], pitchClassesKey)) {
+    			if (_.has(setsLookupTable[setLookupKey], primeFormKey)) {
 
     				var inversionNumber = this._getInversionNumber(pitchClassesFromOrderedNotes, pitchClassesStartingAtZero);
 
 					return {
-    				rootNoteName: rootNoteName, 
-    				chordNames: (setsLookupTable[setLookupKey][pitchClassesKey] + this._getInversionText(inversionNumber)).split(', ')
+    				rootNoteName: this.getRoot(notes), 
+    				chordNames: (setsLookupTable[setLookupKey][primeFormKey] + this._getInversionText(inversionNumber)).split(', ')
     				};
     				//return [(setsLookupTable[setLookupKey][pitchClassesKey] + this._getInversionText(inversionNumber))];
 
     			} else {
-    				console.log('did not find pitchClassesKey: ' + pitchClassesKey);
+    				console.log('did not find primeFormKey: ' + primeFormKey);
     				// return first key
     				for(var key in setsLookupTable[setLookupKey]) break;
 
     					    				console.log(setsLookupTable[setLookupKey][key]);
 
     				return {
-    				rootNoteName: rootNoteName, 
-    				chordNames: setsLookupTable[setLookupKey][key].split(', ')
+	    				rootNoteName: this.getRoot(notes), 
+	    				chordNames: setsLookupTable[setLookupKey][key].split(', ')
     				};
     				//return [setsLookupTable[setLookupKey][key]];
     			}
@@ -492,7 +566,7 @@ define(
 				_.each(pitches, function(comparedPitchValue){
 					var interval = Math.abs(pitchValue - comparedPitchValue);
 					score += weightingPoints[interval];
-					//console.log(pitchValue, comparedPitchValue, interval, weightingPoints[interval], score);
+					console.log(pitchValue, comparedPitchValue, interval, weightingPoints[interval], score);
 
 				});
 
