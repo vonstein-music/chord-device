@@ -1,0 +1,712 @@
+"use strict";
+define(function() {
+
+    var commonChords = {
+
+        'maj': {
+            intervals: [0, 4, 7],
+            i2: 'R/1-3-5',
+            fullName: 'Major Triad',
+            desc: 'Consonant, resolved',
+            comments: 'The tonality of a major is consonant and resolved, in other words it does not "lead away" from itself like the dominant seventh, or leave the listener with a sense of "suspense" like the minor seventh flat five.',
+            exampleName: 'C, Cmaj, Cma, CMAJ, CMA, CΔ'
+        },
+
+        'min': {
+            intervals: [0, 3, 7],
+            i2: 'R/1-♭3-5',
+            fullName: 'Minor Triad',
+            desc: 'Consonant, resolved',
+            comments: 'The tonality of a minor is consonant and resolved, though it is considerably "darker" than a major. It does not "lead away" from itself like the dominant seventh, or leave the listener with a sense of "suspense" like the minor seventh flat five. Major, minor and diminished triads occur naturally in the harmonized major scale (triads), an augmented triad is simply a major triad with a raised fifth degree.',
+            exampleName: 'Cmi, Cmin, CMIN, CMI, C−'
+        },
+
+
+        'dim': {
+            intervals: [0, 3, 6],
+            i2: 'R/1-♭3-♭5',
+            fullName: 'Diminished Triad',
+            desc: 'Dissonant, unstable, unresolved',
+            comments: 'The tonality of a diminished is dissonant, non-centered and unstable (as opposed to a major which is stable and resolved), and is in need of resolution to the root. The diminished occurs naturally in the harmonized major scale at the seventh degree, for example: in the key of C major, B⁰ is the VII.',
+            exampleName: 'C⁰, Cdim, Cmi(♭5)'
+        },
+
+        'aug': {
+            intervals: [0, 4, 8],
+            i2: 'R/1-3-♯5',
+            fullName: 'Augmented Triad',
+            desc: 'Dissonant, unstable, unresolved',
+            comments: 'The augmented triad on the fifth scale degree may be used as a substitute dominant',
+            exampleName: 'C⁺, Caug, C♯5, C(♯5)',
+            substitutions: ['aug7']
+        },
+
+        'maj7': {
+            intervals: [0, 4, 7, 11], // 1 5 8 0 -> 4 3 4
+            i2: 'R/1-3-5-7',
+            fullName: 'Major seventh',
+            desc: 'centered, consonant, stable, resolved',
+            comments: 'The tonality of a major seventh is consonant, resolved and stable, it does not "lead away" from itself like the dominant seventh, or leave the listener with a sense of "suspense" like the minor seventh flat five.',
+            descBuild: 'Major Triad plus a major 7th (11 semitones)',
+            exampleName: 'CMA7, Cmaj7, CMAJ7, Cma7, CΔ7Cmaj7, CM7, CΔ, C7+'
+        },
+
+        'min7': {
+            intervals: [0, 3, 7, 10], // 2 5 9 0 -> 3 4 3
+            i2: 'R/1-♭3-5-♭7',
+            fullName: 'Minor seventh',
+            desc: 'Consonant, stable, resolved.',
+            comments: 'The minor seventh occurs naturally in the harmonized major scale (tetrads) on the II, III and VI.',
+            descBuild: 'Minor Triad plus a minor 7th (10 semitones)',
+            exampleName: 'Cmi7, CMI7, C–7Cmin7, Cm7, Cmin7, CMIN7, C−7'
+        },
+
+        'dom7': {
+            intervals: [0, 4, 7, 10],
+            i2: 'R/1-3-5-♭7',
+            fullName: 'Dominant seventh, major/minor seventh, 7th',
+            desc: 'Widely used. Somewhat dissonant, unresolved',
+            comments: 'The dominant seventh is built upon the fifth degree of the harmonized major scale (tetrads), and is widely used in all styles of music. Authentic cadence is achieved when the dominant seventh is resolved to the tonic (for example: G7 to CMA). The tonality of a dominant seventh is somewhat dissonant and unresolved when played as the V resolving to the I, but is frequently used as the I particularly in Funk and Blues styles. Blues players regularly substitute majors for dominant sevenths, for example: a I-IV-V progression in the key of G would normally be GMA, CMA and D7, Blues players may change this to G7, C7 and D7.',
+            descBuild: 'Major Triad plus a minor 7th (10 semitones). Important dominant (V7)',
+            exampleName: 'C7, Cdom7, CDOM7, C7, C(♭7), C7th',
+            resolveToTonic: 10 //of 10
+        },
+
+        'dom7add13': {
+            intervals: [0, 4, 7, 10, 21],
+            fullName: 'Dominant seventh added 13th',
+        },
+
+        'dom7f13': {
+            intervals: [0, 4, 7, 10, 20],
+            fullName: 'Dominant seventh flat 13th',
+            desc: '',
+            descBuild: '.',
+            comments: '',
+            exampleName: ''
+        },
+
+        'dim7': {
+            intervals: [0, 3, 6, 9], // 3 3 3
+            i2: 'R/1-♭3-♭5-Double Flat7',
+            fullName: 'Diminished seventh, full diminished seventh, Diminished 7th (with Flat 5th)',
+            desc: 'Dissonant, unstable, unresolved. drives towards root resolution',
+            comments: 'Flat 5th can be omitted. A diminished seventh occurs naturally in a harmonized harmonic minor scale on the seventh scale degree, and although it does not occur naturally in a harmonized major scale, it does appear in a major scales parallel harmonic minor. The double flat (Double Flat) 7th is enharmonically equivalent to a major 6th and is one half-step/semi-tone lower than a minor 7th interval, hence the name diminished 7th. The tonality of a diminished seventh is dissonant and distinctly unresolved, it "drives" towards root resolution as opposed to a major seventh which is stable and centered.',
+            descBuild: 'Diminished triad plus the interval of a diminished seventh',
+            exampleName: 'C⁰7, C⁰7, Cmi6(♭5), Cdim7, C°7, Cm6(♭5, Cm7b5',
+            go: 'root'
+        },
+
+        'min7f5': {
+            intervals: [0, 3, 6, 10],
+            i2: 'R/1-♭3-♭5-♭7',
+            fullName: 'Half-diminished seventh, Minor seventh flat five',
+            desc: 'Creates suspense. It has been described as a "considerable instability"',
+            descBuild: 'Diminished triad plus the interval of a a minor 7th.',
+            comments: 'The minor seventh flat five is built upon the seventh degree of the harmonized major scale (tetrads) and possesses an extraordinary drive towards root resolution. ',
+            exampleName: 'Cmi7(♭5), Cø, C-7(-5), C-7 (♭5), Cø7, Dm7b5'
+                //link: 'http://guitar.ricmedia.com/minor-seventh-flat-five-chord/'
+        },
+
+        'minmaj7': {
+            intervals: [0, 3, 7, 11],
+            fullName: 'Minor major seventh',
+            desc: 'Weak function, rarely used. Unstable, heavily dissonant and distinctly unresolved.',
+            descBuild: 'minor triad plus a major seventh (11 semitones)',
+            exampleName: 'Cmi(MA7), C−(ma7), C-(MA7), mM7, mΔ7, -Δ7, mM7, m/M7, m(M7), minmaj7, m⑦,m(♮7), m7+'
+        },
+
+        'aug7': { //maj7s5
+            intervals: [0, 4, 8, 11],
+            i2: 'R/1-3-♯5-7',
+            fullName: 'augmented major seventh, Major seventh sharp five',
+            desc: 'Dissonant, unstable, unresolved',
+            comments: 'The tonality of the major seventh sharp five is dissonant and unresolved, it does not particularly drive towards the root, but can be used in place of an augmented triad. Major seventh, minor seventh, dominant seventh and minor seventh flat five tetrads occur naturally in the harmonized major scale (tetrads), a major seventh sharp five tetrad is simply an augmented triad with an added major 7th interval.',
+            exampleName: 'CMA7(♯5), C⁺(maj7), CΔ7(♯5), +M7, +Δ7, M7♯5, M7(♯5), M7/♯5, M7+5, maj+7, Δ+7, Caug7th',
+            substitutions: ['aug']
+        }, // 1590 0159 -> 1 4 4, [11, 16, 8, 0] -> 0 5 9 1 -> 0159 -> 1 4 4
+
+        'dimmaj7': {
+            intervals: [0, 3, 6, 11],
+            fullName: 'Diminished major seventh',
+            desc: '',
+            exampleName: 'Comaj7'
+        },
+
+        'dom7f5': {
+            intervals: [0, 4, 6, 10],
+            i2: 'R/1-3-♭5-♭7',
+            fullName: 'Dominant seventh flat five, Seven Flat Five',
+            desc: 'Dissonant, unresolved',
+            exampleName: 'C7(♭5), C7(-5), C(♭7♭5)'
+        },
+
+        /* 9ths */
+
+        'add9': {
+            intervals: [0, 4, 7, 14], // 0 2 4 7 -> 2 2 3
+            i2: 'R/1-3-5-9',
+            fullName: 'Added ninth',
+            desc: 'Consonant, resolved',
+            descBuild: 'An added ninth is a major triad with an added ninth. Added ninths differ from other ninths because the seventh is not included',
+            comments: 'In order for a to be called an add9 it must not contain a seventh degree whether it be major, minor or diminished. This lessens the overall "major" feel of the and also opens up some melodic possibilities that would otherwise be unavailable. Some texts refer to the add9 as being equivalent to a sus2 however this is incorrect, the sus2 infers there is no third degree present in the voicing, where as the add9 does have a third present and it is presumed that the added ninth interval should come from the second octave above the root, however in practice this is not always the case.',
+            exampleName: 'Cadd9, C(add9), Csus2, Cadd2'
+        },
+
+        'maj9': {
+            intervals: [0, 4, 7, 11, 14], // 1 5 8 0 3 -> 0 1 3 5 8 -> 1 2 2 3
+            i2: 'R/1-3-5-7-9',
+            fullName: 'major ninth',
+            desc: 'Consonant, resolved',
+            comments: '',
+            exampleName: 'CMA9, Cma7(add9), Cmaj9, CM9, CΔ9'
+        },
+
+        'min9': {
+            intervals: [0, 3, 7, 10, 14], // 0 3 7 10 2 -> +2 -> 2 5 9 0 4 -> 02459
+            i2: 'R/1-♭3-5-♭7-9',
+            fullName: 'minor ninth, Minor Dominant 9th',
+            desc: 'Consonant, resolved',
+            comments: 'This has a more "bluesy" sound and fits very well with the dominant 9th',
+            exampleName: 'Cmi9, Cmi7(add9), C−9, Cmin9, Cm9, Cmin9'
+        },
+
+        'augmaj9': {
+            intervals: [0, 4, 8, 11, 14],
+            fullName: 'Augmented Major 9th',
+            exampleName: 'C+M9, Caugmaj9'
+        },
+
+
+        'minmaj9': {
+            intervals: [0, 3, 7, 11, 14], // ->+1: 1 4 8 0 3 ->geordnet: 01348 ODER 0, 3, 7, 11, 2
+            i2: 'R/1-♭3-5-7-9',
+            fullName: 'Minor-major ninth',
+            desc: 'Dissonant, unresolved',
+            comments: '',
+            exampleName: 'Cmi(MA7), C-(maj9), C-(maj9), CmM9, C−M9, Cminmaj9' // 0 3 7 11 14 +1, %12 -> 1 4 8 0 3 -> 0 1 3 4 8 -> 1 2 1 4
+        }, // 0, 15, 7, 11, 14 -> 1 4 8 0 3 -> 01348
+
+        'minadd9': {
+            intervals: [0, 3, 7, 14],
+            i2: 'R/1-♭3-5-9',
+            fullName: 'Minor added ninth',
+            desc: 'Somewhat Dissonant, unresolved',
+            comments: 'As with the major added ninth, to be called a miadd9 it must not contain a seventh degree whether it be major, minor or diminished.',
+            exampleName: 'Cmiadd9, Cmi(add9), C-add9'
+        },
+
+
+        'min9dim5': {
+            intervals: [0, 3, 6, 10, 14],
+            fullName: 'Minor Ninth Diminished Fifth, Half-Diminished 9th',
+            exampleName: 'CØ9'
+        },
+
+        'maj9s11': {
+            intervals: [0, 4, 7, 11, 14, 18],
+            i2: 'R/1-3-5-7-9-♯11',
+            fullName: 'Major ninth sharp eleventh',
+            desc: 'Somewhat dissonant, resolved',
+            comments: '',
+            exampleName: 'CMA9(♯11), Cma9(+11)'
+        },
+
+        'dom9s5': {
+            intervals: [0, 4, 8, 10, 14],
+            i2: 'R/1-3-♯5-♭7-9',
+            fullName: 'Dominant ninth sharp five, Augmented Dominant 9th',
+            desc: 'Dissonant, unresolved',
+            comments: '',
+            exampleName: 'C9(♯5), Cdom9(♯5), C+9 / C9♯5 Caug9'
+        },
+
+        'dim9': {
+            intervals: [0, 3, 6, 9, 14],
+            fullName: 'Diminished 9th',
+            exampleName: 'C°9, Cdim9'
+        },
+
+        'hdimmin9': {
+            intervals: [0, 3, 6, 10, 13],
+            fullName: 'Half-Diminished Minor 9th',
+            exampleName: 'CØ♭9'
+        },
+
+
+
+        'dimmin9': {
+            intervals: [0, 3, 6, 9, 13],
+            fullName: 'Diminished Minor 9th',
+            exampleName: 'C°♭9, Cdim♭9'
+        },
+
+        'dom9f5': {
+            intervals: [0, 4, 6, 10, 14],
+            i2: 'R/1-3-♭5-♭7-9',
+            fullName: 'Dominant ninth flat five, Seventh flat five',
+            desc: 'Dissonant, unresolved',
+            comments: '',
+            exampleName: 'C9(♭5), Cdom9(♭5)'
+        },
+
+        'dom9': {
+            intervals: [0, 4, 7, 10, 14],
+            i2: 'R/1-3-5-♭7-9',
+            fullName: 'Dominant 9th, Dominant ninth',
+            desc: 'Somewhat dissonant, resolved',
+            descBuild: 'The dominant ninth (V9) is a dominant seventh plus a major or minor ninth',
+            comments: '',
+            exampleName: 'C9, Cdom9, C7(add9)'
+        },
+
+        'dom9s11': {
+            intervals: [0, 4, 7, 10, 14, 18],
+            fullName: 'Dominant 9th sharp 11th',
+            comments: ''
+        },
+
+        'dom7s9f13': {
+            intervals: [0, 4, 7, 10, 15, 20],
+            fullName: 'Dominant seventh sharp 9th flat 13th',
+        },
+
+        'dommin9': {
+            intervals: [0, 4, 7, 10, 13],
+            i2: 'R/1-3-5-♭7-♭9',
+            fullName: 'Dominant minor 9th, Dominant seventh flat ninth',
+            desc: 'dissonant, unstable, unresolved. C7♭9 (C E G B♭ D♭) is particularly effective in heightening the drama and sense of threat',
+            exampleName: 'C7(♭9), C7(-9) or C(-7-9)'
+        },
+
+        'dommin9f13': {
+            intervals: [0, 4, 7, 10, 13, 20],
+            fullName: 'Dominant seventh flat 9th flat 13th',
+        },
+
+
+        'dom7s9': {
+            intervals: [0, 4, 7, 10, 15],
+            i2: 'R/1-3-5-♭7-♯9',
+            fullName: 'Dominant seventh sharp ninth, dominant 7♯9, Hendrix',
+            desc: 'Dissonant, unstable, unresolved. Important. The ninth is available in flat, natural, sharp, and flat-and-sharp "alt" styles. (augmented 9th or R/1-3-5-♭7-♯9).',
+            exampleName: '7#9, C7(♯9), C7+9 or C-7+9'
+                /* http://guitar.ricmedia.com/ */
+        },
+
+        'dom7s5s9': {
+            intervals: [0, 4, 8, 10, 15],
+            i2: 'R/1-3-♯5-♭7-♯9',
+            fullName: 'Dominant seventh sharp five sharp ninth',
+            desc: 'Dissonant, unresolved',
+            exampleName: 'C7(♯5♯9), C7(+5+9)'
+        },
+
+        'dom7s5f9': {
+            intervals: [0, 4, 8, 10, 13],
+            i2: 'R/1-3-♯5-♭7-♭9',
+            fullName: 'Dominant seventh sharp five flat ninth',
+            desc: 'Dissonant, unresolved',
+            exampleName: 'C7(♯5♭9), C7(+5-9)'
+        },
+
+        'dom7s5': {
+            intervals: [0, 4, 8, 10],
+            i2: 'R/1-3-♯5-♭7',
+            fullName: 'augmented seventh, dominant seventh sharp five, Seven Sharp Five, augmented major seventh',
+            desc: 'Dissonant, unstable, unresolved',
+            exampleName: 'C7(♯5), C+7 or Caug(7), Caug7th'
+        },
+
+        'dom7s11': {
+            intervals: [0, 4, 7, 10, 13, 18],
+            i2: 'R/1-3-5-♭7-9-♯11',
+            fullName: 'Dominant seventh sharp eleventh',
+            desc: 'Dissonant, unstable, unresolved',
+            exampleName: 'C7(♯11), C7+11 or C-7+11'
+        },
+
+        'dom7f5f9': {
+            intervals: [0, 4, 6, 10, 13],
+            i2: 'R/1-3-♭5-♭7-♭9',
+            fullName: 'Dominant seventh flat five flat ninth',
+            desc: 'Dissonant, unresolved',
+            exampleName: 'C7(♭5♭9) or C7(-5-9)'
+        },
+
+        'dom7f5f9': {
+            intervals: [0, 4, 6, 10, 15],
+            i2: 'R/1-3-♭5-♭7-♯9',
+            fullName: 'Dominant seventh flat five sharp ninth',
+            desc: 'Dissonant, unresolved',
+            exampleName: 'C7(♭5♯9), C7(-5+9)'
+        },
+
+        'min7s5': {
+            intervals: [0, 3, 7, 9, 14],
+            i2: 'R/1-♭3-5-6-9',
+            fullName: 'Minor seventh sharp five, minor six-nine',
+            desc: 'Somewhat dissonant, resolved',
+            exampleName: 'Cmi6/9 or C−6/9'
+        },
+
+        'maj7f5': {
+            intervals: [0, 4, 6, 11],
+            i2: 'R/1-3-♭5-7',
+            fullName: 'Major seventh flat five',
+            desc: 'Dissonant, unresolved',
+            exampleName: 'CMA7(♭5), CMA7(-5), CΔ7(♭5)'
+        },
+
+        'maj7s11': {
+            intervals: [0, 4, 7, 14, 18],
+            i2: 'R/1-3-5-7-9-♯11',
+            fullName: 'Major seventh sharp eleventh, Major ninth sharp eleventh',
+            desc: 'Dissonant, unresolved',
+            exampleName: 'CMA7(♯11), Cmaj7(♯11), CΔ7(♯11), Cmaj7(♯11), CΔ7(♯11)'
+        },
+
+        'maj7add13': {
+            intervals: [0, 4, 7, 11, 21],
+            fullName: 'Major seventh added thirteenth',
+            desc: '',
+            exampleName: ''
+        },
+
+        /* 6ths*/
+
+        'min6': {
+            intervals: [0, 3, 7, 9],
+            i2: 'R/1-♭3-5-6',
+            fullName: 'Minor sixth',
+            desc: 'Consonant, resolved',
+            exampleName: 'Cmi6, Cmiadd6, Cmi(maj6), Cmin6'
+        },
+
+        'min69': {
+            intervals: [0, 3, 7, 9, 14],
+            i2: 'R/1-♭3-5-6-9',
+            fullName: 'Minor six-nine',
+            desc: ' Somewhat dissonant, resolved',
+            exampleName: 'Cmi6/9, C−6/9'
+        },
+
+        'maj6': {
+            intervals: [0, 4, 7, 9],
+            i2: 'R/1-3-5-6',
+            fullName: 'Major sixth',
+            desc: 'Consonant, resolved',
+            exampleName: 'C6, Cma6, Cadd6, Cmaj6'
+        },
+
+        'maj69': {
+            intervals: [0, 4, 7, 9, 14],
+            i2: 'R/1-3-5-6-9',
+            fullName: 'Major six-nine',
+            desc: 'Consonant, resolved',
+            exampleName: 'C6/9, Cma6/9, Csix-nine'
+        },
+
+        /* 11ths*/
+
+        'min11': {
+            intervals: [0, 3, 7, 10, 14, 17],
+            i2: 'R/1-♭3-5-♭7-9-11',
+            fullName: 'Minor eleventh',
+            desc: 'Consonant, resolved',
+            comments: '',
+            exampleName: 'Cmi11, C-11, Cm11, Cmin11'
+        },
+
+        'maj11': {
+            intervals: [0, 4, 7, 11, 14, 17],
+            i2: 'R/1-3-5-7-9-11',
+            fullName: 'Major eleventh',
+            desc: 'Somewhat dissonant, resolved',
+            comments: 'http://guitar.ricmedia.com/major-eleventh-chord/',
+            exampleName: 'CMA11, Cmaj11, CMAJ11, Cma11, CΔ11, CMA9sus4, CMA9sus, CM11'
+        },
+
+        'dom11f9': {
+            intervals: [0, 4, 7, 10, 13, 17],
+            i2: 'R/1-3-5-♭7-♭9-11',
+            fullName: 'Dominant eleventh flat ninth',
+            desc: 'Dissonant, unresolved',
+            comments: '',
+            exampleName: 'C11(♭9), Cdom11(♭9)'
+        },
+
+        'dom11': {
+            intervals: [0, 4, 7, 14, 17],
+            i2: 'R/1-3-5-♭7-9-11',
+            fullName: 'Dominant eleventh',
+            desc: 'Somewhat dissonant, unresolved',
+            comments: '',
+            exampleName: 'C11, Cdom11, C9sus4, C9sus'
+        },
+
+        /* 13ths */
+
+        'min13': {
+            intervals: [0, 3, 7, 10, 14, 21],
+            i2: 'R/1-♭3-5-♭7-9-13',
+            fullName: 'Minor thirteenth',
+            desc: 'Somewhat dissonant, resolved',
+            comments: '',
+            exampleName: 'Cmi13, Cmi13(no11)'
+        },
+
+        'maj13s11': {
+            intervals: [0, 4, 7, 11, 14, 18, 21],
+            i2: 'R/1-3-5-7-9-♯11-13',
+            fullName: 'Major thirteenth sharp eleventh',
+            desc: 'Somewhat dissonant, unresolved',
+            comments: 'A major thirteenth sharp eleventh is formed due to the dissonance created between the major third and perfect eleventh (perfect fourth) intervals in a major thirteenth voiced with an eleventh interval included. Normally, we omit the eleventh from major and dominant thirteenth voicings due to this dissonance, and limitation of six notes on a six string guitar, alternatively we can sharpen the eleventh and remove the fifth or ninth intervals, the major thirteenth sharp eleventh is a result of this latter process.',
+            exampleName: 'CMA13(♯11), Cmaj13(♯11)'
+        },
+
+        'maj13': {
+            intervals: [0, 4, 7, 11, 14, 21],
+            i2: 'R/1-3-5-7-9-13',
+            fullName: 'Major thirteenth',
+            desc: 'Consonant, resolved',
+            comments: '',
+            exampleName: 'CMA13, Cma13(no11)'
+        },
+
+        'dom13s9': {
+            intervals: [0, 4, 7, 10, 15, 21],
+            i2: 'R/1-3-5-♭7-♯9-13',
+            fullName: 'Dominant thirteenth sharp ninth',
+            desc: 'Dissonant, unresolved',
+            comments: '',
+            exampleName: 'C13(♯9), Cdom13(♯9)'
+        },
+
+        'dom13s11': {
+            intervals: [0, 4, 7, 10, 14, 18, 21],
+            i2: 'R/1-3-5-♭7-9-♯11-13',
+            fullName: 'Dominant thirteenth sharp eleventh',
+            desc: 'Dissonant, unresolved',
+            comments: 'A dominant thirteenth sharp eleventh comes about due to the dissonance created between the major third and perfect eleventh (perfect fourth) intervals in a dominant thirteenth voiced with an eleventh interval included. Normally, we omit the eleventh from major and dominant thirteenth voicings due to this dissonance, and limitation of six notes on a six string guitar, alternatively we can sharpen the eleventh and remove the fifth or ninth intervals, the dominant thirteenth sharp eleventh is a result of this latter process.',
+            exampleName: 'C13(♯11), Cdom13(♯11)'
+        },
+
+        'dom13f9': {
+            intervals: [0, 4, 7, 10, 13, 21],
+            i2: 'R/1-3-5-♭7-♭9-13',
+            fullName: 'Dominant thirteenth flat ninth',
+            desc: 'Dissonant, unresolved',
+            comments: '',
+            exampleName: 'C13(♭9), Cdom13(♭9)'
+        },
+
+        'dom13': {
+            intervals: [0, 4, 7, 10, 14, 21],
+            i2: 'R/1-3-5-♭7-9-13',
+            fullName: 'Dominant thirteenth',
+            desc: 'Somewhat dissonant, unresolved',
+            comments: '',
+            exampleName: 'C13, C13(no11)'
+        },
+
+        /* suspendeds */
+
+        'sus2sus4': {
+            intervals: [0, 2, 5, 7],
+            i2: 'R/1-2-4-5',
+            fullName: 'Suspended second suspended fourth',
+            desc: 'Consonant, unresolved',
+            comments: '',
+            exampleName: 'Csus2sus4, C(sus2sus4)'
+        },
+
+        'sus2': {
+            intervals: [0, 2, 7],
+            i2: 'R/1-2-5',
+            fullName: 'Suspended Second',
+            desc: 'Consonant, unresolved. creates an open sound, dissonance creates tension',
+            exampleName: 'Csus2, C(sus2)'
+        },
+
+        'sus4': {
+            intervals: [0, 5, 7],
+            i2: 'R/1-4-5',
+            fullName: 'Suspended Fourth',
+            desc: 'Consonant, unresolved. creates an open sound, dissonance creates tension',
+            exampleName: 'Csus4, Csus'
+        },
+
+        'maj7sus2': {
+            intervals: [0, 2, 7, 11],
+            i2: 'R/1-2-5-7',
+            fullName: 'Major seventh suspended second',
+            desc: 'Somewhat dissonant, unresolved',
+            comments: '',
+            exampleName: 'CMA7sus2, CMA(sus2)'
+        },
+
+        'maj7sus4': {
+            intervals: [0, 5, 7, 11],
+            i2: 'R/1-4-5-7',
+            fullName: 'Major seventh suspended fourth',
+            desc: 'Somewhat dissonant, unresolved. It is not necessary to resolve the major seventh suspended fourth, it is mearly a tonal tool we can use if required.',
+            comments: 'The major seventh suspended fourth has a major tonality even though it lacks a 3rd degree, its the major seventh interval that gives it this quality. If the perfect 4th (suspended 4th) is resolved to the major 3rd the major quality becomes even clearer.',
+            exampleName: 'CMA7sus4, CMAsus'
+        },
+
+        'dom11': {
+            intervals: [0, 4, 7, 10, 14, 17],
+            fullName: 'Dominant 11th, Eleventh',
+            exampleName: 'C11, Cdom11'
+        },
+
+        'aug11': {
+            intervals: [0, 4, 8, 11, 14, 17],
+            fullName: 'Augmented 11th',
+            exampleName: 'C+11, C11♯5, Caug11'
+        },
+
+        'hdim11': {
+            intervals: [0, 3, 6, 10, 13, 17],
+            fullName: 'Half-Diminished 11th',
+            exampleName: 'CØ11'
+        },
+
+        'dim11': {
+            intervals: [0, 3, 6, 9, 13, 16],
+            fullName: 'Diminished 11th',
+            exampleName: 'C°11, Cdim11'
+        },
+
+
+        'augdom11': {
+            intervals: [0, 4, 8, 10, 14, 17, 21],
+            fullName: 'Augmented Dominant 13th',
+            exampleName: 'C+13, C13♯5, Caug13'
+        },
+
+
+        'dom13': {
+            intervals: [0, 4, 7, 10, 14, 17, 21],
+            fullName: 'Dominant 13th, Thirteenth',
+            exampleName: 'C13, Cdom13'
+        },
+
+        'mindom13': {
+            intervals: [0, 3, 7, 10, 14, 17, 21],
+            fullName: 'Minor Dominant 13th, Minor Thirteenth',
+            exampleName: 'Cm13, C−13, Cmin13'
+
+        },
+
+        'minmaj13': {
+            intervals: [0, 3, 7, 11, 14, 17, 21],
+            fullName: 'Minor Major Thirteenth',
+            exampleName: 'CmM13, C−M13, Cminmaj13'
+        },
+
+        'augmaj13': {
+            intervals: [0, 4, 8, 11, 14, 17, 21],
+            fullName: 'Augmented Major 13th',
+            exampleName: 'C+M13, Caugmaj13'
+        },
+
+        'augdom13': {
+            intervals: [0, 4, 8, 10, 14, 17, 21],
+            fullName: 'Augmented Dominant 13th',
+            exampleName: 'C+13, C13♯5, Caug13'
+        },
+
+        'hdim13': {
+            intervals: [0, 3, 6, 10, 14, 17, 21],
+            fullName: 'Half-Diminished 13th',
+            exampleName: 'CØ13'
+        },
+
+
+        'maj13': {
+            intervals: [0, 4, 7, 11, 14, 17, 21],
+            fullName: 'Major Thirteenth',
+            exampleName: 'CM13, CΔ13, Cmaj13'
+        },
+
+        'dom13sus4': {
+            intervals: [0, 5, 7, 10, 14, 21],
+            i2: 'R/1-4-5-♭7-9-13',
+            fullName: 'Dominant thirteenth suspended fourth',
+            desc: 'Consonant, unresolved',
+            comments: '',
+            exampleName: 'C13sus4, C13sus'
+        },
+
+        'dom7sus2': {
+            intervals: [0, 2, 7, 10],
+            i2: 'R/1-2-5-♭7',
+            fullName: 'Dominant seventh suspended second',
+            desc: 'Somewhat dissonant, unresolved. It is not necessary to resolve the dominant seventh suspended second or the minor seventh suspended seconds, it is mearly a tonal tool we can use if required.',
+            comments: 'http://guitar.ricmedia.com/dominant-seventh-suspended-second-chord/',
+            exampleName: 'C7sus2, C7(sus2)'
+        },
+
+        'dom7sus4': {
+            intervals: [0, 5, 7, 10],
+            i2: 'R/1-4-5-♭7',
+            fullName: 'Dominant seventh suspended fourth',
+            desc: 'Somewhat dissonant, unresolved. It is not necessary to resolve the dominant seventh suspended fourth or the minor seventh suspended fourths, it is merely a tonal tool we can use if required.',
+            comments: 'http://guitar.ricmedia.com/dominant-seventh-suspended-second-chord/',
+            exampleName: 'C7sus4, C7sus'
+        },
+
+        'dom9sus4': {
+            intervals: [0, 5, 7, 10, 14],
+            i2: 'R/1-4-5-♭7-9',
+            fullName: 'Dominant ninth suspended fourth',
+            desc: 'Consonant, unresolved',
+            comments: '',
+            exampleName: 'C9sus4, C9sus'
+        },
+
+        /* specials */
+        'pow': {
+            intervals: [0, 7],
+            i2: 'R/1-5',
+            fullName: 'Power',
+            desc: 'Consonant, resolved. Can go anywhere, indetermant. Good when distorted.',
+            exampleName: 'C5, C(no 3)'
+        },
+
+        'powOct': {
+            intervals: [0, 7, 12],
+            i2: 'R/1-5-1',
+            fullName: 'Power Octave Doubled',
+            desc: 'Consonant, resolved. Can go anywhere, indetermant. Good when distorted.',
+            exampleName: 'C5, C(no 3)'
+        },
+
+        'flat5': {
+            intervals: [0, 4, 6],
+            i2: 'R/1-3-♭5',
+            fullName: 'Flat five',
+            desc: 'Dissonant, unresolved',
+            exampleName: 'C♭5, C♭5, C♭5'
+        },
+
+        'flat5low': {
+            intervals: [0, 2, 6],
+            i2: 'R/1-2-♭5',
+            fullName: 'Flat five',
+            desc: 'Dissonant, unresolved',
+            exampleName: 'C♭5, C♭5, C♭5'
+        },
+
+        'mu': {
+            intervals: [0, 2, 4, 7],
+            fullName: 'Mu',
+            desc: 'may be used in substitution to replace simple major triads',
+            exampleName: 'μ'
+        },
+    };
+
+    return commonChords;
+});
