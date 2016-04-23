@@ -2,6 +2,100 @@
 TODO next
 ---------
 
+- voice analyze device (mit eigenem pitch-analyzer, zur kontrolle tuner dahinter, option um sound durchzulassen oder nicht)
+	- tiefster möglicher ton singen, wird autom. eingestellt
+	- höchster möglichier ton singen, wird autom. eingestellt
+	- range wird angezeigt sowie ob man bass/bariton etc. ist
+	- mit next/prev durch die pitches gehen
+	- play/stop klicken (ton wird abgespielt)
+	- ton singen (analyzer zeigt ton / frequenz an, macht bewertungsvorschlag)
+	- bewertungsvorschlag kann überschrieben werden (wenn man z.B. beim tuner sieht dass es ok war oder man uneinsichtig ist)
+	- next/prev bis man den range abgedeckt hat
+	- show recommended scales
+		- zeigt rangliste in welcher scale man sich am wohlsten fühlt
+
+- smart scale device
+	- auswahl von vielen bekannten scales
+	- möglichkeit, eigene scales zu definieren
+		- dial "number of notes", 12 dials für abstände zum vorherigen, anzeige mit verwendeten noten "C, C#/Db, F, ..."
+		- falls "eigene scale" eine der auswahl ist, wird der Name angezeigt
+
+	- transpose
+		- to closest
+		- always up
+		- always down
+
+- simple melody mangler device ("live-input")
+	- zweck: varianten einer melodie erstellen
+	//- einlesen einer reihe von noten (clip analyze) oder "live-input"
+	- lässt rhythmus unverändert (weiteres device?)
+	//- einstellbar, wieviele der noten (%) verändert werden
+	- tauscht lediglich positionen
+		- live-variante: cache von eingespielten noten (anzahl/zeit)
+			- nimmt statt der aktuellen eine note im cache
+				- cache-control:
+					- cache on/off (werden eingehende noten aufgenommen oder nicht)
+						- anzeige der noten im cache
+					- cache verhalten stack vs. queue
+					- option "neue noten verdängen alte"
+					- einstellbar, wie lange noten im cache bleiben (zeit in ms oder takten)
+					- max. anzahl eingehender, dann wird nicht mehr gefüllt
+
+			- einstellbar, wie oft die gleiche hintereinander kommen darf (dial)
+			- optione "kleine schritte"
+				- nimm note mit kleinstem abstand
+				- gehe rauf bis oberste, dann wieder von der tiefsten
+				- gehe rauf bis oberste, dann wieder schrittweise nach unten
+				- gehe runter bis unterste, dann wieder von ganz oben
+				- gehe runter bis unterste, dann wieder schrittweise nach oben
+			- option "random arp"
+
+
+FFT Transposer
+max for cats articulate
+counter by herrman lobby
+
+- harmonizer device
+		- cache von X noten (einstellbar) oder Zeit Y (jede incoming hat einen zeitstempel)
+		- vermeidet unharmonische intervalle, z.B. semitone/wholetone
+		- wenn eine incoming note nicht 3,4,7 oder 12 abstand von den noten im cache hat wird etwas mit ihr gemacht
+		- transpose to next in scale (falls scale, sonst einfach so dass mind. 3/4 abstand)
+		- transpose down to next in scale
+		- leave out if already in cache
+
+
+		- wenn eine der noten im cache nur 1/2 (evtl. 6)
+
+
+			- minimal-Abstand 3 semitones (evtl. Z), dann wird gemäss option (up/down/closest) transponiert
+				und entweder weggelassen, oder nach oben/unten gestreckt
+				ODER einfach
+
+
+
+
+- chord-progression-device
+	- 
+
+
+- 22-04-2016
+
+	- algorithmus welcher akkorde bildet
+	https://en.wikipedia.org/wiki/Chord_names_and_symbols_(popular_music)
+		- einheitliches gutes naming
+			- intervalle
+			- quality (maj/min/dim/aug/hdim/dom)
+			- altered 5th, 7th, 9th, 11th (sharp/flat)
+
+	- schauen wo lücken / mergen mit meiner sammlung
+
+	- struktur verbessern (quality separat, added separat)
+
+	- evtl. besonderheiten abdecken, z.B. weggelassene, aber trotzdem 11th chord
+
+
+
+
 
 
 - testen, ob nicht jede inversion als whole-path key verwendet werden kann 
@@ -10,7 +104,7 @@ TODO next
 	- zwölf zum ersten addieren
 	- rotieren
 	- bei der reihe wieder allen elementen gleichviel abziehen, so dass das erste 0 ist
-	
+
 	keine inv: [0, 3, 7, 11]  -> key [0, 3, 7, 11]
 	erste inv: [3, 7, 11, 12] -> key [0, 4, 8, 9]
 

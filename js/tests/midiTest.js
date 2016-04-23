@@ -294,6 +294,22 @@ cases:
 - voicing above
 */
 
+
+
+            test('getOutOfScalePitches', function() {
+                _.each(
+                [
+                    {played: [1,4,7], scale: [0, 2, 4, 5, 7, 9, 11], expected: [1]},
+                    {played: [0,3,7], scale: [0, 2, 4, 5, 7, 9, 11], expected: [3]},
+                    {played: [0,4,5,6,8], scale: [0, 2, 4, 5, 7, 9, 11], expected: [6,8]},
+                    {played: [8, 6, 1], scale: [0, 5, 7, 9, 11, 2, 4], expected: [8, 6, 1]},
+                    
+                ], function(p){
+
+                    deepEqual(midi.getOutOfScalePitches(p.played, p.scale), p.expected);
+                });
+            });
+
             test('getConsonanceRating', function() {
                 _.each(
                 [

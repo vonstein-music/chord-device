@@ -276,6 +276,10 @@ define(
 			}
 		},
 
+		getOutOfScalePitches: function(playedPitches, scalePitches) {
+			return _.difference(playedPitches, scalePitches);
+		},
+
 		getConsonanceRating: function(notes){
 			var intervalConsonanceRating = [
 				10, // (0 semitones) unison
