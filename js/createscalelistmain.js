@@ -101,8 +101,97 @@ function toTitleCase(str)
     return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
 
+function hasFiveWholeStepsAndTwoHalfSteps(scale){
+ console.log(scale);
+    scale = _.sortBy(scale[1]);
+   
 
-function renderMerged(){
+    var numberOfPitches = scale.length;
+
+    if (numberOfPitches !== 7) {
+        return false;
+    }
+
+    var halfSteps = 0;
+    var fullSteps = 0;
+
+    //var halfStepsSeparatedByTwoOrThreeFullSteps = 0;
+
+    var intervals = []; // 2212221
+
+    //var intervalCode = '';
+
+// all major scales use the same interval sequence T-T-s-T-T-T-s
+// natural minor: W, H, W, W, H, W, W        OR    T S T T S T T
+console.log(scale);
+    _.each(scale, function(pitch, index){
+
+
+
+//console.log('index', index);
+
+
+        var interval = Math.abs(scale[(index+1)%numberOfPitches] - pitch);
+        if(interval > 6) {
+            interval = 12 - interval;
+        }
+
+
+        if (interval === 1){
+            halfSteps++;
+            //intervalCode += 'W';
+        }
+        if (interval === 2){
+            fullSteps++;
+            //intervalCode += 'H';
+
+        }
+        intervals.push(interval);
+
+        // loop intervals
+        // see if previous 2 or 3 are fullsteps and the next 2 or 3 are fullsteps
+    });
+//console.log(intervals);
+
+    if (fullSteps !== 5 || halfSteps !== 2) {
+        return false;
+    }
+
+    var firstHalfStepIndex = _.indexOf(intervals, 1);
+
+    var after = intervals.slice(firstHalfStepIndex, numberOfPitches);
+    var before = intervals.slice(0, firstHalfStepIndex);
+
+    //console.log(after, before);
+
+    var str = after.join('') + before.join('');
+    console.log(str);
+
+    if (str === '1221222' || str === '1222122') {
+        console.log('true');
+        return true;
+    }
+    console.log('false');
+    return false;
+}
+/*
+    ['Major', [0,2,4,5,7,9,11]],
+    ['Natural Minor', [0,2,3,5,7,8,10]],
+    ['Dorian', [0,2,3,5,7,9,10]],
+    ['Phrygian', [0,1,3,5,7,8,10]],
+    ['Lydian', [0,2,4,6,7,9,11]],
+    ['Mixolydian', [0,2,4,5,7,9,10]],
+    ['Locrian', [0,1,3,5,6,8,10]],
+*/
+function onlyDiatonicScales(scales) {
+
+    return _.filter(scales, function(scale){
+        return hasFiveWholeStepsAndTwoHalfSteps(scale);
+    });
+}
+
+
+function render(scales){
 
     document.write('"use strict";');
     document.write('<br>');
@@ -110,7 +199,7 @@ function renderMerged(){
     document.write('<br>');
     document.write('var scales = [');
 
-    _.each(mergedScales, function(scale){
+    _.each(scales, function(scale){
         document.write('<br>');
         document.write('&nbsp;&nbsp;&nbsp;&nbsp;[');
 
@@ -130,6 +219,6 @@ function renderMerged(){
 }
 
 mergeScales();
-renderMerged();
+render(onlyDiatonicScales(mergedScales));
 
 });

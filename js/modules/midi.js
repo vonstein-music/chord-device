@@ -1,8 +1,13 @@
 "use strict";
 define(
-	['data/commonChordsLookupTable', 'data/setsLookupTable', 'data/scales'],
-	function(commonChordsLookupTable, setsLookupTable, scales) {
-    var midi = {   
+	['data/commonChordsLookupTable', 'data/setsLookupTable', 'data/diatonicScales'],
+	function(commonChordsLookupTable, setsLookupTable, diatonicScales) {
+    var midi = {
+
+    	config: {
+    		keyPitch: 0, // 0 - 11
+    		scaleIndex: 0
+    	},
 
     	noteNamesLookup: {
     		flat: ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'],
@@ -27,6 +32,8 @@ define(
 		// e.g. played G in key C in major scale:
 		//  in: pitch 7, keyPitch 0, orderedScalePitches [0, 2, 4, 5, 7, 9, 11]
 		// should return 5
+
+		// only makes sense for 7-pitchclasses-scales
 		getScaleDegree: function(pitch, keyPitch, orderedScalePitches) {
 
 			// add keypitch to all in scale, then look for position of pitch
@@ -35,6 +42,106 @@ define(
 			var normalizedPitch = (pitch - keyPitch + 12) % 12;
 
 			return _.indexOf(orderedScalePitches,  normalizedPitch) + 1;
+		},
+
+
+
+		// in: 0 4 7 11 (already in prime form)
+		// [0, 2, 4, 5, 7, 9, 11]
+		// to check if the chord has all the notes in the scale 
+		/*isPrimeFormInScale: function(primeForm, orderedScalePitches) {
+			var inPrimeFormButNotInScale = _.difference(
+				primeForm, 
+				orderedScalePitches
+				//this._getPitchesForKeyAndScale(keyPitch, orderedScalePitches)
+			);
+			return inPrimeFormButNotInScale.length === 0;
+		},*/
+// http://www.musictheory.net/calculators/analysis
+//https://www.musictheory.net/lessons/49
+		hasPitchNotInKey: function(playedPitchClasses, keyPitch, orderedScalePitches){
+			//console.log(playedPitchClasses, keyPitch, orderedScalePitches);
+			var keyPitches = this._getPitchesForKeyAndScale(keyPitch, orderedScalePitches);
+			//console.log('playedPitchClasses', playedPitchClasses);
+
+			//console.log('keyPitches', keyPitches);
+			var pitchesPlayedButNotInScale = _.difference(playedPitchClasses, keyPitches);
+			//console.log('pitchesPlayedButNotInScale', pitchesPlayedButNotInScale);
+
+			//console.log(pitchesPlayedButNotInScale.length === 0);
+			return pitchesPlayedButNotInScale.length > 0;
+		},
+
+		getDiatonicFunction: function(playedPitchesOrdered){
+			var playedPitchClasses = this._getPitchClasses(playedPitchesOrdered);
+			var scalePitches = diatonicScales[this.config.scaleIndex][1];
+			var keyPitch     = this.config.keyPitch; 			
+			
+			if (this.hasPitchNotInKey(playedPitchClasses, keyPitch, scalePitches)) {
+				//console.log();
+				return '?';
+			}
+			
+			var scaleDegree = this.getScaleDegree(playedPitchesOrdered[0], keyPitch, scalePitches);
+
+			/*if (scaleDegree === 0) {
+				return '';
+				https://en.wikipedia.org/wiki/Mode_(music)
+			}*/
+
+			var simplifiedNaming = ['', 'Tonic', 'Supertonic', 'Mediant', 'Subdominant', 'Dominant', 'Submediant', 'Leading tone'];
+
+			var selectedScaleName = diatonicScales[this.config.scaleIndex][0];
+			if (selectedScaleName === 'Natural Minor') {
+				simplifiedNaming[7] = 'Subtonic';
+			}
+
+			/* @todo: 
+
+https://en.wikipedia.org/wiki/Roman_numeral_analysis
+
+
+			Uppercase Roman numeral	Major triad	I
+			Lowercase Roman numeral	Minor triad	i
+			Superscript °	Diminished triad	i°
+			Superscript + (sometimes x[citation needed])	Augmented triad	I+
+			Superscript number	added note	V7, I6
+			Two or more numbers	figured bass notation	V4 - 3, I6
+			4 (equivalent to Ic)
+			Lowercase b	First inversion	Ib
+			Lowercase c	Second inversion	Ic
+			Lowercase d	Third inversion	V7d
+
+			uppercase for major chords
+			lowercase for minor chords
+			° for diminished
+			+ for augmented
+
+			*/
+
+			return {scaleDegree: scaleDegree, name: simplifiedNaming[scaleDegree]};
+		},
+
+
+
+		/*isPrimeFormInScale: function(primeForm, rootPitch, keyPitch, orderedScalePitches) {
+			
+			var playedPitches = _.map(primeForm, function(pitch){
+				return pitch + rootPitch%12;
+			});
+			var inPrimeFormButNotInScale = _.difference(
+				primeForm, 
+				orderedScalePitches
+				this._getPitchesForKeyAndScale(keyPitch, orderedScalePitches)
+			);
+			return inPrimeFormButNotInScale.length === 0;
+		},*/
+
+		_getPitchesForKeyAndScale: function(keyPitch, scalePitches){
+			
+			return _.map(scalePitches, function(pitch){
+				return (pitch + keyPitch) % 12;
+			});
 		},
 
 		//getScaleDegreeNameFromScaleDegree:
@@ -253,7 +360,7 @@ define(
 
 			var chordMode = isMinorChord ? 'min' : 'maj';
 
-			var scale = scales[scaleIndex][1];
+			var scale = diatonicScales[scaleIndex][1];
 
 			var positionInScale = _.indexOf(currentScale, rootNotePitch);
 
@@ -447,7 +554,7 @@ define(
     			//console.log(commonChordsLookupTable[commonChordsLookupKey]);
     			// find root
     			var lowestInputPitch = orderedPitches[0];
-    			console.log('lowestInputPitch', lowestInputPitch);
+    			//console.log('lowestInputPitch', lowestInputPitch);
     			//console.log('startingAtZero', startingAtZero);
 
 
@@ -456,14 +563,14 @@ define(
 
     			var rootNoteName = this.getNoteNameForPitch(orderedPitches[0]);
     			//console.log(rootNoteName);
+
+
+
     			return {
     				rootNoteName: rootNoteName, 
-    				chordNames: chordNames.split(', ')
+    				chordNames: chordNames.split(', '),
+    				diatonicFunction: this.getDiatonicFunction(orderedPitches)
     			}; // @todo return multiple names if there
-
-
-
-
 
     			//console.log('gefunden: ', commonChordsLookupTable[commonChordsLookupKey]);
 
@@ -474,18 +581,18 @@ define(
 
 
     		} else {
-    			console.log('startingAtZero', startingAtZero);
-    			console.log('commonChordsLookupKey', commonChordsLookupKey);
-    			console.log('nicht gefunden: ', orderedPitches, commonChordsLookupKey);
+    			//console.log('startingAtZero', startingAtZero);
+    			//console.log('commonChordsLookupKey', commonChordsLookupKey);
+    			//console.log('nicht gefunden: ', orderedPitches, commonChordsLookupKey);
     		}
 
     		var setLookupKey = '_' + this._getSickodecimal(this._getIntervalVector(notes));
 
-    			console.log('setLookupKey: ', setLookupKey);
+    			//console.log('setLookupKey: ', setLookupKey);
 
     		if (_.has(setsLookupTable, setLookupKey)) {
 
-    			    			console.log('found setLookupKey: ', setLookupKey);
+    			    			//console.log('found setLookupKey: ', setLookupKey);
 
 
     			//var notesOrdered = _.sortBy(notes);
@@ -538,7 +645,7 @@ define(
     				//return [(setsLookupTable[setLookupKey][pitchClassesKey] + this._getInversionText(inversionNumber))];
 
     			} else {
-    				console.log('did not find primeFormKey: ' + primeFormKey);
+    				//console.log('did not find primeFormKey: ' + primeFormKey);
     				// return first key
     				for(var key in setsLookupTable[setLookupKey]) break;
 
@@ -589,7 +696,7 @@ define(
 				_.each(pitches, function(comparedPitchValue){
 					var interval = Math.abs(pitchValue - comparedPitchValue);
 					score += weightingPoints[interval];
-					console.log(pitchValue, comparedPitchValue, interval, weightingPoints[interval], score);
+					//console.log(pitchValue, comparedPitchValue, interval, weightingPoints[interval], score);
 
 				});
 
@@ -615,14 +722,14 @@ define(
 			// unique winner
 			if (countOfScoreMap[highestScore] === 1) {
 				var winnerPitch = _.find(ratings, ['score', highestScore]);
-				console.log(winnerPitch);
-				console.log('unique winner');
+				//console.log(winnerPitch);
+				//console.log('unique winner');
 				return this._getNoteName(winnerPitch.pitch);
 			}
 
 			// all pitches have the same (highest) count, return lowest note
 			if (countOfScoreMap[highestScore] === pitches.length) {
-				console.log('all same, return lowest');
+				//console.log('all same, return lowest');
 				return this._getNoteName(pitches[0]);
 			}
 

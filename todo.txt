@@ -2,6 +2,17 @@
 TODO next
 ---------
 
+- separates inScale-device
+	- dial um key und scale auszuwählen
+	- keyboard-ansicht mit noten in scale koloriert
+	- gespielte noten werden im keyboard gehighlighted
+		- falsche in rot, korrekte anders
+
+
+- rootless-chords 
+	https://en.wikipedia.org/wiki/Root_(chord)
+	https://en.wikipedia.org/wiki/Slash_chord
+
 - ziel:
 	- major modes : ionian (standard major scale), dorian, phrygian, lydian, mixolydian, aeolian, locrian
 	- 
@@ -23,7 +34,11 @@ TODO next
 		=> 7, 9, 11, 0, 2, 4, 6, 7
 		=> G, A, B, C, D, E, and F♯
 
-	- d.h. wenn 
+
+
+	- tabelle erstellen
+		- welche akkorde/typen (maj/min/dim/aug, welche seventh?) auf welchem scale degree in welcher scale? https://en.wikipedia.org/wiki/Mode_(music)
+		- siehe chordelia?
 
 
 - sostenuto-device

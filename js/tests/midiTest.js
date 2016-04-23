@@ -435,6 +435,19 @@ cases:
                 });
             });
 */
+            test('getDiatonicFunction works', function() {
+                _.each(
+                [
+                    {pitches: [0, 4, 7], key: 0, scale: [0, 2, 4, 5, 7, 9, 11], expected: 1}, // C in C major
+                    {pitches: [2, 5, 9], key: 0, scale: [0, 2, 4, 5, 7, 9, 11], expected: 2}, // D in C major
+
+
+
+                ], function(p){
+                    equal(midi.getDiatonicFunction(p.pitches).scaleDegree, p.expected, p.pitches + ' in ' + p.key + '/' + p.scale + ' has Degree: ' + p.expected);
+                });
+            });
+
 
             test('getScaleDegree works', function() {
                 _.each(
@@ -462,6 +475,21 @@ cases:
 
                 ], function(p){
                     deepEqual(midi._getPrimeFromNormalForm(p.pitches), p.expected, p.pitches.join() + ' is: ' + p.expected.join());
+                });
+            });
+
+            test('hasPitchNotInKey works', function() {
+                _.each(
+                [
+                    {pitches: [0, 4, 7], key: 0, scale: [0, 2, 4, 6, 7, 9, 11], expected: false}, // Cmaj in C major scale
+                    {pitches: [1, 4, 7], key: 0, scale: [0, 2, 4, 6, 7, 9, 11], expected: true}, // bstrd in C major scale
+                    {pitches: [0, 4, 7, 11], key: 0, scale: [0, 2, 4, 6, 7, 9, 11], expected: false}, // Cmaj7 in C major scale
+                    {pitches: [2, 6, 9], key: 2, scale: [0, 2, 4, 6, 7, 9, 11], expected: false}, // Dmaj in D major scale
+                    {pitches: [2, 6, 9], key: 2, scale: [0, 2, 3, 5, 7, 8, 10], expected: true}, // Dmaj in D aeolian scale
+
+
+                ], function(p){
+                    equal(midi.hasPitchNotInKey(p.pitches, p.key, p.scale), p.expected);
                 });
             });
 
