@@ -2,6 +2,36 @@
 TODO next
 ---------
 
+- ziel:
+	- major modes : ionian (standard major scale), dorian, phrygian, lydian, mixolydian, aeolian, locrian
+	- 
+
+	- a scale is an ordered set of notes typically used in a key, while the key is the center of gravity, established by particular chord progressions
+	- scale: 
+		- bestimmte halb- und ganztonschritte
+		- key: wo fängt man an?
+
+	- welche noten verwendet werden, hängt vom key (z.B. G) und der skala (z.B. major/ionian, (natural) minor/aeolian, melodic minor, dorian)
+	- major/ionian: wenn man sie durchspielt, fühlen sie sich ähnlich an weil die intervall-abstände gleich sind
+		die intervalle sind einfach verschoben
+		ionian: [0, 2, 4, 5, 7, 9, 11] 2 2 1 2 2 2 1
+		dorian: [0, 2, 3, 5, 7, 9, 10] 2 1 2 2 2 1 2
+
+	- um zu berechnen welche noten effektiv in einer key-skala-combo vorkommen, muss man 
+		vom key ausgehend (z.B. G = pitch 7) jeweils die intervalle der skala addieren,
+		=> G major/ionian: 7, 9, 11, 12, 14, 16, 18, 19 
+		=> 7, 9, 11, 0, 2, 4, 6, 7
+		=> G, A, B, C, D, E, and F♯
+
+	- d.h. wenn 
+
+
+- sostenuto-device
+	- weitere derartige implementieren: http://nickfever.com/music/midi-cc-list
+		- Portamento, Sostenuto, soft, legato, hold
+	- tabs um umzuschalten
+	- info was passiert / wie man es nutzen kann
+
 - voice analyze device (mit eigenem pitch-analyzer, zur kontrolle tuner dahinter, option um sound durchzulassen oder nicht)
 	- tiefster möglicher ton singen, wird autom. eingestellt
 	- höchster möglichier ton singen, wird autom. eingestellt

@@ -436,6 +436,25 @@ cases:
             });
 */
 
+            test('getScaleDegree works', function() {
+                _.each(
+                [
+                    {pitch: 0, key: 0, scale: [0, 2, 4, 5, 7, 9, 11], expected: 1}, // C in C major
+                    {pitch: 5, key: 0, scale: [0, 2, 4, 5, 7, 9, 11], expected: 4}, // G in C major
+                    {pitch: 11, key: 0, scale: [0, 2, 4, 5, 7, 9, 11], expected: 7}, // B in C major
+                    {pitch: 1, key: 0, scale: [0, 2, 4, 5, 7, 9, 11], expected: 0}, // C# in C major (0 = not found)
+
+                    {pitch: 2, key: 2, scale: [0, 2, 4, 5, 7, 9, 11], expected: 1}, // D in D major
+                    {pitch: 9, key: 2, scale: [0, 2, 3, 5, 7, 9, 10], expected: 5}, // A in D dorian
+
+                    {pitch: 11, key: 5, scale: [0, 2, 4, 6, 7, 9, 11], expected: 4}, // B in F Lydian
+
+
+                ], function(p){
+                    deepEqual(midi.getScaleDegree(p.pitch, p.key, p.scale), p.expected);
+                });
+            });
+
             test('_getPrimeFromNormalForm works', function() {
                 _.each(
                 [

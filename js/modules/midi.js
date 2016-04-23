@@ -4,7 +4,7 @@ define(
 	function(commonChordsLookupTable, setsLookupTable, scales) {
     var midi = {   
 
-    	noteNames: {
+    	noteNamesLookup: {
     		flat: ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'],
     		sharp: ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
     	},
@@ -24,9 +24,28 @@ define(
 			return 
 		},*/
 
+		// e.g. played G in key C in major scale:
+		//  in: pitch 7, keyPitch 0, orderedScalePitches [0, 2, 4, 5, 7, 9, 11]
+		// should return 5
+		getScaleDegree: function(pitch, keyPitch, orderedScalePitches) {
+
+			// add keypitch to all in scale, then look for position of pitch
+
+			// or: subtract keypitch from pitch + 12, take modulo 12 and then look for pos
+			var normalizedPitch = (pitch - keyPitch + 12) % 12;
+
+			return _.indexOf(orderedScalePitches,  normalizedPitch) + 1;
+		},
+
+		//getScaleDegreeNameFromScaleDegree:
+
+		getNumeralFromScaleDegree: function(){
+
+		},
+
     	_getNoteName: function(pitch, isFlat) {
     		var suffix = isFlat ? 'flat' : 'sharp';
-    		return this.noteNames[suffix][pitch%12];
+    		return this.noteNamesLookup[suffix][pitch%12];
     	},
 
     	getNoteNameForPitchWithOctave: function(pitch, isFlat) {
