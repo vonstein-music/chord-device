@@ -435,6 +435,26 @@ cases:
                 });
             });
 */
+
+
+//      getPitchesOfChordForScaleDegree: function(scaleDegree, cardinality, keyPitch, scalePitches){
+
+            test('getPitchesOfChordForScaleDegree works', function() {
+                _.each(
+                [
+                    {scaleDegree: 1, cardinality: 3, key: 0, scale: [0, 2, 4, 5, 7, 9, 11], expected: [0, 4, 7]},
+                    {scaleDegree: 1, cardinality: 5, key: 0, scale: [0, 2, 4, 5, 7, 9, 11], expected: [0, 4, 7, 11, 14]},
+                    {scaleDegree: 7, cardinality: 3, key: 0, scale: [0, 2, 4, 5, 7, 9, 11], expected: [11, 14, 17]},
+                    {scaleDegree: 1, cardinality: 4, key: 2, scale: [0, 2, 4, 5, 7, 9, 11], expected: [2, 6, 9, 13]}, // Dmaj scale
+
+                    {scaleDegree: 4, cardinality: 3, key: 0, scale: [0,2,4,6,7,9,11], expected: [6,9,12]}, // C lydian
+                    {scaleDegree: 5, cardinality: 5, key: 11, scale: [0,2,4,6,7,9,11], expected: [18, 22, 25, 29, 32]}, // B lydian // 7 11 14 18 21 > 18, 22, 25, 29, 32
+
+                ], function(p){
+                    deepEqual(midi.getPitchesOfChordForScaleDegree(p.scaleDegree, p.cardinality, p.key, p.scale), p.expected);
+                });
+            });
+
             test('getDiatonicFunction works', function() {
                 _.each(
                 [

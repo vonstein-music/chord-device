@@ -14,6 +14,35 @@ define(
     		sharp: ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
     	},
 
+    	getPitchesOfChordForScaleDegree: function(scaleDegree, cardinality, keyPitch, scalePitches){
+
+    		console.log(scaleDegree, cardinality, keyPitch, scalePitches);
+
+    		scalePitches = scalePitches || diatonicScales[this.config.scaleIndex][1];
+			keyPitch     = keyPitch || this.config.keyPitch;
+
+			var pitchesOfChord = [];
+
+			_.times(cardinality, function(index){
+
+				console.log('index', index);
+				var positionInScale = (scaleDegree - 1) + 2*index;
+				var safePositionInScale = positionInScale % 7;
+
+				var pitchFromScale = scalePitches[safePositionInScale];
+
+				if (positionInScale > 6) {
+					pitchFromScale += 12;
+				}
+
+				console.log(pitchFromScale);
+
+				pitchesOfChord.push(pitchFromScale + keyPitch);
+			});
+
+			return pitchesOfChord;
+    	},
+
     	/*chordFunctions = [
 				{func: 'Tonic', name: 'Tonic', major: 'I', minor: 'i', chordTypeMajor: [0,4,7]},
 				{func: 'Supertonic', name: 'Subdominant parallel', major: 'ii', minor: 'ii°'},
@@ -46,6 +75,7 @@ define(
 
 
 
+
 		// in: 0 4 7 11 (already in prime form)
 		// [0, 2, 4, 5, 7, 9, 11]
 		// to check if the chord has all the notes in the scale 
@@ -72,10 +102,12 @@ define(
 			return pitchesPlayedButNotInScale.length > 0;
 		},
 
-		getDiatonicFunction: function(playedPitchesOrdered){
+		getDiatonicFunction: function(playedPitchesOrdered, keyPitch, scalePitches){
+
 			var playedPitchClasses = this._getPitchClasses(playedPitchesOrdered);
-			var scalePitches = diatonicScales[this.config.scaleIndex][1];
-			var keyPitch     = this.config.keyPitch; 			
+
+			scalePitches = scalePitches || diatonicScales[this.config.scaleIndex][1];
+			keyPitch = keyPitch || this.config.keyPitch; 			
 			
 			if (this.hasPitchNotInKey(playedPitchClasses, keyPitch, scalePitches)) {
 				//console.log();

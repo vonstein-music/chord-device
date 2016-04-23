@@ -2,6 +2,21 @@
 TODO next
 ---------
 
+- live-chord-progression-device
+	- für diatonic heptatonic scales (auswahl key und scale)
+	- anhand der klassischen progr. I->ii etc.
+	- checkboxen was alles vorkommen darf (triads, seventh, 9th, ...)
+	- dial für länge der progression
+	- started auf tonic, endet auf tonic
+	- dials für pitch range
+	- inversen on/off
+	- spreading on/off
+	- additional voicings dial: anzahl oben, dial: anzahl unten
+	- erzeugung simpel
+		- nimm scale degree
+		- erzeuge chord 
+
+
 - separates inScale-device
 	- dial um key und scale auszuwählen
 	- keyboard-ansicht mit noten in scale koloriert
