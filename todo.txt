@@ -3,18 +3,29 @@ TODO next
 ---------
 
 - live-chord-progression-device
-	- für diatonic heptatonic scales (auswahl key und scale)
+	- nur major / minor mode
 	- anhand der klassischen progr. I->ii etc.
-	- checkboxen was alles vorkommen darf (triads, seventh, 9th, ...)
-	- dial für länge der progression
-	- started auf tonic, endet auf tonic
-	- dials für pitch range
+	- smart dial was alles vorkommen darf (triads, seventh, 9th, ...)
+		- einmal drehen deckt viele kombinationen ab
+	- dial für länge der progression (0 = endless)
+		- gegen ende muss route "home" eingeschlagen werden
+		- dial für force start/end on tonic kombinationen
+
+	- dials für pitch range (1 dial für lowest, 2. dial für range up)
 	- inversen on/off
 	- spreading on/off
+	- checkbox "use smooth transitions when possible"
+		- versucht möglichst viele noten zu übernehmen/weiterzuführen
 	- additional voicings dial: anzahl oben, dial: anzahl unten
 	- erzeugung simpel
 		- nimm scale degree
 		- erzeuge chord 
+	- dial für "richtung tension/neutral/richtung home"
+	- spielen: 2 dials für den keyboard-range (low, range)
+		- der keyboard-range wird dann auf den pitch-range gemappt
+		  und erlaubt so volle kontrolle über die höhe des gespielten akkords
+	- evtl. mittels matrix wege und gewichtungen festlegbar
+	- evtl. anzeige grafik (umsetzen mit messages u. farben) wo man steht, bei pfeilen sind dials für gewichtung
 
 
 - separates inScale-device

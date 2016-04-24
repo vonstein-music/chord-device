@@ -481,6 +481,7 @@ cases:
                     {pitch: 9, key: 2, scale: [0, 2, 3, 5, 7, 9, 10], expected: 5}, // A in D dorian
 
                     {pitch: 11, key: 5, scale: [0, 2, 4, 6, 7, 9, 11], expected: 4}, // B in F Lydian
+                    {pitch: 9, key: 9, scale: [0,2,3,5,7,9,10], expected: 1}, // A in A dorian
 
 
                 ], function(p){

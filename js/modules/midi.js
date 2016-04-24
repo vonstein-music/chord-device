@@ -67,12 +67,6 @@ define(
 				    	[2, 4, 5, 2],
 				    	[1, 3],
 				    ]
-
-				    // Dorian
-				    // Phrygian
-				    // Lydian
-				    // Mixolydian
-				    // Locrian
 			];
 
 			var options = progressionOptions[selectedScaleIndex][currentDegree - 1];
@@ -89,10 +83,37 @@ define(
 				{func: 'Leading', name: 'incomplete Dominant seventh', major: 'vii°', minor: 'VII'},
 		],*/
 
-		/*_getRomanNumeral: function(isMinor) {
-			var isMinor = isMinor || false;
-			return 
-		},*/
+		_getRomanNumeral: function(scaleDegree, orderedPitchClassesStartingAtZero, inversionNumber) {
+			// @todo figured bass notation
+
+			var numerals = ['', 'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii'];
+			var romanNumeral = numerals[scaleDegree];
+
+			switch (commonChordsLookupKey.substring(0, 4)) {
+
+				case '_036': // diminished
+					romanNumeral += '°';
+					break;
+
+				case '_047': // major
+					romanNumeral.toUpperCase();
+					break;
+
+				case '_048': // augmented
+					romanNumeral += '+';
+					break;
+			}
+
+			// superscript number
+			if (orderedPitchClassesStartingAtZero.length > 3) {
+				romanNumeral += _.last(orderedPitchClassesStartingAtZero);
+			}
+
+			var inversions = ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l']
+			romanNumeral += inversions[inversionNumber];
+
+			return romanNumeral;
+		},
 
 		// e.g. played G in key C in major scale:
 		//  in: pitch 7, keyPitch 0, orderedScalePitches [0, 2, 4, 5, 7, 9, 11]
@@ -138,6 +159,10 @@ define(
 			return pitchesPlayedButNotInScale.length > 0;
 		},
 
+		_isScaleSelected: function(){
+			return this.config.scaleIndex === -1;
+		},
+
 		getDiatonicFunction: function(playedPitchesOrdered, keyPitch, scalePitches){
 
 			var playedPitchClasses = this._getPitchClasses(playedPitchesOrdered);
@@ -147,7 +172,7 @@ define(
 			
 			if (this.hasPitchNotInKey(playedPitchClasses, keyPitch, scalePitches)) {
 				//console.log();
-				return '?';
+				return '';
 			}
 			
 			var scaleDegree = this.getScaleDegree(playedPitchesOrdered[0], keyPitch, scalePitches);
@@ -164,30 +189,8 @@ define(
 				simplifiedNaming[7] = 'Subtonic';
 			}
 
-			/* @todo: 
-
-https://en.wikipedia.org/wiki/Roman_numeral_analysis
-
-
-			Uppercase Roman numeral	Major triad	I
-			Lowercase Roman numeral	Minor triad	i
-			Superscript °	Diminished triad	i°
-			Superscript + (sometimes x[citation needed])	Augmented triad	I+
-			Superscript number	added note	V7, I6
-			Two or more numbers	figured bass notation	V4 - 3, I6
-			4 (equivalent to Ic)
-			Lowercase b	First inversion	Ib
-			Lowercase c	Second inversion	Ic
-			Lowercase d	Third inversion	V7d
-
-			uppercase for major chords
-			lowercase for minor chords
-			° for diminished
-			+ for augmented
-
-			*/
-
-			return {scaleDegree: scaleDegree, name: simplifiedNaming[scaleDegree]};
+			return {scaleDegree: scaleDegree, functionName: simplifiedNaming[scaleDegree]};
+			//return romanNumeral + ' / ' + simplifiedNaming[scaleDegree]);
 		},
 
 
@@ -553,23 +556,6 @@ https://en.wikipedia.org/wiki/Roman_numeral_analysis
 			});
 		},
 
-		_getPrimeFromDirectedIntervalVector: function(directedIntervalVector) {
-			
-
-			
-		},
-
-
-
-
-		/*getChordInfo: function(notes) {
-			var allNames = this._getAllChordNames(notes);
-			if (allNames === '') {
-				return 'No info available';
-			}
-			return allNames.split(',')[0];
-		},*/
-
 
 		/**
 			todo
@@ -596,32 +582,80 @@ https://en.wikipedia.org/wiki/Roman_numeral_analysis
 		*/
     	getChordInfo: function(notes) {
 
-    		var orderedPitches = _.sortBy(notes);
-    		//console.log('orderedPitches', orderedPitches);
+    		var foundChords = [];
 
-    		var startingAtZero = this._getIntervalSetStartingAtZero(orderedPitches);    		
+    		var fortePrimeForm = this.getFortePrimeForm(notes);
+    		var playedPitchesOrdered = _.sortBy(notes);
+
+
+    		var consonanceRating = this.getConsonanceRating(notes);
+
+    		//console.log('playedPitchesOrdered', playedPitchesOrdered);
+
+    		var startingAtZero = this._getIntervalSetStartingAtZero(playedPitchesOrdered);    		
     		//console.log('startingAtZero', startingAtZero);
 
     		var commonChordsLookupKey = '_' + this._getSickodecimal(startingAtZero);
     		
 
 			// 047  4-7-12
-    		if (_.has(commonChordsLookupTable, commonChordsLookupKey)) {
+    		if (_.has(commonChordsLookupTable, commonChordsLookupKey)) { // hit in common chords table
 
 			//console.log(commonChordsLookupTable[commonChordsLookupKey]);
 
-    			var chordNames = '';
+				var lowestInputPitch = playedPitchesOrdered[0];
+				var rootNoteName = this.getNoteNameForPitch(playedPitchesOrdered[0]);
+
+    			//var chordNames = '';
     			var that = this;
-    			_.each(commonChordsLookupTable[commonChordsLookupKey], function(possibleChord){ 
-    			    chordNames += ', ' + possibleChord[0] + that._getInversionText(possibleChord[1]);
+
+
+    			// diatonic functino / roman muss hier rein
+
+    			// loop chords that were found
+    			_.each(commonChordsLookupTable[commonChordsLookupKey], function(possibleChord){
+
+    				var foundChord = {
+    					name: possibleChord[0], // take the first in the list that is returned (maybe send all to m4l)
+    					rootNotePitch: lowestInputPitch,
+    					rootNoteName: rootNoteName,
+    					inversionNumber: possibleChord[1],
+    					inversionText: that._getInversionText(possibleChord[1]),
+    					consonanceRating: consonanceRating,
+    					forte: fortePrimeForm
+    				};
+
+    				if (that._isScaleSelected) { // get diatonic stuff
+
+    					var diatonicFunction = that.getDiatonicFunction(playedPitchesOrdered);
+
+    					foundChord.scaleDegree = diatonicFunction.scaleDegree;
+    					diatonicFunctionName = diatonicFunction.functionName;
+    					
+    					if (diatonicFunction !== '') { // get roman numberal
+
+    						var playedPitchClasses = this._getPitchClasses(playedPitchesOrdered);
+
+							var orderedPitchClassesStartingAtZero = this._getPitchClassesStartingAtZero(
+									_.sortBy(playedPitchClasses)
+								);
+
+							var romanNumeral = this._getRomanNumeral(
+									diatonicFunction.scaleDegree,
+									orderedPitchClassesStartingAtZero, 
+									inversionNumber
+								);
+
+							foundChord.romanNumeral = romanNumeral;
+    					}
+    				}
+
+    				foundChords.push(foundChord);
     			});
-
-    			chordNames = chordNames.substr(2);
-
 
     			//console.log(commonChordsLookupTable[commonChordsLookupKey]);
     			// find root
-    			var lowestInputPitch = orderedPitches[0];
+    			//var lowestInputPitch = playedPitchesOrdered[0];
     			//console.log('lowestInputPitch', lowestInputPitch);
     			//console.log('startingAtZero', startingAtZero);
 
@@ -629,23 +663,19 @@ https://en.wikipedia.org/wiki/Roman_numeral_analysis
 
     			//var actualRootNoteIfNotInversion = 
 
-    			var rootNoteName = this.getNoteNameForPitch(orderedPitches[0]);
+    			
     			//console.log(rootNoteName);
 
 
 
-    			return {
-    				rootNoteName: rootNoteName, 
-    				chordNames: chordNames.split(', '),
-    				diatonicFunction: this.getDiatonicFunction(orderedPitches)
-    			}; // @todo return multiple names if there
+    			return foundChords;
 
     			//console.log('gefunden: ', commonChordsLookupTable[commonChordsLookupKey]);
 
     			//
-    			if (commonChordsLookupTable[commonChordsLookupKey][1]) {
+    			/*if (commonChordsLookupTable[commonChordsLookupKey][1]) {
     				console.log('------------->', commonChordsLookupTable[commonChordsLookupKey]);
-    			}
+    			}*/
 
 
     		} else {
@@ -665,7 +695,7 @@ https://en.wikipedia.org/wiki/Roman_numeral_analysis
 
     			//var notesOrdered = _.sortBy(notes);
 
-    			var fortePrimeForm = this.getFortePrimeForm(notes);
+    			
     			//var fortePrimeFormKey = this._getSickodecimal(primeForm);
 
     			// half-diminished seventh chord [0,3,6,10] -> _036A
@@ -702,14 +732,25 @@ https://en.wikipedia.org/wiki/Roman_numeral_analysis
 
     			//console.log('[' + notes.join(',') + ']: setLookupKey: ' + setLookupKey + ', normalForm: ' + normalForm + ', normalFormInvertedSet: ' + normalFormInvertedSet + ', pitchClassesKey: ' + pitchClassesKey + ', primeFormKey: ' + primeFormKey);
 
-    			if (_.has(setsLookupTable[setLookupKey], primeFormKey)) {
+    			if (_.has(setsLookupTable[setLookupKey], primeFormKey)) { // hit in sets
 
     				var inversionNumber = this._getInversionNumber(pitchClassesFromOrderedNotes, pitchClassesStartingAtZero);
 
-					return {
-    				rootNoteName: this.getRoot(notes), 
-    				chordNames: (setsLookupTable[setLookupKey][primeFormKey] + this._getInversionText(inversionNumber)).split(', ')
+    				var guessedRootPitch = this.getRootInfo(notes);
+
+    				var foundChord = {
+    					name: setsLookupTable[setLookupKey][primeFormKey].split(', ')[0], // first of commaseparated list @todo make arrays in set table
+    					rootNotePitch: guessedRootPitch,
+    					rootNoteName: this._getNoteName(guessedRootPitch),
+    					inversionNumber: inversionNumber,
+    					inversionText: this._getInversionText(inversionNumber),
+    					consonanceRating: consonanceRating,
+    					forte: fortePrimeForm
     				};
+
+    				foundChords.push(foundChord);
+    				
+					return foundChords;
     				//return [(setsLookupTable[setLookupKey][pitchClassesKey] + this._getInversionText(inversionNumber))];
 
     			} else {
@@ -731,7 +772,7 @@ https://en.wikipedia.org/wiki/Roman_numeral_analysis
     		}
     		return '';
     	},
-    	getRoot: function(notes) {
+    	getRootInfo: function(notes) {
 
 			var weightingPoints = [
 				0,  	// same note 	(0)
@@ -792,13 +833,13 @@ https://en.wikipedia.org/wiki/Roman_numeral_analysis
 				var winnerPitch = _.find(ratings, ['score', highestScore]);
 				//console.log(winnerPitch);
 				//console.log('unique winner');
-				return this._getNoteName(winnerPitch.pitch);
+				return winnerPitch.pitch;
 			}
 
 			// all pitches have the same (highest) count, return lowest note
 			if (countOfScoreMap[highestScore] === pitches.length) {
 				//console.log('all same, return lowest');
-				return this._getNoteName(pitches[0]);
+				return pitches[0];
 			}
 
 			// unclear, return the lowest pitch of all the winners				
@@ -812,7 +853,7 @@ https://en.wikipedia.org/wiki/Roman_numeral_analysis
 
 			//console.log(_.sortBy(winners, 'pitch')[0]);
 
-			return this._getNoteName(lowestPitchAmongWinners.pitch);
+			return lowestPitchAmongWinners.pitch;
     	}
     };
     return midi;
