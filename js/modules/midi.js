@@ -16,16 +16,11 @@ define(
 
     	getPitchesOfChordForScaleDegree: function(scaleDegree, cardinality, keyPitch, scalePitches){
 
-    		console.log(scaleDegree, cardinality, keyPitch, scalePitches);
-
-    		scalePitches = scalePitches || diatonicScales[this.config.scaleIndex][1];
-			keyPitch     = keyPitch || this.config.keyPitch;
-
 			var pitchesOfChord = [];
 
 			_.times(cardinality, function(index){
 
-				console.log('index', index);
+				//console.log('index', index);
 				var positionInScale = (scaleDegree - 1) + 2*index;
 				var safePositionInScale = positionInScale % 7;
 
@@ -83,23 +78,25 @@ define(
 				{func: 'Leading', name: 'incomplete Dominant seventh', major: 'vii°', minor: 'VII'},
 		],*/
 
-		_getRomanNumeral: function(scaleDegree, orderedPitchClassesStartingAtZero, inversionNumber) {
+		_getRomanNumeral: function(scaleDegree, primeForm, orderedPitchClassesStartingAtZero, inversionNumber) {
 			// @todo figured bass notation
 
 			var numerals = ['', 'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii'];
 			var romanNumeral = numerals[scaleDegree];
 
-			switch (commonChordsLookupKey.substring(0, 4)) {
+			console.log(scaleDegree, primeForm, orderedPitchClassesStartingAtZero, inversionNumber);
 
-				case '_036': // diminished
+			switch (primeForm.join('')) {
+
+				case '036': // diminished
 					romanNumeral += '°';
 					break;
 
-				case '_047': // major
-					romanNumeral.toUpperCase();
+				case '047': // major
+					romanNumeral = romanNumeral.toUpperCase();
 					break;
 
-				case '_048': // augmented
+				case '048': // augmented
 					romanNumeral += '+';
 					break;
 			}
@@ -172,7 +169,10 @@ define(
 			
 			if (this.hasPitchNotInKey(playedPitchClasses, keyPitch, scalePitches)) {
 				//console.log();
-				return '';
+				return {
+					scaleDegree: 'chord not in scale', 
+					functionName: 'chord not in scale'
+				};
 			}
 			
 			var scaleDegree = this.getScaleDegree(playedPitchesOrdered[0], keyPitch, scalePitches);
@@ -389,15 +389,6 @@ define(
 		        return (pitch - lowestPitch + 144)%12;
 		    });
 		},
-		// not used
-		_getIntervalSetStartingAtZeroKeepOrder: function(pitches) {
-
-			var orderedPitches = _.sortBy(pitches);
-		    var lowestPitch = orderedPitches[0];
-		    return _.map(pitches, function(pitch){
-		        return (pitch - lowestPitch);
-		    });
-		},
 
 		_getPitchClassesStartingAtZero: function (setOfPitchClasses) {
 			var semitonesToTransposeDown = setOfPitchClasses[0];
@@ -588,6 +579,17 @@ define(
     		var playedPitchesOrdered = _.sortBy(notes);
 
 
+    			var pitchClassesFromOrderedNotes = this._getPitchClasses(_.sortBy(notes));
+    			var pitchClassesStartingAtZero = this._getPitchClassesStartingAtZero(
+    				_.sortBy(pitchClassesFromOrderedNotes)
+    			);
+    			//var pitchClassesKey = '_' + this._getSickodecimal(pitchClassesStartingAtZero);
+
+				var orderedPC = _.sortBy(this._getPitchClasses(notes));
+				var normalForm = this._getNormalForm(orderedPC);
+				var primeForm = this._getPrimeFromNormalForm(normalForm)
+
+
     		var consonanceRating = this.getConsonanceRating(notes);
 
     		//console.log('playedPitchesOrdered', playedPitchesOrdered);
@@ -627,28 +629,35 @@ define(
 
     				if (that._isScaleSelected) { // get diatonic stuff
 
+
+
     					var diatonicFunction = that.getDiatonicFunction(playedPitchesOrdered);
 
+    					//console.log(diatonicFunction);
+
     					foundChord.scaleDegree = diatonicFunction.scaleDegree;
-    					diatonicFunctionName = diatonicFunction.functionName;
+    					foundChord.diatonicFunctionName = diatonicFunction.functionName;
     					
-    					if (diatonicFunction !== '') { // get roman numberal
+    					if (foundChord.scaleDegree !== 'chord not in scale') { // get roman numberal
 
-    						var playedPitchClasses = this._getPitchClasses(playedPitchesOrdered);
+    						var playedPitchClasses = that._getPitchClasses(playedPitchesOrdered);
 
-							var orderedPitchClassesStartingAtZero = this._getPitchClassesStartingAtZero(
+							var orderedPitchClassesStartingAtZero = that._getPitchClassesStartingAtZero(
 									_.sortBy(playedPitchClasses)
 								);
 
-							var romanNumeral = this._getRomanNumeral(
+							var romanNumeral = that._getRomanNumeral(
 									diatonicFunction.scaleDegree,
+									primeForm,
 									orderedPitchClassesStartingAtZero, 
-									inversionNumber
+									possibleChord[1]
 								);
 
 							foundChord.romanNumeral = romanNumeral;
     					}
     				}
+
+    				//console.log(foundChord);
 
     				foundChords.push(foundChord);
     			});
@@ -717,15 +726,7 @@ define(
 
 
 
-				var pitchClassesFromOrderedNotes = this._getPitchClasses(_.sortBy(notes));
-    			var pitchClassesStartingAtZero = this._getPitchClassesStartingAtZero(
-    				_.sortBy(pitchClassesFromOrderedNotes)
-    			);
-    			//var pitchClassesKey = '_' + this._getSickodecimal(pitchClassesStartingAtZero);
 
-				var orderedPC = _.sortBy(this._getPitchClasses(notes));
-				var normalForm = this._getNormalForm(orderedPC);
-				var primeForm = this._getPrimeFromNormalForm(normalForm)
 				var primeFormKey = '_' + this._getSickodecimal(primeForm);
 
 				//var normalFormInvertedSet = this._getPitchClassesStartingAtZero(this._getNormalForm(this._getInvertedSet(orderedPC)));
@@ -749,7 +750,7 @@ define(
     				};
 
     				foundChords.push(foundChord);
-    				
+
 					return foundChords;
     				//return [(setsLookupTable[setLookupKey][pitchClassesKey] + this._getInversionText(inversionNumber))];
 
