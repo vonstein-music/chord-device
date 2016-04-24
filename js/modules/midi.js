@@ -43,6 +43,42 @@ define(
 			return pitchesOfChord;
     	},
 
+    	getNextDegree: function(currentDegree, selectedScaleIndex){
+// http://www.secretsofsongwriting.com/2014/10/29/5-lydian-mode-chord-progressions-and-how-they-work/
+			
+			var progressionOptions = [
+				    // Major
+				    [
+				    	[1, 2, 3, 4, 5, 6, 7], // first scale degree goes anywhere
+				    	[5, 7, 5, 5], // 2nd scale degree
+				    	[6],
+				    	[5, 7, 5, 5],
+				    	[1],
+				    	[2, 4, 2, 2],
+				    	[1, 3]
+				    ],
+				    // Natural Minor
+				    [
+				    	[1, 2, 3, 4, 5, 6, 7],
+				    	[5, 7, 5, 5],
+				    	[4, 6, 6],
+				    	[1, 2, 5, 7, 1, 5, 5],
+				    	[1, 6, 1],
+				    	[2, 4, 5, 2],
+				    	[1, 3],
+				    ]
+
+				    // Dorian
+				    // Phrygian
+				    // Lydian
+				    // Mixolydian
+				    // Locrian
+			];
+
+			var options = progressionOptions[selectedScaleIndex][currentDegree - 1];
+			return _.shuffle(options)[0];
+		},	
+
     	/*chordFunctions = [
 				{func: 'Tonic', name: 'Tonic', major: 'I', minor: 'i', chordTypeMajor: [0,4,7]},
 				{func: 'Supertonic', name: 'Subdominant parallel', major: 'ii', minor: 'ii°'},
