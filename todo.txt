@@ -166,7 +166,8 @@ counter by herrman lobby
 
 
 
-
+- voicing below
+- voicing above
 
 
 - testen, ob nicht jede inversion als whole-path key verwendet werden kann 
@@ -187,7 +188,15 @@ counter by herrman lobby
 
 
 
-
+    	/*chordFunctions = [
+				{func: 'Tonic', name: 'Tonic', major: 'I', minor: 'i', chordTypeMajor: [0,4,7]},
+				{func: 'Supertonic', name: 'Subdominant parallel', major: 'ii', minor: 'ii°'},
+				{func: 'Mediant', name: 'Dominant parallel/Tonic counter parallel', major: 'iii', minor: 'III'},
+				{func: 'Subdominant', name: 'Subdominant', major: 'IV', minor: 'iv'},
+				{func: 'Dominant', name: 'Dominant', major: 'V', minor: 'V'},
+				{func: 'Submediant', name: 'Tonic parallel', major: 'vi', minor: 'VI'},
+				{func: 'Leading', name: 'incomplete Dominant seventh', major: 'vii°', minor: 'VII'},
+		],*/
 
 
 vorgehen 18-04
@@ -334,3 +343,36 @@ Separates Device:
 		- tonic / dominant character via interval-rating
 
 
+			/*
+			@todo
+
+			- herausfinden welche akkordtypen welche funktionen wahrnehmen können
+			- herausfinden ob das pauschal so festgelegt werden kann (unabhängig vom kontext/vorher gespielten noten)
+			- dom7, diminshed, major, minor etc. berücksichtigen
+			- wie verhält es sich mit 9th, 11th etc.?
+
+			*/
+
+					/**
+			todo
+			----
+
+			- keine sortierungen, operationen auf sets
+				- alle zu Beginn berechnen und erklären wofür
+
+			- commonChordTableLookup einbauen
+
+			- testen, ob lookup auf common geht mit ordered pitchclasses
+				- [12,4,7,0,16]->[0,4,7]->maj
+				- [1,4,8,13]->min 
+
+			- fallback auf sets wenn nicht geklappt hat in commonChordTableLookup
+				(weil zu exotisch?)
+
+			- bei fallback wie bisher (mit ordered pitchclasses versuchen mehr details zu finden)
+
+			- aufräumen, refactoring
+
+			- testing
+
+		*/

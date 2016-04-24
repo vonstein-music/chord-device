@@ -1,3 +1,15 @@
+/*
+// http://www.secretsofsongwriting.com/2014/10/29/5-lydian-mode-chord-progressions-and-how-they-work/
+// http://www.musictheory.net/calculators/analysis
+// https://www.musictheory.net/lessons/49
+
+getScaleDegree: only makes sense for 7-pitchclasses-scales
+
+
+
+*/
+
+
 "use strict";
 define(
 	['data/commonChordsLookupTable', 'data/setsLookupTable', 'data/diatonicScales'],
@@ -14,23 +26,20 @@ define(
     		sharp: ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
     	},
 
+    	// for little poppy
     	getPitchesOfChordForScaleDegree: function(scaleDegree, cardinality, keyPitch, scalePitches){
 
 			var pitchesOfChord = [];
 
 			_.times(cardinality, function(index){
 
-				//console.log('index', index);
 				var positionInScale = (scaleDegree - 1) + 2*index;
 				var safePositionInScale = positionInScale % 7;
-
 				var pitchFromScale = scalePitches[safePositionInScale];
 
 				if (positionInScale > 6) {
 					pitchFromScale += 12;
 				}
-
-				console.log(pitchFromScale);
 
 				pitchesOfChord.push(pitchFromScale + keyPitch);
 			});
@@ -38,8 +47,8 @@ define(
 			return pitchesOfChord;
     	},
 
+    	// for little poppy
     	getNextDegree: function(currentDegree, selectedScaleIndex){
-// http://www.secretsofsongwriting.com/2014/10/29/5-lydian-mode-chord-progressions-and-how-they-work/
 			
 			var progressionOptions = [
 				    // Major
@@ -68,25 +77,13 @@ define(
 			return _.shuffle(options)[0];
 		},	
 
-    	/*chordFunctions = [
-				{func: 'Tonic', name: 'Tonic', major: 'I', minor: 'i', chordTypeMajor: [0,4,7]},
-				{func: 'Supertonic', name: 'Subdominant parallel', major: 'ii', minor: 'ii°'},
-				{func: 'Mediant', name: 'Dominant parallel/Tonic counter parallel', major: 'iii', minor: 'III'},
-				{func: 'Subdominant', name: 'Subdominant', major: 'IV', minor: 'iv'},
-				{func: 'Dominant', name: 'Dominant', major: 'V', minor: 'V'},
-				{func: 'Submediant', name: 'Tonic parallel', major: 'vi', minor: 'VI'},
-				{func: 'Leading', name: 'incomplete Dominant seventh', major: 'vii°', minor: 'VII'},
-		],*/
-
-		_getRomanNumeral: function(scaleDegree, primeForm, orderedPitchClassesStartingAtZero, inversionNumber) {
+		getRomanNumeral: function(scaleDegree, primeForm, orderedPitchClassesStartingAtZero, inversionNumber) {
 			// @todo figured bass notation
 
 			var numerals = ['', 'i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii'];
 			var romanNumeral = numerals[scaleDegree];
 
-			console.log(scaleDegree, primeForm, orderedPitchClassesStartingAtZero, inversionNumber);
-
-			switch (primeForm.join('')) {
+			switch (primeForm.join('').substring(0, 3)) {
 
 				case '036': // diminished
 					romanNumeral += '°';
@@ -97,13 +94,43 @@ define(
 					break;
 
 				case '048': // augmented
-					romanNumeral += '+';
+					romanNumeral = romanNumeral.toUpperCase() + '+';
 					break;
 			}
 
 			// superscript number
 			if (orderedPitchClassesStartingAtZero.length > 3) {
-				romanNumeral += _.last(orderedPitchClassesStartingAtZero);
+
+				var intervalInSemitones = _.last(orderedPitchClassesStartingAtZero);
+				var semitonesToIntervalName = [
+					1, //0,
+					2, //1,
+					2, //2,
+					3, //3,
+					3, //4,
+					4, //5,
+					'd5/A4', //6, Tritone, no number
+					5, //7,
+					6, //8,
+					6, //9,
+					7, //10,
+					7, //11,
+					8, //12
+					9, //13,
+					9, //14,
+					10, //15,
+					10, //16,
+					11, //17,
+					'd12/A11', //18,
+					12, //19,
+					13, //20,
+					13, //21,
+					14, //22,
+					14, //23,
+					15, //24					
+				];
+
+				romanNumeral += semitonesToIntervalName[intervalInSemitones];
 			}
 
 			var inversions = ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l']
@@ -112,11 +139,6 @@ define(
 			return romanNumeral;
 		},
 
-		// e.g. played G in key C in major scale:
-		//  in: pitch 7, keyPitch 0, orderedScalePitches [0, 2, 4, 5, 7, 9, 11]
-		// should return 5
-
-		// only makes sense for 7-pitchclasses-scales
 		getScaleDegree: function(pitch, keyPitch, orderedScalePitches) {
 
 			// add keypitch to all in scale, then look for position of pitch
@@ -141,8 +163,7 @@ define(
 			);
 			return inPrimeFormButNotInScale.length === 0;
 		},*/
-// http://www.musictheory.net/calculators/analysis
-//https://www.musictheory.net/lessons/49
+
 		hasPitchNotInKey: function(playedPitchClasses, keyPitch, orderedScalePitches){
 			//console.log(playedPitchClasses, keyPitch, orderedScalePitches);
 			var keyPitches = this._getPitchesForKeyAndScale(keyPitch, orderedScalePitches);
@@ -176,49 +197,21 @@ define(
 			}
 			
 			var scaleDegree = this.getScaleDegree(playedPitchesOrdered[0], keyPitch, scalePitches);
-
-			/*if (scaleDegree === 0) {
-				return '';
-				https://en.wikipedia.org/wiki/Mode_(music)
-			}*/
-
 			var simplifiedNaming = ['', 'Tonic', 'Supertonic', 'Mediant', 'Subdominant', 'Dominant', 'Submediant', 'Leading tone'];
-
 			var selectedScaleName = diatonicScales[this.config.scaleIndex][0];
+
 			if (selectedScaleName === 'Natural Minor') {
 				simplifiedNaming[7] = 'Subtonic';
 			}
 
 			return {scaleDegree: scaleDegree, functionName: simplifiedNaming[scaleDegree]};
-			//return romanNumeral + ' / ' + simplifiedNaming[scaleDegree]);
 		},
-
-
-
-		/*isPrimeFormInScale: function(primeForm, rootPitch, keyPitch, orderedScalePitches) {
-			
-			var playedPitches = _.map(primeForm, function(pitch){
-				return pitch + rootPitch%12;
-			});
-			var inPrimeFormButNotInScale = _.difference(
-				primeForm, 
-				orderedScalePitches
-				this._getPitchesForKeyAndScale(keyPitch, orderedScalePitches)
-			);
-			return inPrimeFormButNotInScale.length === 0;
-		},*/
 
 		_getPitchesForKeyAndScale: function(keyPitch, scalePitches){
 			
 			return _.map(scalePitches, function(pitch){
 				return (pitch + keyPitch) % 12;
 			});
-		},
-
-		//getScaleDegreeNameFromScaleDegree:
-
-		getNumeralFromScaleDegree: function(){
-
 		},
 
     	_getNoteName: function(pitch, isFlat) {
@@ -279,10 +272,6 @@ define(
 			var orderedPC = _.sortBy(this._getPitchClasses(notes));
 			var normalForm = this._getNormalForm(orderedPC);
 			var normalFormInvertedSet = this._getNormalForm(this._getInvertedSet(orderedPC));
-
-			//console.log(normalForm);
-			//console.log(this._getIntervalSetStartingAtZero(normalForm));
-			//console.log(this._getPitchClassesStartingAtZero(normalForm));
 
 			return this._getSetWithSmallerPitchesToTheLeft(
 					  this._getPitchClassesStartingAtZero(normalForm), 
@@ -371,10 +360,6 @@ define(
 			return orderedPC.slice(bestRotationIndex, cardinality).concat(orderedPC.slice(0, bestRotationIndex));
 		},
 
-		/*
-			@todo evtl. rahn prime auch einbauen (neben forte)
-		*/
-
 		_getOrderedPitchesStartingAtZero: function (pitches) {
 			var orderedPitches = _.sortBy(pitches)
 			var lowestPitch = orderedPitches[0];
@@ -383,7 +368,7 @@ define(
 			});
 		},
 
-		_getIntervalSetStartingAtZero: function(pitches) {
+		_getPitchClassesInPlayedOrderTransposedDown: function(pitches) {
 		    var lowestPitch = pitches[0];
 		    return _.map(pitches, function(pitch){
 		        return (pitch - lowestPitch + 144)%12;
@@ -403,37 +388,6 @@ define(
 				invertedSet.push(12 - pitches[i - 1]);
 			}
 			return invertedSet;
-		},
-
-		getChordFunction: function(keyIndex, scaleIndex, rootNotePitch, isMinorChord){
-
-			/*
-			@todo
-
-			- herausfinden welche akkordtypen welche funktionen wahrnehmen können
-			- herausfinden ob das pauschal so festgelegt werden kann (unabhängig vom kontext/vorher gespielten noten)
-			- dom7, diminshed, major, minor etc. berücksichtigen
-			- wie verhält es sich mit 9th, 11th etc.?
-
-			*/
-			var keyIndex = keyIndex || 0;		// default C
-			var scaleIndex = scaleIndex || 0; 	// default major
-			var isMinorChord = isMinorChord || 0;
-
-			var chordMode = isMinorChord ? 'min' : 'maj';
-
-			var scale = diatonicScales[scaleIndex][1];
-
-			var positionInScale = _.indexOf(currentScale, rootNotePitch);
-
-
-
-
-			// in: 0, 1, 0 (C, major, C-2)
-			// out: Tonic
-
-			// in: 0, 1, 7 (C, major, G-2)
-			// out: Dominant
 		},
 
 		_getInversionNumber: function(pitchClassesOnlyOrdered, pitchClassesStartingAtZero){
@@ -547,78 +501,33 @@ define(
 			});
 		},
 
-
-		/**
-			todo
-			----
-
-			- keine sortierungen, operationen auf sets
-				- alle zu Beginn berechnen und erklären wofür
-
-			- commonChordTableLookup einbauen
-
-			- testen, ob lookup auf common geht mit ordered pitchclasses
-				- [12,4,7,0,16]->[0,4,7]->maj
-				- [1,4,8,13]->min 
-
-			- fallback auf sets wenn nicht geklappt hat in commonChordTableLookup
-				(weil zu exotisch?)
-
-			- bei fallback wie bisher (mit ordered pitchclasses versuchen mehr details zu finden)
-
-			- aufräumen, refactoring
-
-			- testing
-
-		*/
     	getChordInfo: function(notes) {
 
     		var foundChords = [];
-
     		var fortePrimeForm = this.getFortePrimeForm(notes);
     		var playedPitchesOrdered = _.sortBy(notes);
-
-
-    			var pitchClassesFromOrderedNotes = this._getPitchClasses(_.sortBy(notes));
-    			var pitchClassesStartingAtZero = this._getPitchClassesStartingAtZero(
-    				_.sortBy(pitchClassesFromOrderedNotes)
-    			);
-    			//var pitchClassesKey = '_' + this._getSickodecimal(pitchClassesStartingAtZero);
-
-				var orderedPC = _.sortBy(this._getPitchClasses(notes));
-				var normalForm = this._getNormalForm(orderedPC);
-				var primeForm = this._getPrimeFromNormalForm(normalForm)
-
-
+			var pitchClassesFromOrderedNotes = this._getPitchClasses(_.sortBy(notes));
+			var pitchClassesStartingAtZero = this._getPitchClassesStartingAtZero(
+				_.sortBy(pitchClassesFromOrderedNotes)
+			);
+			var orderedPC = _.sortBy(this._getPitchClasses(notes));
+			var normalForm = this._getNormalForm(orderedPC);
+			var primeForm = this._getPrimeFromNormalForm(normalForm)
     		var consonanceRating = this.getConsonanceRating(notes);
-
-    		//console.log('playedPitchesOrdered', playedPitchesOrdered);
-
-    		var startingAtZero = this._getIntervalSetStartingAtZero(playedPitchesOrdered);    		
-    		//console.log('startingAtZero', startingAtZero);
-
+    		var startingAtZero = this._getPitchClassesInPlayedOrderTransposedDown(playedPitchesOrdered);    		
     		var commonChordsLookupKey = '_' + this._getSickodecimal(startingAtZero);
     		
-
-			// 047  4-7-12
     		if (_.has(commonChordsLookupTable, commonChordsLookupKey)) { // hit in common chords table
-
-			//console.log(commonChordsLookupTable[commonChordsLookupKey]);
 
 				var lowestInputPitch = playedPitchesOrdered[0];
 				var rootNoteName = this.getNoteNameForPitch(playedPitchesOrdered[0]);
-
-    			//var chordNames = '';
     			var that = this;
-
-
-    			// diatonic functino / roman muss hier rein
 
     			// loop chords that were found
     			_.each(commonChordsLookupTable[commonChordsLookupKey], function(possibleChord){
 
     				var foundChord = {
-    					name: possibleChord[0], // take the first in the list that is returned (maybe send all to m4l)
+    					chordName: possibleChord[0], // take the first in the list that is returned (maybe send all to m4l)
     					rootNotePitch: lowestInputPitch,
     					rootNoteName: rootNoteName,
     					inversionNumber: possibleChord[1],
@@ -629,11 +538,7 @@ define(
 
     				if (that._isScaleSelected) { // get diatonic stuff
 
-
-
     					var diatonicFunction = that.getDiatonicFunction(playedPitchesOrdered);
-
-    					//console.log(diatonicFunction);
 
     					foundChord.scaleDegree = diatonicFunction.scaleDegree;
     					foundChord.diatonicFunctionName = diatonicFunction.functionName;
@@ -646,7 +551,7 @@ define(
 									_.sortBy(playedPitchClasses)
 								);
 
-							var romanNumeral = that._getRomanNumeral(
+							var romanNumeral = that.getRomanNumeral(
 									diatonicFunction.scaleDegree,
 									primeForm,
 									orderedPitchClassesStartingAtZero, 
@@ -657,90 +562,25 @@ define(
     					}
     				}
 
-    				//console.log(foundChord);
-
     				foundChords.push(foundChord);
     			});
 
-    			//console.log(commonChordsLookupTable[commonChordsLookupKey]);
-    			// find root
-    			//var lowestInputPitch = playedPitchesOrdered[0];
-    			//console.log('lowestInputPitch', lowestInputPitch);
-    			//console.log('startingAtZero', startingAtZero);
-
-
-
-    			//var actualRootNoteIfNotInversion = 
-
-    			
-    			//console.log(rootNoteName);
-
-
-
     			return foundChords;
-
-    			//console.log('gefunden: ', commonChordsLookupTable[commonChordsLookupKey]);
-
-    			//
-    			/*if (commonChordsLookupTable[commonChordsLookupKey][1]) {
-    				console.log('------------->', commonChordsLookupTable[commonChordsLookupKey]);
-    			}*/
-
-
-    		} else {
-    			//console.log('startingAtZero', startingAtZero);
-    			//console.log('commonChordsLookupKey', commonChordsLookupKey);
-    			//console.log('nicht gefunden: ', orderedPitches, commonChordsLookupKey);
     		}
 
     		var setLookupKey = '_' + this._getSickodecimal(this._getIntervalVector(notes));
 
-    			//console.log('setLookupKey: ', setLookupKey);
-
     		if (_.has(setsLookupTable, setLookupKey)) {
 
-    			    			//console.log('found setLookupKey: ', setLookupKey);
-
-
-    			//var notesOrdered = _.sortBy(notes);
-
-    			
-    			//var fortePrimeFormKey = this._getSickodecimal(primeForm);
-
-    			// half-diminished seventh chord [0,3,6,10] -> _036A
-    			/*var pitchClassesFromOrderedNotes = this._getPitchClasses(_.sortBy(notes));
-    			var pitchClassesStartingAtZero = this._getIntervalSetStartingAtZero(
-    				_.sortBy(pitchClassesFromOrderedNotes)
-    			);
-    			var pitchClassesKey = '_' + this._getSickodecimal(pitchClassesStartingAtZero);*/
-
-
-    			// half-diminished seventh chord [0,3,6,10] -> 0258
-    			// Dominant-seventh/German-sixth Chord [[0,4,7,10]]-> 0368
-
-    			/*
-				
-
-    			*/
-
-
-
-
-
 				var primeFormKey = '_' + this._getSickodecimal(primeForm);
-
-				//var normalFormInvertedSet = this._getPitchClassesStartingAtZero(this._getNormalForm(this._getInvertedSet(orderedPC)));
-
-    			//console.log('[' + notes.join(',') + ']: setLookupKey: ' + setLookupKey + ', normalForm: ' + normalForm + ', normalFormInvertedSet: ' + normalFormInvertedSet + ', pitchClassesKey: ' + pitchClassesKey + ', primeFormKey: ' + primeFormKey);
 
     			if (_.has(setsLookupTable[setLookupKey], primeFormKey)) { // hit in sets
 
     				var inversionNumber = this._getInversionNumber(pitchClassesFromOrderedNotes, pitchClassesStartingAtZero);
-
-    				var guessedRootPitch = this.getRootInfo(notes);
+    				var guessedRootPitch = this.guessRootPitch(notes);
 
     				var foundChord = {
-    					name: setsLookupTable[setLookupKey][primeFormKey].split(', ')[0], // first of commaseparated list @todo make arrays in set table
+    					chordName: setsLookupTable[setLookupKey][primeFormKey].split(', ')[0], // first of commaseparated list @todo make arrays in set table
     					rootNotePitch: guessedRootPitch,
     					rootNoteName: this._getNoteName(guessedRootPitch),
     					inversionNumber: inversionNumber,
@@ -752,28 +592,20 @@ define(
     				foundChords.push(foundChord);
 
 					return foundChords;
-    				//return [(setsLookupTable[setLookupKey][pitchClassesKey] + this._getInversionText(inversionNumber))];
 
     			} else {
-    				//console.log('did not find primeFormKey: ' + primeFormKey);
     				// return first key
     				for(var key in setsLookupTable[setLookupKey]) break;
 
-    					    				console.log(setsLookupTable[setLookupKey][key]);
-
     				return {
-	    				rootNoteName: this.getRoot(notes), 
+	    				rootNoteName: this.guessRootPitch(notes), 
 	    				chordNames: setsLookupTable[setLookupKey][key].split(', ')
     				};
-    				//return [setsLookupTable[setLookupKey][key]];
     			}
-
-
-    			//return setsLookupTable[intervalVector][0];
     		}
-    		return '';
+    		return foundChords; // empty array
     	},
-    	getRootInfo: function(notes) {
+    	guessRootPitch: function(notes) {
 
 			var weightingPoints = [
 				0,  	// same note 	(0)
@@ -790,12 +622,8 @@ define(
 				1, 	// major 7th	(11)
 			];
 
-
-
 			var lowestPitch = _.sortBy(notes)[0] % 12;
-
 			var pitches = _.sortBy(this._getPitchClasses(notes));
-			//var pitches = _.sortBy(notes);
 			var ratings = [];
 			var countOfScoreMap = {};
 			var highestScore = 0;
@@ -806,8 +634,6 @@ define(
 				_.each(pitches, function(comparedPitchValue){
 					var interval = Math.abs(pitchValue - comparedPitchValue);
 					score += weightingPoints[interval];
-					//console.log(pitchValue, comparedPitchValue, interval, weightingPoints[interval], score);
-
 				});
 
 				ratings.push({ 
@@ -826,33 +652,20 @@ define(
 				}				
 			});
 
-			//console.log(pitches);
-			//console.log(ratings);
-
 			// unique winner
 			if (countOfScoreMap[highestScore] === 1) {
 				var winnerPitch = _.find(ratings, ['score', highestScore]);
-				//console.log(winnerPitch);
-				//console.log('unique winner');
 				return winnerPitch.pitch;
 			}
 
 			// all pitches have the same (highest) count, return lowest note
 			if (countOfScoreMap[highestScore] === pitches.length) {
-				//console.log('all same, return lowest');
 				return pitches[0];
 			}
 
 			// unclear, return the lowest pitch of all the winners				
-			//console.log('unclear, return the lowest pitch of all the winners');
-
 			var winners = _.filter(ratings, ['score', highestScore]);
-
-
-
 			var lowestPitchAmongWinners = _.sortBy(winners, 'pitch')[0];
-
-			//console.log(_.sortBy(winners, 'pitch')[0]);
 
 			return lowestPitchAmongWinners.pitch;
     	}

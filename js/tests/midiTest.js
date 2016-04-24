@@ -4,18 +4,18 @@ define(
     function(midi) {
         var run = function() {
 
-            /*test('_getHexadecimal works', function() {
+            test('_getSickodecimal works', function() {
                 _.each(
                 [
-                    {pitches: [0,1,2,3,4,5,6,7,8,9,10,11,12], expected: '0123456789ABC'},
+                    {pitches: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18], expected: '0123456789ABCDEFGHI'},
 
                 ], function(p){
-                    deepEqual(midi._getHexadecimal(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
+                    deepEqual(midi._getSickodecimal(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
                 });
-            });*/
+            });
 
 
-            /*test('getPrimeForm works', function() {
+            test('getFortePrimeForm works', function() {
                 _.each(
                 [
                     {pitches: [0,1], expected: [0,1,]},
@@ -44,78 +44,57 @@ define(
 
 
                 ], function(p){
-                    deepEqual(midi.getPrimeForm(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
-                });
-            });*/
-
-            /*test('_getNormalForm works', function() {
-                _.each(
-                [
-                    {pitches: [8,0,4,6], expected: [0, 2, 4, 8]},     
-                    {pitches: [0,2,6], expected: '010101'},
-                    {pitches: [0,2,3,6], expected: '112101'},
-                    {pitches: [4,6,0,1,3], expected: '223111'},
-                    {pitches: [0,1,2,4,5,8], expected: '323421'},
-                    //{pitches: [0,2,3,4,6], expected: '223111'},
-                    //{pitches: [0,1,2,4,6], expected: [2,2,3,1,1,1]},     
-                ], function(p){
-                    deepEqual(midi._getNormalForm(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected.join());
-                });
-            });*/
-
-           /* test('_getTnSetClass works', function() {
-                _.each(
-                [
-                    {pitches: [5, 2, 11, 3, 9], expected: '100011'},     
-
-                    //{pitches: [0,2,3,4,6], expected: '223111'},
-                    //{pitches: [0,1,2,4,6], expected: [2,2,3,1,1,1]},     
-                ], function(p){
-                    deepEqual(midi._getTnSetClass(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
-                });
-            });*/
-
-/*
-            test('_getIntervalVector works', function() {
-                _.each(
-                [
-                    {pitches: [2, 3, 9], expected: '100011'},     
-                    {pitches: [0,2,6], expected: '010101'},
-                    {pitches: [0,2,3,6], expected: '112101'},
-                    {pitches: [4,6,0,1,3], expected: '223111'},
-                    {pitches: [0,1,2,4,5,8], expected: '323421'},
-                    //{pitches: [0,2,3,4,6], expected: '223111'},
-                    //{pitches: [0,1,2,4,6], expected: [2,2,3,1,1,1]},     
-                ], function(p){
-                    deepEqual(midi._getIntervalVectorString(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
+                    deepEqual(midi.getFortePrimeForm(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
                 });
             });
 
-            test('getNoteNameForPitch for', function() {
+            test('_getNormalForm works', function() {
                 _.each(
                 [
-                    {pitch: 0, isFlat: 1, expected: 'C-2'},
-                    {pitch: 0, isFlat: 1, expected: 'C-2'},
-                    {pitch: 1, isFlat: 1, expected: 'Db-2'},
-                    {pitch: 2, isFlat: 1, expected: 'D-2'},
-                    {pitch: 3, isFlat: 1, expected: 'Eb-2'},
-                    {pitch: 4, isFlat: 1, expected: 'E-2'},
-                    {pitch: 5, isFlat: 1, expected: 'F-2'},
-                    {pitch: 6, isFlat: 1, expected: 'Gb-2'},
-                    {pitch: 7, isFlat: 1, expected: 'G-2'},
-                    {pitch: 8, isFlat: 1, expected: 'Ab-2'},
-                    {pitch: 9, isFlat: 1, expected: 'A-2'},
-                    {pitch: 10, isFlat: 1, expected: 'Bb-2'},
-                    {pitch: 11, isFlat: 1, expected: 'B-2'},
-                    {pitch: 12, isFlat: 1, expected: 'C-1'},
+                    {pitches: [8,0,4,6], expected: [0, 4, 6, 8]},     
+                ], function(p){
+                    deepEqual(midi._getNormalForm(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected.join());
+                });
+            });
 
-                    {pitch: 127, isFlat: 1, expected: 'G8'},
+            test('_getIntervalVector works', function() {
+                _.each(
+                [
+                    {pitches: [2,3,9], expected: [1,0,0,0,1,1]},     
+                    {pitches: [0,2,6], expected: [0,1,0,1,0,1]},
+                    {pitches: [0,2,3,6], expected: [1,1,2,1,0,1]},
+                    {pitches: [4,6,0,1,3], expected: [2,2,3,1,1,1]},
+                    {pitches: [0,1,2,4,5,8], expected: [3,2,3,4,2,1]}, 
+                ], function(p){
+                    deepEqual(midi._getIntervalVector(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
+                });
+            });
 
-                    {pitch: 1, isFlat: 0, expected: 'C#-2'},
-                    {pitch: 3, isFlat: 0, expected: 'D#-2'},
-                    {pitch: 6, isFlat: 0, expected: 'F#-2'},
-                    {pitch: 8, isFlat: 0, expected: 'G#-2'},
-                    {pitch: 10, isFlat: 0, expected: 'A#-2'},
+            test('getNoteNameForPitch works', function() {
+                _.each(
+                [
+                    {pitch: 0, isFlat: 1, expected: 'C'},
+                    {pitch: 0, isFlat: 1, expected: 'C'},
+                    {pitch: 1, isFlat: 1, expected: 'Db'},
+                    {pitch: 2, isFlat: 1, expected: 'D'},
+                    {pitch: 3, isFlat: 1, expected: 'Eb'},
+                    {pitch: 4, isFlat: 1, expected: 'E'},
+                    {pitch: 5, isFlat: 1, expected: 'F'},
+                    {pitch: 6, isFlat: 1, expected: 'Gb'},
+                    {pitch: 7, isFlat: 1, expected: 'G'},
+                    {pitch: 8, isFlat: 1, expected: 'Ab'},
+                    {pitch: 9, isFlat: 1, expected: 'A'},
+                    {pitch: 10, isFlat: 1, expected: 'Bb'},
+                    {pitch: 11, isFlat: 1, expected: 'B'},
+                    {pitch: 12, isFlat: 1, expected: 'C'},
+
+                    {pitch: 127, isFlat: 1, expected: 'G'},
+
+                    {pitch: 1, isFlat: 0, expected: 'C#'},
+                    {pitch: 3, isFlat: 0, expected: 'D#'},
+                    {pitch: 6, isFlat: 0, expected: 'F#'},
+                    {pitch: 8, isFlat: 0, expected: 'G#'},
+                    {pitch: 10, isFlat: 0, expected: 'A#'},
 
                 ], function(p){
                     equal(
@@ -139,153 +118,7 @@ define(
                 ], function(p){
                     deepEqual(midi._getPitchClasses(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected.join());
                 });
-            });*/
-
-
-
-            /*test('getIntervalKey works', function() {
-                _.each(
-                [
-                    {pitches: [1, 2, 4], expected: '12'},
-                    {pitches: [1, 3], expected: '2'},
-                    {pitches: [0, 4, 6, 10], expected: '242'},
-
-
-
-                ], function(p){
-                    equal(midi._getIntervalKey(p.pitches), p.expected, p.pitches.join() + ' becomes ' + p.expected);
-                });
-            });*/
-
-
-/*
-         [
-             ["maj", "major"],
-             [0, 4, 7], "Major"
-         ], [
-             ["m", "min", "minor"],
-             [0, 3, 7], "Minor"
-         ], [
-             ["7"],
-             [0, 4, 7, 10], "Dominant Seventh"
-         ], [
-             ["min7", "m7", "minor7"],
-             [0, 3, 7, 10], "Minor Seventh"
-         ], [
-             ["maj7", "Major7"],
-             [0, 4, 7, 11], "Major Seventh"
-         ], [
-             ["sus4", "sus"],
-             [0, 5, 7], "Suspended Fourth"
-         ], [
-             ["7sus4", "7sus"],
-             [0, 5, 7, 10], "Seventh Suspended Fourth"
-         ], [
-             ["6", "maj6", "major6"],
-             [0, 4, 7, 9], "Sixth"
-         ], [
-             ["min6", "m6", "minor6"],
-             [0, 3, 7, 9], "Minor Sixth"
-         ], [
-             ["dim", "dim7", "diminished", "o"],
-             [0, 3, 6],
-             "Diminished Seventh"
-         ], [
-             ["aug", "+", "augmented"],
-             [0, 4, 8], "Augmented"
-         ], [
-             ["7-5", "7b5"],
-             [0, 4, 6, 10], "Seventh Diminished Fifth"
-         ], [
-             ["7+5", "7#5"],
-             [0, 4, 8, 10], "Seventh Augmented Fifth"
-         ], [
-             ["m7-5", "m7b5", "0"],
-             [0, 3, 6, 10], "Half Diminished Seventh"
-         ], [
-             ["m/maj7"],
-             [0, 3, 7, 11], "Minor/Major Seventh"
-         ], [
-             ["maj7+5", "maj7#5"],
-             [0, 4, 8, 11], "Major Seventh Augmented Fifth"
-         ], [
-             ["maj7-5", "maj7b5"],
-             [0, 4, 6, 11], "Major Seventh Diminished Fifth"
-         ], [
-             ["9"],
-             [0, 4, 7, 10, 14], "Ninth"
-         ], [
-             ["m9"],
-             [0, 3, 7, 10, 14], "Minor Ninth"
-         ], [
-             ["maj9"],
-             [0, 4, 7, 11, 14], "Major Ninth"
-         ], [
-             ["7+9", "7#9"],
-             [0, 4, 7, 10, 15], "Seventh Augmented Ninth"
-         ], [
-             ["7-9", "7b9"],
-             [0, 4, 7, 10, 13], "Seventh Diminished Ninth"
-         ], [
-             ["7+9-5", "7#9b5"],
-             [0, 4, 6, 10, 15],
-             "Seventh Augmented Ninth Diminished Fifth"
-         ], [
-             ["6/9", "69"],
-             [0, 4, 7, 9, 14], "Sixth/Ninth"
-         ], [
-             ["9+5", "9#5"],
-             [0, 4, 8, 10, 14], "Ninth Augmented Fifth"
-         ], [
-             ["9-5", "9b5"],
-             [0, 4, 6, 10, 14], "Ninth Diminished Fifth"
-         ], [
-             ["m9-5", "m9b5"],
-             [0, 3, 6, 10, 14],
-             "Minor Ninth Diminished Fifth"
-         ], [
-             ["11"],
-             [0, 4, 7, 10, 14, 17], "Eleventh"
-         ], [
-             ["m11"],
-             [0, 3, 7, 10, 14, 17], "Minor Eleventh"
-         ], [
-             ["11-9", "11b9"],
-             [0, 4, 7, 10, 13, 17],
-             "Eleventh Diminished Ninth"
-         ], [
-             ["13"],
-             [0, 4, 7, 10, 14, 17, 21], "Thirteenth"
-         ], [
-             ["m13"],
-             [0, 3, 7, 10, 14, 17, 21], "Minor Thirteenth"
-         ], [
-             ["maj13"],
-             [0, 4, 7, 11, 14, 17, 21], "Major Thirteenth"
-         ], [
-             ["add9", "(add9)"],
-             [0, 4, 7, 14], "Major (Add Ninth)"
-         ], [
-             ["madd9", "m(add9)"],
-             [0, 3, 7, 14], "Minor (Add Ninth)"
-         ], [
-             ["sus2"],
-             [0, 2, 7], "Suspended Second"
-         ], [
-             ["5"],
-             [0, 7], "Power Chord"
-         ]
-
-*/
-
-
-/*
-cases:
-- voicing below
-- voicing above
-*/
-
-
+            });
 
             test('getOutOfScalePitches', function() {
                 _.each(
@@ -316,89 +149,15 @@ cases:
                 });
             });
 
-           /* test('customLookup works', function() {
+            test('_getPitchClassesInPlayedOrderTransposedDown works', function() {
                 _.each(
                 [
-                    {pitches: [0,4,7], expected: 'Major Triad'},
-                    {pitches: [11,15,18], expected: 'Major Triad'}, // transposed
-                    {pitches: [15,18,11], expected: 'Major Triad'}, // differentOrder
-                    {pitches: [4,7,12], expected: 'Major Triad (1st inv)'}, // first inversion
-                    {pitches: [7,12,16], expected: 'Major Triad (2nd inv)'}, // second inversion
-                    {pitches: [0,4,7,12], expected: 'Major Triad'}, // additional voicing
-
-                    {pitches: [0,3,7], expected: 'Minor Triad'},
-                    {pitches: [0,3,6], expected: 'Diminished Triad'},
-                    {pitches: [0,4,8], expected: 'Augmented Triad'},
-                    {pitches: [0,4,7,11], expected: 'Major seventh chord'},
-                    {pitches: [0,3,7,10], expected: 'Minor seventh chord'},
-                    {pitches: [0,4,7,10], expected: 'Dominant seventh chord, major/minor seventh chord, 7th chord'},
-                    {pitches: [0,3,6,9], expected: 'Diminished seventh chord, full diminished seventh chord, Diminished 7th (with Flat 5th)'},
-                    {pitches: [0,3,6,10], expected: 'Minor seventh flat five chord, Half-diminished seventh chord'},
-                    {pitches: [0,3,7,11], expected: 'Minor major seventh chord'},
-                    {pitches: [0,4,8,11], expected: 'Major seventh sharp five chord, augmented major seventh chord'},
-                    {pitches: [0,3,6,11], expected: 'Diminished major seventh chord'},
-                    {pitches: [0,4,6,10], expected: 'Dominant seventh flat five chord, Seven Flat Five'},
-                    {pitches: [0,4,7,14], expected: 'Added ninth chord'},
-                    {pitches: [0,4,7,11,14], expected: 'major ninth chord'},
-                    {pitches: [0,3,7,10,14], expected: 'minor ninth chord'},
-                    {pitches: [0,3,7,11,14], expected: 'Minor-major ninth chord'},
-                    {pitches: [0,3,7,14], expected: 'Minor added ninth chord'},
-                    {pitches: [0,4,7,14,18], expected: 'Major ninth sharp eleventh chord|Major seventh sharp eleventh chord'},
-                    {pitches: [0,4,8,10,14], expected: 'Dominant ninth sharp five chord'},
-                    {pitches: [0,4,6,10,14], expected: 'Dominant ninth flat five chord'},
-                    {pitches: [0,4,7,10,14], expected: 'Dominant 9th, Dominant ninth chord'},
-                    {pitches: [0,4,7,10,13], expected: 'Dominant minor 9th, Dominant seventh flat ninth chord'},
-                    {pitches: [0,4,7,10,15], expected: 'Dominant seventh sharp ninth chord, dominant 7â™¯9 chord, Hendrix chord'},
-                    {pitches: [0,4,8,10,15], expected: 'Dominant seventh sharp five sharp ninth chord'},
-                    {pitches: [0,4,8,10,13], expected: 'Dominant seventh sharp five flat ninth chord'},
-                    {pitches: [0,4,8,10], expected: 'dominant seventh sharp five chord, augmented seventh chord, Seven Sharp Five'},
-                    {pitches: [0,4,7,10,13,18], expected: 'Dominant seventh sharp eleventh chord'},
-                    {pitches: [0,4,6,10,15], expected: 'Dominant seventh flat five sharp ninth chord'},
-                    {pitches: [0,3,7,9,14], expected: 'Minor seventh sharp five chord, minor six-nine chord'},
-                    {pitches: [0,4,6,11], expected: 'Major seventh flat five chord'},
-                    {pitches: [0,3,7,9], expected: 'Minor sixth chord'},
-                    {pitches: [0,4,7,9], expected: 'Major sixth chord'},
-                    {pitches: [0,4,7,9,14], expected: 'Major six-nine chord'},
-                    {pitches: [0,3,7,10,14,17], expected: 'Minor eleventh chord'},
-                    {pitches: [0,4,7,11,14,17], expected: 'Major eleventh chord'},
-                    {pitches: [0,4,7,10,13,17], expected: 'Dominant eleventh flat ninth chord'},
-                    {pitches: [0,4,7,14,17], expected: 'Dominant eleventh chord'},
-                    {pitches: [0,3,7,10,14,21], expected: 'Minor thirteenth chord'},
-                    {pitches: [0,4,7,11,14,18,21], expected: 'Major thirteenth sharp eleventh chord'},
-                    {pitches: [0,4,7,11,14,21], expected: 'Major thirteenth chord'},
-                    {pitches: [0,4,7,10,15,21], expected: 'Dominant thirteenth sharp ninth chord'},
-                    {pitches: [0,4,7,10,14,18,21], expected: 'Dominant thirteenth sharp eleventh chord'},
-                    {pitches: [0,4,7,10,13,21], expected: 'Dominant thirteenth flat ninth chord'},
-                    {pitches: [0,4,7,10,14,21], expected: 'Dominant thirteenth chord'},
-                    {pitches: [0,2,5,7], expected: 'Suspended second suspended fourth chord'},
-                    {pitches: [0,2,7], expected: 'Suspended Second Chord'},
-                    {pitches: [0,5,7], expected: 'Suspended Fourth Chord'},
-                    {pitches: [0,2,7,11], expected: 'Major seventh suspended second chord'},
-                    {pitches: [0,5,7,11], expected: 'Major seventh suspended fourth chord'},
-                    {pitches: [0,5,7,10,14,21], expected: 'Dominant thirteenth suspended fourth chord'},
-                    {pitches: [0,2,7,10], expected: 'Dominant seventh suspended second chord'},
-                    {pitches: [0,5,7,10], expected: 'Dominant seventh suspended fourth chord'},
-                    {pitches: [0,5,7,10,14], expected: 'Dominant ninth suspended fourth chord'},
-                    {pitches: [0,7], expected: 'Power Chord'},
-                    {pitches: [0,7,12], expected: 'Power Chord Octave Doubled'},
-                    {pitches: [0,4,6], expected: 'Flat five chord'},
-                    {pitches: [0,2,6], expected: 'Flat five chord'},
-                    {pitches: [0,2,4,7], expected: 'Mu chord'},
-                ], function(p){
-                    equal(midi.customLookup(p.pitches), p.expected, p.pitches.join() + ' is ' + p.expected);
-                });
-            });*/
-
-
-            test('_getIntervalSetStartingAtZero works', function() {
-                _.each(
-                [
-                    {pitchesOrdered: [0, 3, 7, 9, 15, 18], expected: [0, 3, 7, 9, 15, 18]},
-                    {pitchesOrdered: [3, 7, 9, 15, 18], expected: [0, 4, 6, 12, 15]},
-                    {pitchesOrdered: [14, 15, 18, 45], expected: [0, 1, 4, 31]},
+                    {pitchesOrdered: [0, 3, 7, 9, 15, 18], expected: [0, 3, 7, 9, 3, 6]},
+                    {pitchesOrdered: [3, 7, 9, 15, 18], expected: [0, 4, 6, 0, 3]},
+                    {pitchesOrdered: [14, 15, 18, 45], expected: [0, 1, 4, 7]},
 
                 ], function(p){
-                    deepEqual(midi._getIntervalSetStartingAtZero(p.pitchesOrdered), p.expected);
+                    deepEqual(midi._getPitchClassesInPlayedOrderTransposedDown(p.pitchesOrdered), p.expected);
                 });
             });
 
@@ -410,6 +169,35 @@ cases:
                     {pitchesOrdered: [14, 15, 18, 45], expected: [0, 1, 4, 7]},
                 ], function(p){
                     deepEqual(midi._getPitchClassesStartingAtZero(p.pitchesOrdered), p.expected, p.pitchesOrdered.join() + ' becomes ' + p.expected.join());
+                });
+            });
+
+            test('getRomanNumeral works', function() {
+                _.each(
+                [
+                    {scaleDegree: 1, primeForm: [0, 3, 7], orderedPitchClassesStartingAtZero: [0, 3, 7], inversion: 0, expected: 'i'},                    
+                    {scaleDegree: 1, primeForm: [0, 4, 7], orderedPitchClassesStartingAtZero: [0, 4, 7], inversion: 0, expected: 'I'},                    
+                    {scaleDegree: 2, primeForm: [0, 4, 7], orderedPitchClassesStartingAtZero: [0, 4, 7], inversion: 0, expected: 'II'},  
+                    {scaleDegree: 2, primeForm: [0, 4, 7], orderedPitchClassesStartingAtZero: [0, 4, 7, 11], inversion: 0, expected: 'II7'},
+                    {scaleDegree: 2, primeForm: [0, 4, 7], orderedPitchClassesStartingAtZero: [0, 4, 7, 11, 14, 21], inversion: 0, expected: 'II13'},
+                    {scaleDegree: 7, primeForm: [0, 3, 6], orderedPitchClassesStartingAtZero: [0, 3, 6], inversion: 0, expected: 'vii°'},  
+                    {scaleDegree: 5, primeForm: [0, 4, 8], orderedPitchClassesStartingAtZero: [0, 4, 8], inversion: 0, expected: 'V+'},  
+                    {scaleDegree: 1, primeForm: [0, 4, 7], orderedPitchClassesStartingAtZero: [0, 4, 7], inversion: 1, expected: 'Ia'},                    
+                    {scaleDegree: 1, primeForm: [0, 4, 7], orderedPitchClassesStartingAtZero: [0, 4, 7], inversion: 2, expected: 'Ib'},
+
+                ], function(p){
+                    console.log(midi.getRomanNumeral(
+                            p.scaleDegree, 
+                            p.primeForm,
+                            p.orderedPitchClassesStartingAtZero,
+                            p.inversion
+                        ));
+                    equal(midi.getRomanNumeral(
+                            p.scaleDegree, 
+                            p.primeForm,
+                            p.orderedPitchClassesStartingAtZero,
+                            p.inversion
+                        ), p.expected);
                 });
             });
 
@@ -518,126 +306,120 @@ cases:
                 });
             });
 
-            test('_getIntervalSetStartingAtZeroKeepOrder works', function() {
-                _.each(
-                [
-                    {pitches: [0, 3, 7], expected: [0, 3, 7]},
-                    {pitches: [3, 7, 0], expected: [3, 7, 0]},
-                    {pitches: [7, 0, 3], expected: [7, 0, 3]},
-                    {pitches: [4, 6, 9], expected: [0, 2, 5]},
-                    {pitches: [14, 6, 9], expected: [8, 0, 3]},
-                    // @TODO more tests
-
-                ], function(p){
-                    deepEqual(midi._getIntervalSetStartingAtZeroKeepOrder(p.pitches), p.expected, p.pitches.join() + ' is: ' + p.expected.join());
-                });
-            });
-
-
             test('getChordInfo works', function() {
                 _.each(
-                [
-                    
-/*
-{pitches: [0,4,7], expected: 'Major Triad'},
-{pitches: [0,3,7], expected: 'Minor Triad'},
-{pitches: [0,3,6], expected: 'Diminished Triad'},
-{pitches: [0,4,8], expected: 'Augmented Triad'},
-{pitches: [0,4,7,11], expected: 'Major seventh'},
-{pitches: [0,3,7,10], expected: 'Minor seventh'},
-{pitches: [0,4,7,10], expected: 'Dominant seventh'},
-{pitches: [0,3,6,9], expected: 'Diminished seventh'},
-{pitches: [0,3,6,10], expected: 'Half-diminished seventh'},
-{pitches: [0,3,7,11], expected: 'Minor major seventh'},
-{pitches: [0,4,8,11], expected: 'augmented major seventh'},
-{pitches: [0,3,6,11], expected: 'Diminished major seventh'},
-{pitches: [0,4,6,10], expected: 'Dominant seventh flat five'},
-{pitches: [0,4,7,14], expected: 'Added ninth'},
-{pitches: [0,4,7,11,14], expected: 'major ninth'},
-{pitches: [0,3,7,10,14], expected: 'minor ninth'},
-{pitches: [0,4,8,11,14], expected: 'Augmented Major 9th'},
-{pitches: [0,3,7,11,14], expected: 'Minor-major ninth'},
-{pitches: [0,3,7,14], expected: 'Minor added ninth'},
-{pitches: [0,3,6,10,14], expected: 'Minor Ninth Diminished Fifth'},
-{pitches: [0,4,7,14,18], expected: 'Major seventh sharp eleventh'},
-{pitches: [0,4,8,10,14], expected: 'Dominant ninth sharp five'},
-{pitches: [0,3,6,9,14], expected: 'Diminished 9th'},
-{pitches: [0,3,6,10,13], expected: 'Half-Diminished Minor 9th'},
-{pitches: [0,3,6,9,13], expected: 'Diminished Minor 9th'},
-{pitches: [0,4,6,10,14], expected: 'Dominant ninth flat five'},
-{pitches: [0,4,7,10,14], expected: 'Dominant 9th'},
-{pitches: [0,4,7,10,13], expected: 'Dominant minor 9th'},
-{pitches: [0,4,7,10,15], expected: 'Dominant seventh sharp ninth'},
-{pitches: [0,4,8,10,15], expected: 'Dominant seventh sharp five sharp ninth'},
-{pitches: [0,4,8,10,13], expected: 'Dominant seventh sharp five flat ninth'},
-{pitches: [0,4,8,10], expected: 'augmented seventh'},
-{pitches: [0,4,7,10,13,18], expected: 'Dominant seventh sharp eleventh'},
-{pitches: [0,4,6,10,15], expected: 'Dominant seventh flat five sharp ninth'},
-{pitches: [0,3,7,9,14], expected: 'Minor seventh sharp five'},
-{pitches: [0,4,6,11], expected: 'Major seventh flat five'},
-{pitches: [0,4,7,14,18], expected: 'Major seventh sharp eleventh'},
-{pitches: [0,3,7,9], expected: 'Minor sixth'},
-{pitches: [0,3,7,9,14], expected: 'Minor six-nine'},
-{pitches: [0,4,7,9], expected: 'Major sixth'},
-{pitches: [0,4,7,9,14], expected: 'Major six-nine'},
-{pitches: [0,3,7,10,14,17], expected: 'Minor eleventh'},
-{pitches: [0,4,7,11,14,17], expected: 'Major eleventh'},
-{pitches: [0,4,7,10,13,17], expected: 'Dominant eleventh flat ninth'},
-{pitches: [0,4,7,10,14,17], expected: 'Dominant 11th'},
-{pitches: [0,3,7,10,14,21], expected: 'Minor thirteenth'},
-{pitches: [0,4,7,11,14,18,21], expected: 'Major thirteenth sharp eleventh'},
-{pitches: [0,4,7,11,14,17,21], expected: 'Major Thirteenth'},
-{pitches: [0,4,7,10,15,21], expected: 'Dominant thirteenth sharp ninth'},
-{pitches: [0,4,7,10,14,18,21], expected: 'Dominant thirteenth sharp eleventh'},
-{pitches: [0,4,7,10,13,21], expected: 'Dominant thirteenth flat ninth'},
-{pitches: [0,4,7,10,14,17,21], expected: 'Dominant 13th'},
-{pitches: [0,2,5,7], expected: 'Suspended second suspended fourth'},
-{pitches: [0,2,7], expected: 'Suspended Second'},
-{pitches: [0,5,7], expected: 'Suspended Fourth'},
-{pitches: [0,2,7,11], expected: 'Major seventh suspended second'},
-{pitches: [0,5,7,11], expected: 'Major seventh suspended fourth'},
-{pitches: [0,4,8,11,14,17], expected: 'Augmented 11th'},
-{pitches: [0,3,6,10,13,17], expected: 'Half-Diminished 11th'},
-{pitches: [0,3,6,9,13,16], expected: 'Diminished 11th'},
-{pitches: [0,4,8,10,14,17,21], expected: 'Augmented Dominant 13th'},
-{pitches: [0,3,7,10,14,17,21], expected: 'Minor Dominant 13th'},
-{pitches: [0,3,7,11,14,17,21], expected: 'Minor Major Thirteenth'},
-{pitches: [0,4,8,11,14,17,21], expected: 'Augmented Major 13th'},
-{pitches: [0,4,8,10,14,17,21], expected: 'Augmented Dominant 13th'},
-{pitches: [0,3,6,10,14,17,21], expected: 'Half-Diminished 13th'},
-{pitches: [0,5,7,10,14,21], expected: 'Dominant thirteenth suspended fourth'},
-{pitches: [0,2,7,10], expected: 'Dominant seventh suspended second'},
-{pitches: [0,5,7,10], expected: 'Dominant seventh suspended fourth'},
-{pitches: [0,5,7,10,14], expected: 'Dominant ninth suspended fourth'},
-{pitches: [0,7], expected: 'Power'},
-{pitches: [0,7,12], expected: 'Power Octave Doubled'},
-{pitches: [0,4,6], expected: 'Flat five'},
-{pitches: [0,2,6], expected: 'Flat five'},
-{pitches: [0,2,4,7], expected: 'Mu'},
+                [                                        
 
-*/
-{pitches: [1,5,8], expected: 'Major Triad'},
-{pitches: [12,4,7], expected: 'Major Triad (1st inv)'},
-{pitches: [7,12,4], expected: 'Major Triad (1st inv)'},
+                    {pitches: [0,4,7], expectedName: 'Major Triad'},
+                    {pitches: [0,3,7], expectedName: 'Minor Triad'},
+                    {pitches: [0,3,6], expectedName: 'Diminished Triad'},
+                    {pitches: [0,4,8], expectedName: 'Augmented Triad'},
+                    {pitches: [0,4,7,11], expectedName: 'Major seventh'},
+                    {pitches: [0,3,7,10], expectedName: 'Minor seventh'},
+                    {pitches: [0,4,7,10], expectedName: 'Dominant seventh'},
+                    {pitches: [0,3,6,9], expectedName: 'Diminished seventh'},
+                    {pitches: [0,3,6,10], expectedName: 'Half-diminished seventh'},
+                    {pitches: [0,3,7,11], expectedName: 'Minor major seventh'},
+                    {pitches: [0,4,8,11], expectedName: 'augmented major seventh'},
+                    {pitches: [0,3,6,11], expectedName: 'Diminished major seventh'},
+                    {pitches: [0,4,6,10], expectedName: 'Dominant seventh flat five'},
+                    {pitches: [0,4,7,14], expectedName: 'Added ninth'},
+                    {pitches: [0,4,7,11,14], expectedName: 'major ninth'},
+                    {pitches: [0,3,7,10,14], expectedName: 'minor ninth'},
+                    {pitches: [0,4,8,11,14], expectedName: 'Augmented Major 9th'},
+                    {pitches: [0,3,7,11,14], expectedName: 'Minor-major ninth'},
+                    {pitches: [0,3,7,14], expectedName: 'Minor added ninth'},
+                    {pitches: [0,3,6,10,14], expectedName: 'Minor Ninth Diminished Fifth'},
+                    {pitches: [0,4,7,14,18], expectedName: 'Major seventh sharp eleventh'},
+                    {pitches: [0,4,8,10,14], expectedName: 'Dominant ninth sharp five'},
+                    {pitches: [0,3,6,9,14], expectedName: 'Diminished 9th'},
+                    {pitches: [0,3,6,10,13], expectedName: 'Half-Diminished Minor 9th'},
+                    {pitches: [0,3,6,9,13], expectedName: 'Diminished Minor 9th'},
+                    {pitches: [0,4,6,10,14], expectedName: 'Dominant ninth flat five'},
+                    {pitches: [0,4,7,10,14], expectedName: 'Dominant 9th'},
+                    {pitches: [0,4,7,10,13], expectedName: 'Dominant minor 9th'},
+                    {pitches: [0,4,7,10,15], expectedName: 'Dominant seventh sharp ninth'},
+                    {pitches: [0,4,8,10,15], expectedName: 'Dominant seventh sharp five sharp ninth'},
+                    {pitches: [0,4,8,10,13], expectedName: 'Dominant seventh sharp five flat ninth'},
+                    {pitches: [0,4,8,10], expectedName: 'augmented seventh'},
+                    {pitches: [0,4,7,10,13,18], expectedName: 'Dominant seventh sharp eleventh'},
+                    {pitches: [0,4,6,10,15], expectedName: 'Dominant seventh flat five sharp ninth'},
+                    {pitches: [0,3,7,9,14], expectedName: 'Minor seventh sharp five'},
+                    {pitches: [0,4,6,11], expectedName: 'Major seventh flat five'},
+                    {pitches: [0,4,7,14,18], expectedName: 'Major seventh sharp eleventh'},
+                    {pitches: [0,3,7,9], expectedName: 'Minor sixth'},
+                    {pitches: [0,3,7,9,14], expectedName: 'Minor six-nine'},
+                    {pitches: [0,4,7,9], expectedName: 'Major sixth'},
+                    {pitches: [0,4,7,9,14], expectedName: 'Major six-nine'},
+                    {pitches: [0,3,7,10,14,17], expectedName: 'Minor eleventh'},
+                    {pitches: [0,4,7,11,14,17], expectedName: 'Major eleventh'},
+                    {pitches: [0,4,7,10,13,17], expectedName: 'Dominant eleventh flat ninth'},
+                    {pitches: [0,4,7,10,14,17], expectedName: 'Dominant 11th'},
+                    {pitches: [0,3,7,10,14,21], expectedName: 'Minor thirteenth'},
+                    {pitches: [0,4,7,11,14,18,21], expectedName: 'Major thirteenth sharp eleventh'},
+                    {pitches: [0,4,7,11,14,17,21], expectedName: 'Major Thirteenth'},
+                    {pitches: [0,4,7,10,15,21], expectedName: 'Dominant thirteenth sharp ninth'},
+                    {pitches: [0,4,7,10,14,18,21], expectedName: 'Dominant thirteenth sharp eleventh'},
+                    {pitches: [0,4,7,10,13,21], expectedName: 'Dominant thirteenth flat ninth'},
+                    {pitches: [0,4,7,10,14,17,21], expectedName: 'Dominant 13th'},
+                    {pitches: [0,2,5,7], expectedName: 'Suspended second suspended fourth'},
+                    {pitches: [0,2,7], expectedName: 'Suspended Second'},
+                    {pitches: [0,5,7], expectedName: 'Suspended Fourth'},
+                    {pitches: [0,2,7,11], expectedName: 'Major seventh suspended second'},
+                    {pitches: [0,5,7,11], expectedName: 'Major seventh suspended fourth'},
+                    {pitches: [0,4,8,11,14,17], expectedName: 'Augmented 11th'},
+                    {pitches: [0,3,6,10,13,17], expectedName: 'Half-Diminished 11th'},
+                    {pitches: [0,3,6,9,13,16], expectedName: 'Diminished 11th'},
+                    {pitches: [0,4,8,10,14,17,21], expectedName: 'Augmented Dominant 13th'},
+                    {pitches: [0,3,7,10,14,17,21], expectedName: 'Minor Dominant 13th'},
+                    {pitches: [0,3,7,11,14,17,21], expectedName: 'Minor Major Thirteenth'},
+                    {pitches: [0,4,8,11,14,17,21], expectedName: 'Augmented Major 13th'},
+                    {pitches: [0,4,8,10,14,17,21], expectedName: 'Augmented Dominant 13th'},
+                    {pitches: [0,3,6,10,14,17,21], expectedName: 'Half-Diminished 13th'},
+                    {pitches: [0,5,7,10,14,21], expectedName: 'Dominant thirteenth suspended fourth'},
+                    {pitches: [0,2,7,10], expectedName: 'Dominant seventh suspended second'},
+                    {pitches: [0,5,7,10], expectedName: 'Dominant seventh suspended fourth'},
+                    {pitches: [0,5,7,10,14], expectedName: 'Dominant ninth suspended fourth'},
+                    {pitches: [0,7], expectedName: 'Power'},
+                    {pitches: [0,7,12], expectedName: 'Power Octave Doubled'},
+                    {pitches: [0,4,6], expectedName: 'Flat five'},
+                    {pitches: [0,2,6], expectedName: 'Flat five'},
+                    {pitches: [0,2,4,7], expectedName: 'Mu'},
 
-{pitches: [7,12,16], expected: 'Major Triad (2nd inv)'},
+                    {pitches: [1,5,8], expectedName: 'Major Triad'},
+                    {pitches: [12,4,7], expectedName: 'Major Triad (1st inv)'},
+                    {pitches: [7,12,4], expectedName: 'Major Triad (1st inv)'},
 
-// voicings
-{pitches: [0,4,7, 12, 24, 16], expected: 'Major Triad'},
-{pitches: [2, 6, 9, 14, 26, 18], expected: 'Major Triad'},
+                    {pitches: [7,12,16], expectedName: 'Major Triad (2nd inv)'},
+
+                    // voicings
+                    {pitches: [0,4,7, 12, 24, 16], expectedName: 'Major Triad'},
+                    {pitches: [2, 6, 9, 14, 26, 18], expectedName: 'Major Triad'},
 
 
-{pitches: [0, 3, 7, 12, 15], expected: 'Minor Triad'},
-{pitches: [3, 6, 10, 15, 18], expected: 'Minor Triad'},
+                    {pitches: [0, 3, 7, 12, 15], expectedName: 'Minor Triad'},
+                    {pitches: [3, 6, 10, 15, 18], expectedName: 'Minor Triad'},
 
-{pitches: [1,2,3,4,5,6], expected: 'Chromatic Hexamirror'},
+                    {pitches: [1,2,3,4,5,6], expectedName: 'Chromatic Hexamirror'},
 
-{pitches: [0, 2, 4, 7, 9], expected: '"Black Key" Pentatonic'},
+                    {pitches: [0, 2, 4, 7, 9], expectedName: '"Black Key" Pentatonic'},
 
                 ], function(p){
-                    console.log(midi.getChordInfo(p.pitches));
-                    ok(1,1);
-                    //notEqual(_.indexOf(midi.getChordInfo(p.pitches).chordNames, p.expected), -1, p.expected + ' is among ' + midi.getChordInfo(p.pitches).chordNames.join() + ' root: ' + midi.getChordInfo(p.pitches).rootNoteName);
+
+                    var result = midi.getChordInfo(p.pitches);
+
+                    var listOfFoundChordNames = _.map(result, function(chord){
+                        return chord.chordName;
+                    });
+                    console.log(listOfFoundChordNames);
+                    console.log(p.expectedName);
+
+                    var inThere = _.findIndex(listOfFoundChordNames, function(chordName){
+                        return chordName === p.expectedName;
+                    }) !== -1;
+
+                    equal(inThere, true, p.pitches);
+
                 });
             });
 
@@ -647,36 +429,34 @@ cases:
             var notes = [11, 3, 7]; // {3: 16, 7: 20, 11: 16}
             var notes = [13, 3, 7]; // {1: 6, 3: 13, 7: 13}*/
 
-            /*test('getRoot works', function() {
+            test('guessRootPitch works', function() {
 
                 _.each(
                 [
-                    {pitches: [0, 3, 7], expected: 'C', chord: 'c minor'},
-                    {pitches: [0, 4, 7], expected: 'C', chord: 'c major'},
-                    {pitches: [4, 7, 12], expected: 'C', chord: 'c major 1. inversion'},
-                    {pitches: [7, 12, 16], expected: 'C', chord: 'c major 2. inversion'},
-                    {pitches: [12, 16, 19], expected: 'C', chord: 'c major 3. inversion (same chord)'},
-                    {pitches: [1, 4, 8], expected: 'C#', chord: 'c# minor'},
-                    {pitches: [2, 5, 9], expected: 'D', chord: 'd minor'},                    
-                    {pitches: [0, 4, 7, 11], expected: 'C', chord: 'maj7'},
-                    {pitches: [0, 3, 7, 10], expected: 'C', chord: 'min7'},
-                    {pitches: [0, 4, 7, 10], expected: 'C', chord: 'dom7'},
-                    {pitches: [0, 3, 6, 9], expected: 'C', chord: 'dim7'},
-                    {pitches: [0, 4, 8], expected: 'C', chord: 'c aug'},
-                    {pitches: [5, 9, 13], expected: 'C#', chord: 'c# aug first inversion'},
+                    {pitches: [0, 3, 7], expected: 0, chord: 'c minor'},
+                    {pitches: [0, 4, 7], expected: 0, chord: 'c major'},
+                    {pitches: [4, 7, 12], expected: 0, chord: 'c major 1. inversion'},
+                    {pitches: [7, 12, 16], expected: 0, chord: 'c major 2. inversion'},
+                    {pitches: [12, 16, 19], expected: 0, chord: 'c major 3. inversion (same chord)'},
+                    {pitches: [1, 4, 8], expected: 1, chord: 'c# minor'},
+                    {pitches: [2, 5, 9], expected: 2, chord: 'd minor'},                    
+                    {pitches: [0, 4, 7, 11], expected: 0, chord: 'maj7'},
+                    {pitches: [0, 3, 7, 10], expected: 0, chord: 'min7'},
+                    {pitches: [0, 4, 7, 10], expected: 0, chord: 'dom7'},
+                    {pitches: [0, 3, 6, 9], expected: 0, chord: 'dim7'},
+                    {pitches: [0, 4, 8], expected: 0, chord: 'c aug'},
+                    {pitches: [5, 9, 13], expected: 1, chord: 'c# aug first inversion'},
 
                     //{pitches: [0, 4, 7, 10, 15], expected: 'C', chord: 'hendrix chord'},
                     //{pitches: [1, 5, 8, 11, 16], expected: 'C#', chord: 'hendrix chord'},
-                    {pitches: [0, 4, 7, 11, 14], expected: 'C', chord: 'maj 9'},
-
-
+                    //{pitches: [0, 4, 7, 11, 14], expected: 0, chord: 'maj 9'},
                     //{pitches: [2, 6, 9, 12, 17], expected: 'D', chord: 'hendrix chord'},
                     //{pitches: [3, 7, 10, 13, 18], expected: 'D#', chord: 'hendrix chord'},
 
                 ], function(p){
-                    equal(midi.getRoot(p.pitches), p.expected, p.pitches.join() + ' has root ' + p.expected);
+                    equal(midi.guessRootPitch(p.pitches), p.expected, p.pitches.join() + ' has root ' + p.expected);
                 });
-            });*/
+            });
 
             
         };
